@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href= "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css"  media="screen,projection"/>
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>Interactive underground app</title>
+  </head>
+  <body>
+    <script type="module" src="/index.js" defer></script>
+    <!-- <script type="text/javascript" src="/interactive-react-og/node_modules/materialize-css/dist/js/materialize.min.js" defer></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/2.2.3/react-bootstrap.min.js"></script>
+    
+<!-- 
+    <div class="fixed-action-btn">
+      <a class="btn-floating btn-large red">
+        <span class="material-icons">add</span>
+      </a>
+      <ul>
+        <li><a class="btn-floating red" id="pipe"><i class="material-icons">Pipe</i></a></li>
+        <li><a class="btn-floating red" id="cable"><i class="material-icons">Cable</i></a></li>
+        <li><a class="btn-floating red" id="tree_roots"><i class="material-icons">Tree roots</i></a></li>
+        <li><a class="btn-floating red" id="wadi"><i class="material-icons">Wadi</i></a></li>
+      </ul>
+    </div>
+    
+    
+    <script>  
+      document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.fixed-action-btn');
+        var instances = M.FloatingActionButton.init(elems, {
+        direction: 'top',
+        hoverEnabled: false
+        });
+      });
+    </script> -->
+
+
+    <div id="root"></div>
+
+    
+    
+  </body>
+</html>
