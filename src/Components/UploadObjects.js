@@ -39,12 +39,8 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
 
     const handleClick = event => {
       var conflictLog = "\n These are the conflicts for the selected object " + Object.values(object.assetId);
-      //import objects
-      //add function to show conflicts
-      // for the clicked object get position
-              // ref.current.position.x
-              //object.objectId
 
+      // for the clicked object get position and object id
       var currentObjectX = ref.current.position.x;
       var currentObjectId = object.objectId;
 
@@ -52,42 +48,46 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
         console.log("currentObjectId :" + currentObjectId)
         if (currentObjectId === order[index].objectId){
           var i = index;
-          
+
+          //comparing the objects to the left and right (if exists) in each iteration
           for (let x = 1; x <= order.length ; x++) {
+            // select neighbour object to the left and compare distances for conflicts
             if(i-x >= 0){
+              //TODO: get current position when you have drag and drop
               var distanceBetweenObjects = distances[index] - distances[i-x];
               //var distanceBetweenObjects = currentObjectX - distances[i-x];
               var uitlegschemaDistance, neighbourObjectAssetId;
               
+              //get the minimum distance for corresponding object types from Uitlegschema 
               ObjectData.afstand.map((o) => { 
                 if(o.Asset == Object.values(object.assetId) ){
-                  console.log("here")
                   neighbourObjectAssetId = Object.values(objects[order[i-x].objectId - 1].assetId)
                   console.log("neighbourObjectAssetId: " +  neighbourObjectAssetId)
+
                   uitlegschemaDistance = o[neighbourObjectAssetId.toString()]
                   console.log("uitlegschemaDistance: " + uitlegschemaDistance )
                 }})
         
               console.log("Distance between selected object " + (index+1)  + " and object " + (i-x+1) + " is: " + distanceBetweenObjects);
+              // compare the distances and log if conflict occurs
               if(parseFloat(distanceBetweenObjects) < parseFloat(uitlegschemaDistance)){
                 console.log("Selected Object " + (index+1)  + " has a conflict with Object " + (i-x+1) )
-               // appContext.objectConflicts = "\nSelected Object " + (index+1)  + " has a conflict with Object " + (i-x+1)
-               //conflictLog = conflictLog.concat("-------------------------------------------------------------------------");
                conflictLog = conflictLog.concat("\n Selected Object " + (index+1) + " (" + Object.values(object.assetId) + ") has a conflict with Object " + (i-x+1) + " (" + neighbourObjectAssetId + ")");
               
               }
               
             }
 
+             // select neighbour object to the right and compare distances for conflicts
             if(i+x < order.length){
               //TODO: get current position when you have drag and drop
               var distanceBetweenObjects = distances[i+x] - distances[index];
               //var distanceBetweenObjects = distances[i+x] - currentObjectX;
               var uitlegschemaDistance, neighbourObjectAssetId;
 
+              //get the minimum distance for corresponding object types from Uitlegschema 
               ObjectData.afstand.map((o) => { 
                 if(o.Asset == Object.values(object.assetId) ){
-                  console.log("here i+x")
                   neighbourObjectAssetId = Object.values(objects[order[i+x].objectId - 1].assetId)
                   console.log("neighbourObjectAssetId: " +  neighbourObjectAssetId)
                   
@@ -96,12 +96,9 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
                 }})
 
               console.log("Distance between selected object " + (index+1)  + " and object " + (i+x+1) + " is: " + distanceBetweenObjects);
+              // compare the distances and log if conflict occurs
               if(parseFloat(distanceBetweenObjects) < parseFloat(uitlegschemaDistance)){
                 console.log("Selected Object " + (index+1)  + " has a conflict with Object " + (i+x+1) )
-                //appContext.objectConflicts = "\nSelected Object " + (index+1)  + " has a conflict with Object " + (i+x+1)
-                //appContext.objectConflicts = "Got ITTTTTTTT here as well";
-                //appContext.setObjectConflicts(appContext.objectConflicts);
-                //conflictLog = conflictLog.concat("-------------------------------------------------------------------------");
                 conflictLog = conflictLog.concat("\n Selected Object " + (index+1) + " (" + Object.values(object.assetId) + ") has a conflict with Object " + (i+x+1) + " (" + neighbourObjectAssetId + ")");
               }
             }
@@ -114,10 +111,7 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
         
       }
 
-      // select neighbour object and compare distances for conflicts
-        //use order to find neighbour objects   =>  order[i].objectId === object.objectId
-      //start from to right and then check on left
-      // or check left and right alternatively?
+      //for logging the conflicts in UI in App.js
       setObjectConflicts(conflictLog);
       
     }
@@ -130,6 +124,7 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
         ref={ref}
         //scale={clicked ? 1.5 : 1} 
         //onClick={(event) => click(!clicked)}
+        //show object Name on single click and conflicts on Double click
         onClick={handleClick}
         onPointerOver={(event) => hover(true)}
         onPointerOut={(event) => hover(false)}>
@@ -142,6 +137,7 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
 function UploadObjects ({object, distance, objects, order, distances, setObjectConflicts }){
     return(
     // <Cylinder position= {[distance, 0, 0]} diameter = {object.diameter} depth = {object.depth} />
+    //TODO: reduce the number of input parameters
     <Cylinder distance= {distance} diameter = {Object.values(object.diameter)} depth = {Object.values(object.depth)} object = {object} objects = {objects} order ={order} distances={distances} setObjectConflicts = {setObjectConflicts}/>      
   )
 }

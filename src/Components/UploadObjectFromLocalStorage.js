@@ -45,7 +45,7 @@ return (
     order.map((o, i) => {
         console.log('id ' + o.objectId);
         console.log(Object.values(objects[o.objectId - 1]));
-        //TRY getting rid of distance and only use distances?
+        //TRY getting rid of distance and only use distances? //TODO: reduce the number of input parameters
         return <UploadObjects object = {objects[o.objectId - 1]} distance = {distance[i]} objects= {objects} order={order} distances={distance} setObjectConflicts= {setObjectConflicts}  /> 
         
     })

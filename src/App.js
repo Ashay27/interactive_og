@@ -432,7 +432,7 @@ function App() {
          
         {/* <UploadObjects /> */}
 
-        
+        {/* TODO: reduce the number of input parameters show? */}
         <UploadObjectFromLocalStorage show = 'true' objects = {storedObjectsUpload} order = {storedObjectsOrder} setObjectConflicts = {setObjectConflicts}/>
         </group>
       </Canvas>
