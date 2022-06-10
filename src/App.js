@@ -231,6 +231,7 @@ function App() {
   const [storedObjectsUpload, setStoredObjectsUpload] = useState([]);
   const [storedObjectId, setStoredObjectsId] = useState(0);
   const [storedObjectsOrder, setStoredObjectsOrder] = useState([]);
+  const [objectConflicts, setObjectConflicts] = useState('');
 
   const showSettings = {
     showStoredObjectsUpload: showStoredObjectsUpload,
@@ -238,10 +239,12 @@ function App() {
     storedObjectId: storedObjectId,
     storedObjectsOrder: storedObjectsOrder,
     LOCAL_ORDER_KEY: LOCAL_ORDER_KEY,
+    objectConflicts: objectConflicts,
     setShowStoredObjectsUpload,
     setStoredObjectsUpload,
     setStoredObjectsId,
-    setStoredObjectsOrder
+    setStoredObjectsOrder,
+    setObjectConflicts
   };
 
   const objectNumberRef = useRef();
@@ -338,6 +341,13 @@ function App() {
     orderNumberRef.current.value = null;
   }
   // console.log(Object.values(storedObjectsOrder[24]));
+
+  function NewlineText(props) {
+    const text = props.text;
+    const newText = text.split('\n').map(str => <p>{str}</p>);
+    
+    return newText;
+  }
   
   return (
     <AppContext.Provider value={showSettings}>
@@ -347,6 +357,7 @@ function App() {
 
     < div className= "flexbox-interaction conflicts-log">
         <p> Click on an object to see the related conflicts </p>
+        <NewlineText text={objectConflicts} />
     </div>
       
       < div className= "flexbox-interaction buttons">
@@ -422,7 +433,7 @@ function App() {
         {/* <UploadObjects /> */}
 
         
-        <UploadObjectFromLocalStorage show = 'true' objects = {storedObjectsUpload} order = {storedObjectsOrder} />
+        <UploadObjectFromLocalStorage show = 'true' objects = {storedObjectsUpload} order = {storedObjectsOrder} setObjectConflicts = {setObjectConflicts}/>
         </group>
       </Canvas>
       {/* <Order objects = {storedObjectsUpload} /> */}

@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import UploadObjects from "./UploadObjects";
 
-function UploadObjectFromLocalStorage({show, objects, order}) {
+function UploadObjectFromLocalStorage({show, objects, order, setObjectConflicts}) {
 
 //console.log(Object.values(objects[0].diameter))
 console.log({objects})
@@ -46,7 +46,7 @@ return (
         console.log('id ' + o.objectId);
         console.log(Object.values(objects[o.objectId - 1]));
         //TRY getting rid of distance and only use distances?
-        return <UploadObjects object = {objects[o.objectId - 1]} distance = {distance[i]} objects= {objects} order={order} distances={distance}  /> 
+        return <UploadObjects object = {objects[o.objectId - 1]} distance = {distance[i]} objects= {objects} order={order} distances={distance} setObjectConflicts= {setObjectConflicts}  /> 
         
     })
   
