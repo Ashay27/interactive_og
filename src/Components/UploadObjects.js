@@ -39,6 +39,7 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
 
     const handleClick = event => {
       var conflictLog = "\n These are the conflicts for the selected object " + Object.values(object.assetId);
+      var conflictExist = false;
 
       // for the clicked object get position and object id
       var currentObjectX = ref.current.position.x;
@@ -72,8 +73,8 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
               // compare the distances and log if conflict occurs
               if(parseFloat(distanceBetweenObjects) < parseFloat(uitlegschemaDistance)){
                 console.log("Selected Object " + (index+1)  + " has a conflict with Object " + (i-x+1) )
-               conflictLog = conflictLog.concat("\n Selected Object " + (index+1) + " (" + Object.values(object.assetId) + ") has a conflict with Object " + (i-x+1) + " (" + neighbourObjectAssetId + ")");
-              
+                conflictLog = conflictLog.concat("\n Selected Object " + (index+1) + " (" + Object.values(object.assetId) + ") has a conflict with Object " + (i-x+1) + " (" + neighbourObjectAssetId + ")");
+                conflictExist = true;
               }
               
             }
@@ -100,15 +101,15 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
               if(parseFloat(distanceBetweenObjects) < parseFloat(uitlegschemaDistance)){
                 console.log("Selected Object " + (index+1)  + " has a conflict with Object " + (i+x+1) )
                 conflictLog = conflictLog.concat("\n Selected Object " + (index+1) + " (" + Object.values(object.assetId) + ") has a conflict with Object " + (i+x+1) + " (" + neighbourObjectAssetId + ")");
+                conflictExist = true;
               }
-            }
-            
+            }           
           }
-         
-          
+        }      
+      }  
 
-        }
-        
+      if(!conflictExist){
+        conflictLog = conflictLog.concat("\n No conflicts detected for the selected object");
       }
 
       //for logging the conflicts in UI in App.js
