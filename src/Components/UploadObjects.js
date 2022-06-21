@@ -20,7 +20,7 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
     // Hold state for hovered and clicked events
     const [hovered, hover] = useState(false)
     const [clicked, click] = useState(false)
-    const [position, setPosition] = useState([distance,0,0]);
+    const [position, setPosition] = useState([distance,-depth,0]);
     
     const { size, viewport } = useThree();
     const aspect = size.width / viewport.width;
@@ -31,13 +31,15 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
 
     console.log(object.objectId)
 
-    const bind = useDrag(({ offset: [x, y] }) => {   
-        const [,, z] = position;
-        setPosition([(distance + (x/aspect)) , -y/aspect , z]); // / props.aspect
-        console.log('position-> x: ' + (distance + (x/aspect)) + ' y: ' + (-y/aspect) + ' z: ' + z);
+    const bind = useDrag(({ offset: [x] }) => {   
+        const [,y, z] = position;
+        setPosition([(distance + (x/aspect)) , y , z]); // / props.aspect
+        console.log('position-> x: ' + (distance + (x/aspect)) + ' y: ' + y + ' z: ' + z);
     }, { pointerEvents: true });
 
     const handleClick = event => {
+      click(!clicked);
+      if(!clicked){
       var conflictLog = "\n These are the conflicts for the selected object " + Object.values(object.assetId);
       var conflictExist = false;
 
@@ -55,6 +57,7 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
             // select neighbour object to the left and compare distances for conflicts
             if(i-x >= 0){
               //TODO: get current position when you have drag and drop
+              //NOTE: currently to identify conflicts, distance measured from center to center of the objects is used.
               var distanceBetweenObjects = distances[index] - distances[i-x];
               //var distanceBetweenObjects = currentObjectX - distances[i-x];
               var uitlegschemaDistance, neighbourObjectAssetId;
@@ -63,6 +66,7 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
               ObjectData.afstand.map((o) => { 
                 if(o.Asset == Object.values(object.assetId) ){
                   neighbourObjectAssetId = Object.values(objects[order[i-x].objectId - 1].assetId)
+                  neighbourObjectAssetId = neighbourObjectAssetId.toString().split("_",1)[0];
                   console.log("neighbourObjectAssetId: " +  neighbourObjectAssetId)
 
                   uitlegschemaDistance = o[neighbourObjectAssetId.toString()]
@@ -90,6 +94,7 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
               ObjectData.afstand.map((o) => { 
                 if(o.Asset == Object.values(object.assetId) ){
                   neighbourObjectAssetId = Object.values(objects[order[i+x].objectId - 1].assetId)
+                  neighbourObjectAssetId = neighbourObjectAssetId.toString().split("_",1)[0];
                   console.log("neighbourObjectAssetId: " +  neighbourObjectAssetId)
                   
                   uitlegschemaDistance = o[neighbourObjectAssetId.toString()]
@@ -114,7 +119,7 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
 
       //for logging the conflicts in UI in App.js
       setObjectConflicts(conflictLog);
-      
+      }
     }
 
     // Return the view, these are regular Threejs elements expressed in JSX
@@ -129,8 +134,9 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
         onClick={handleClick}
         onPointerOver={(event) => hover(true)}
         onPointerOut={(event) => hover(false)}>
-        <cylinderGeometry args={hovered ? [diameter,diameter,depth,50] : [diameter/2,diameter/2,depth,50]} />
-        <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} wireframe ={hovered ? true : false}/>
+        <cylinderGeometry args={[diameter/2,diameter/2,1,50]} />
+        {/* <cylinderGeometry args={hovered ? [diameter,diameter,1,50] : [diameter/2,diameter/2,1,50]} /> */}
+        <meshStandardMaterial color={clicked ? 'hotpink' : 'orange'} wireframe ={hovered ? true : false}/>
       </mesh>
     )
   }
