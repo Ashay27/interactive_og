@@ -115,7 +115,8 @@ function PipeModal(props) {
     const depth = depthRef.current.value;
     const diameter = diameterRef.current.value;
 
-    if (optionName === '') return
+    //TODO: Validate if input of distance, depth and diameter is not string (only float and number is valid) and is greater than 0
+    if (optionName === 'Choose the type of pipe') return window.alert("Please choose the type of object")
     else if (distance === '') return
     else if (depth === '') return
     else if (diameter === '') return  
@@ -422,7 +423,8 @@ function App() {
       </div>
       
       <div className='flexbox-interaction canvas'>
-      <Canvas camera={ {position: [2,2,10], fov: 70}} >
+      {/* <Canvas camera={ {position: [2,2,10], fov: 70}} > */}
+      <Canvas camera={ {position: [2,2,10]} }>
         <group>
         <CameraController />
          
