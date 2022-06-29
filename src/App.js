@@ -424,7 +424,7 @@ function App() {
       
       <div className='flexbox-interaction canvas'>
       {/* <Canvas camera={ {position: [2,2,10], fov: 70}} > */}
-      <Canvas camera={ {position: [2,2,10]} }>
+      <Canvas orthographic camera={ {position: [0,0,10]} }>
         <group>
         <CameraController />
          
