@@ -20,7 +20,10 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
     // Hold state for hovered and clicked events
     const [hovered, hover] = useState(false)
     const [clicked, click] = useState(false)
-    const [position, setPosition] = useState([distance,-depth,0]);
+    const [position, setPosition] = useState([distance,-(parseFloat(depth) + parseFloat(diameter)/2 ),0]);
+
+    console.log("depth: " + depth)
+    console.log("depth: " + (parseFloat(depth) + parseFloat(diameter)/2))
     
     const { size, viewport } = useThree();
     const aspect = size.width / viewport.width;
@@ -66,10 +69,33 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
               ObjectData.afstand.map((o) => { 
                 if(o.Asset == Object.values(object.assetId) ){
                   neighbourObjectAssetId = Object.values(objects[order[i-x].objectId - 1].assetId)
-                  neighbourObjectAssetId = neighbourObjectAssetId.toString().split("_",1)[0];
-                  console.log("neighbourObjectAssetId: " +  neighbourObjectAssetId)
+                  var neighbourObjectAssetName = neighbourObjectAssetId.toString().split("_",2)[0];
+                  console.log("neighbourObjectAssetName: " +  neighbourObjectAssetName)
 
-                  uitlegschemaDistance = o[neighbourObjectAssetId.toString()]
+                  var neighbourObjectAssetCat = neighbourObjectAssetId.toString().split("_",2)[1];
+                  console.log("neighbourObjectAssetCat: " +  neighbourObjectAssetCat)
+                  if(o.Asset.includes("Boom")|| o.Asset.includes("Gebouwen")){
+                    if(neighbourObjectAssetCat === "t"){
+                      uitlegschemaDistance = o[neighbourObjectAssetName.toString()]
+                      uitlegschemaDistance = (uitlegschemaDistance.toString().split("&",2)[0])
+                      console.log(uitlegschemaDistance)
+                      if(uitlegschemaDistance.includes("|") && parseFloat(diameter)<=0.2){
+                        uitlegschemaDistance = (uitlegschemaDistance.toString().split("|",2)[0])
+                        console.log ("using G_t <= 200mm")
+                      }else if((uitlegschemaDistance.includes("|") && parseFloat(diameter)>0.2)){
+                        uitlegschemaDistance = (uitlegschemaDistance.toString().split("|",2)[1])
+                        console.log ("using G_t > 200mm")
+                      }
+                      uitlegschemaDistance = parseFloat(uitlegschemaDistance)
+                    }else if(neighbourObjectAssetCat === "d"){
+                      uitlegschemaDistance = o[neighbourObjectAssetName.toString()]
+                      uitlegschemaDistance = parseFloat(uitlegschemaDistance.toString().split("&",2)[1])
+                    }else{
+                      uitlegschemaDistance = parseFloat(o[neighbourObjectAssetName.toString()])
+                    }
+                }else{
+                  uitlegschemaDistance = parseFloat(o[neighbourObjectAssetName.toString()])
+                }                
                   console.log("uitlegschemaDistance: " + uitlegschemaDistance )
                 }})
         
