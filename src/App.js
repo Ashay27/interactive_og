@@ -324,35 +324,26 @@ function App() {
   }
 
   const handleDelete = () => {
-    //TRY only deleting from order
+    // Only deleting from order, since uploading objects only if they exist in order
     if (storedObjectsUpload === "" ) return (
       window.alert("INVALID. At least 1 object should be added!"))
 
     if(objectNumberRef.current.value === '' || objectNumberRef.current.value <= 0 ) return (
       window.alert("INVALID object number. Fill the correct objects number! \nIt should not be empty and greater than 0"))
+    else if ( objectNumberRef.current.value > storedObjectsOrder.length) return (
+        window.alert("INVALID object number. \nThis should be less than or equal to the current number of objects in the profile.")
+      )
     else if (!(orderNumberRef.current.value === ''))  return (
-      window.alert("INVALID input. \nIt should be empty"))
-
-  //  if(storedObjectsOrder.length<2) return window.alert("INVALID. More than 1 objects required!")
-    console.log(Object.values(storedObjectsOrder[objectNumberRef.current.value-1]));
-    var objects = storedObjectsUpload;
-    objects.splice(Object.values(storedObjectsOrder[objectNumberRef.current.value-1]));
+      window.alert("INVALID input at 'Change Order to'. \nIt should be empty"))
     
     var order = storedObjectsOrder.slice();
     order.splice(objectNumberRef.current.value-1,1);
-    // var tempObj = order.splice(objectNumberRef.current.value-1,1);
-    // order.splice(orderNumberRef.current.value-1,0,tempObj[0]);
+    console.log({order});
     setStoredObjectsOrder(order);
-    setStoredObjectsUpload(objects);
-
-    // const storedObjects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    // storedObjects.splice(25,1);
-    // localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(storedObjects));
 
     objectNumberRef.current.value = null;
     orderNumberRef.current.value = null;
   }
-  // console.log(Object.values(storedObjectsOrder[24]));
 
   function NewlineText(props) {
     const text = props.text;
@@ -396,10 +387,10 @@ function App() {
           <Button onClick={handleChangeOrder}>
               Change order 
           </Button>
-          <br/>
-          {/* <Button onClick={handleDelete}>
+          <br/><br/>
+          <Button onClick={handleDelete}>
               Delete object
-          </Button> */}
+          </Button>
           
 
           </Form>
