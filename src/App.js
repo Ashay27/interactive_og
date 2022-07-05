@@ -1,9 +1,10 @@
 
 import './App.css';
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber'
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls' ;
 import "/node_modules/materialize-css/dist/js/materialize.min.js";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { SketchPicker } from "react-color";
 
 import {Button, Form, Modal} from 'react-bootstrap';
@@ -54,11 +55,11 @@ const CameraController = () => {
     () => {
       const controls = new OrbitControls(camera, gl.domElement);
       gl.setPixelRatio(window.devicePixelRatio);
-      gl.setSize(window.innerWidth/3, window.innerHeight/3,true);
+      gl.setSize(window.innerWidth, window.innerHeight,true);
 
       controls.minDistance = 3;
-      controls.maxDistance = 10;
-      controls.enableRotate = false;
+      controls.maxDistance = 5;
+      controls.enableRotate = true;
       
       return () => {
         controls.dispose();
@@ -231,6 +232,14 @@ return (
 )
 }
 
+const Model = () => {
+  const gltf = useLoader(GLTFLoader, "./Lega Blocks - Haaksbergweg - Principe straat_noK&L.gltf");
+  return (
+    <>
+      <primitive object={gltf.scene} scale={1} />
+    </>
+  );
+};
 
 function App() {
  
@@ -440,12 +449,14 @@ function App() {
       
       <div className='flexbox-interaction canvas'>
       {/* <Canvas camera={ {position: [2,2,10], fov: 70}} > */}
-      <Canvas orthographic camera={ {position: [0,0,10]} }>
+      <Canvas orthographic camera={ {position: [0,0,10], zoom: 25 }}>
         <group>
         <CameraController />
          
         <ambientLight color={0xFFFFFF} />
+        <directionalLight position={[5, 5, 5]} color={0xFFFFFF} />
         
+        {/* <Model /> */}
         {/* <AddObjectsFromCSVModal show = {show} objects = {values} /> */}
          
         {/* <UploadObjects /> */}

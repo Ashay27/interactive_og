@@ -30,7 +30,7 @@
   position: fixed;
   top: 2%;
   right: 2%;
-  width: 15%;
+  width: 22%;
   height: auto;
 }
 
@@ -46,10 +46,14 @@
 }
 
 .canvas{
-  position: relative;
+  position: fixed;
   flex-shrink: 0;
-  width: 1000px;
-  margin-left: 9%;
+  width: 1200px;
+  height: auto;
+  /* min-height: 768px; */
+  max-height: 850px;
+  margin-left: 2%;
+  /* margin-top: 2%; */
   margin-top: 34%;
 }
 
