@@ -11,13 +11,13 @@ console.log({show})
 console.log({order})
 if (!show) return
 
-var distance = Array(objects.length).fill(0);
+var distance = Array(order.length).fill(0);
 
 
 var index;
 
 //use order.length when delete object enabled? 
-for (index = 0; index < objects.length; index++) {
+for (index = 0; index < order.length; index++) {
 //     objects = objects.map(({diameter, depth, distance}) => 
 //     ({ diameter: parseFloat(diameter), depth: parseFloat(depth), distance: parseFloat(distance) }
 // ))
