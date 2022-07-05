@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls' ;
 import "/node_modules/materialize-css/dist/js/materialize.min.js";
+import { SketchPicker } from "react-color";
 
 import {Button, Form, Modal} from 'react-bootstrap';
 import Dropdown from 'react-bootstrap/Dropdown'
@@ -72,6 +73,7 @@ function PipeModal(props) {
   const [showPipeModal, setShowPipeModal] = useState(false);
   const handleClose = () => setShowPipeModal(false);
   const handleShow = () => setShowPipeModal(true);
+  const [sketchPickerColor, setSketchPickerColor] = useState("#F8E71C");
   const [objects, setObjects] = useState([]);
 
   const appContext = useContext(AppContext);
@@ -114,6 +116,7 @@ function PipeModal(props) {
     const distance = distanceRef.current.value;
     const depth = depthRef.current.value;
     const diameter = diameterRef.current.value;
+    const color = sketchPickerColor;
 
     //TODO: Validate if input of distance, depth and diameter is not string (only float and number is valid) and is greater than 0
     if (optionName === 'Choose the type of pipe') return window.alert("Please choose the type of object")
@@ -133,7 +136,7 @@ function PipeModal(props) {
     
 
     setObjects(prevObjects => {
-      return [...prevObjects,{diameter: {diameter}, depth:{depth}, distance: {distance}, assetId: {optionName}, objectId: (appContext.storedObjectId) }]
+      return [...prevObjects,{diameter: {diameter}, depth:{depth}, distance: {distance}, assetId: {optionName}, objectId: (appContext.storedObjectId), color: {color} }]
     })
     
 
@@ -202,6 +205,14 @@ return (
             //value = "1"
             autoFocus
             //disabled 
+          />
+
+          <Form.Label>Color</Form.Label>
+          <SketchPicker
+            onChange={(color) => {
+              setSketchPickerColor(color.hex);
+            }}
+            color={sketchPickerColor}
           />
                      
           </Form.Group>

@@ -162,7 +162,7 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
         onPointerOut={(event) => hover(false)}>
         <cylinderGeometry args={[diameter/2,diameter/2,1,50]} />
         {/* <cylinderGeometry args={hovered ? [diameter,diameter,1,50] : [diameter/2,diameter/2,1,50]} /> */}
-        <meshStandardMaterial color={clicked ? 'hotpink' : 'orange'} wireframe ={hovered ? true : false}/>
+        <meshStandardMaterial color={clicked ? 'hotpink' : Object.values(object.color)[0]} wireframe ={hovered ? true : false}/>
       </mesh>
     )
   }
