@@ -345,6 +345,15 @@ function App() {
     orderNumberRef.current.value = null;
   }
 
+  const handleClearData = () => {
+    if (window.confirm("This will clear all the data loaded for the profile. Press OK to confirm.") == true) {
+      localStorage.clear();
+      window.location.reload(true);
+    } else { 
+      return
+    }
+  }
+
   function NewlineText(props) {
     const text = props.text;
     const newText = text.split('\n').map(str => <p>{str}</p>);
@@ -390,6 +399,11 @@ function App() {
           <br/><br/>
           <Button onClick={handleDelete}>
               Delete object
+          </Button>
+
+          <br/><br/>
+          <Button onClick={handleClearData}>
+              Clear all
           </Button>
           
 
