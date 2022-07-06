@@ -350,6 +350,8 @@ function App() {
     console.log({order});
     setStoredObjectsOrder(order);
 
+    window.location.reload(true);
+
     objectNumberRef.current.value = null;
     orderNumberRef.current.value = null;
   }
