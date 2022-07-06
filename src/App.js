@@ -74,7 +74,7 @@ function PipeModal(props) {
   const [showPipeModal, setShowPipeModal] = useState(false);
   const handleClose = () => setShowPipeModal(false);
   const handleShow = () => setShowPipeModal(true);
-  const [sketchPickerColor, setSketchPickerColor] = useState("#F8E71C");
+  const [sketchPickerColor, setSketchPickerColor] = useState("#BD9F9F");
   const [objects, setObjects] = useState([]);
 
   const appContext = useContext(AppContext);
@@ -252,7 +252,8 @@ function App() {
   const [storedObjectsUpload, setStoredObjectsUpload] = useState([]);
   const [storedObjectId, setStoredObjectsId] = useState(0);
   const [storedObjectsOrder, setStoredObjectsOrder] = useState([]);
-  const [objectConflicts, setObjectConflicts] = useState('');
+  const [objectConflicts, setObjectConflicts] = useState([]);
+  const [objectConflictsLog, setObjectConflictsLog] = useState('');
 
   const showSettings = {
     showStoredObjectsUpload: showStoredObjectsUpload,
@@ -261,11 +262,13 @@ function App() {
     storedObjectsOrder: storedObjectsOrder,
     LOCAL_ORDER_KEY: LOCAL_ORDER_KEY,
     objectConflicts: objectConflicts,
+    objectConflictsLog: objectConflictsLog,
     setShowStoredObjectsUpload,
     setStoredObjectsUpload,
     setStoredObjectsId,
     setStoredObjectsOrder,
-    setObjectConflicts
+    setObjectConflicts,
+    setObjectConflictsLog
   };
 
   const objectNumberRef = useRef();
@@ -380,7 +383,7 @@ function App() {
 
     < div className= "flexbox-interaction conflicts-log">
         <p> Click on an object to see the related conflicts </p>
-        <NewlineText text={objectConflicts} />
+        <NewlineText text={objectConflictsLog} />
     </div>
       
       < div className= "flexbox-interaction buttons">
@@ -464,7 +467,7 @@ function App() {
         {/* <UploadObjects /> */}
 
         {/* TODO: reduce the number of input parameters show? */}
-        <UploadObjectFromLocalStorage show = 'true' objects = {storedObjectsUpload} order = {storedObjectsOrder} setObjectConflicts = {setObjectConflicts}/>
+        <UploadObjectFromLocalStorage show = 'true' objects = {storedObjectsUpload} order = {storedObjectsOrder} setObjectConflicts = {setObjectConflicts} objectConflicts = {objectConflicts} setObjectConflictsLog = {setObjectConflictsLog}/>
         </group>
       </Canvas>
       {/* <Order objects = {storedObjectsUpload} /> */}
