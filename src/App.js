@@ -1,7 +1,8 @@
 
 import './App.css';
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber'
+import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls' ;
 import "/node_modules/materialize-css/dist/js/materialize.min.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -26,6 +27,7 @@ import { Vector3 } from 'three';
 const LOCAL_STORAGE_KEY = 'localData.objects'
 const LOCAL_ID_KEY = 'localData.id'
 const LOCAL_ORDER_KEY = 'localData.order'
+const LOCAL_LINE_KEY = 'localData.lineIntersect'
 
 // localStorage.clear();
 
@@ -241,6 +243,156 @@ const Model = () => {
   );
 };
 
+function ControlLines() {
+  const appContext = useContext(AppContext);
+  var valueH;
+  var valueV;
+
+  useEffect(() => {
+    var storedIntersect = JSON.parse(localStorage.getItem(LOCAL_LINE_KEY));
+    console.log("storedIntersect: " + storedIntersect);
+    if(storedIntersect) {
+      appContext.setStoredLineIntersect(storedIntersect);
+    }
+  }, [])
+  
+  useEffect(() => {
+    localStorage.setItem(LOCAL_LINE_KEY, JSON.stringify(appContext.storedLineIntersect))
+  }, [appContext.storedLineIntersect])
+    
+  const ref = useRef()
+  const ref2 = useRef()
+
+  const points = []
+  points.push(new THREE.Vector3(-5, appContext.storedLineIntersect[0], 0)) 
+  points.push(new THREE.Vector3(40, appContext.storedLineIntersect[0], 0))
+
+  //console.log("pointsH: " + appContext.storedLineIntersect[0])
+
+  const [newPoints, setNewPoints] = useState(points)
+  const lineGeometry = new THREE.BufferGeometry();
+
+  const points2 = []
+  points2.push(new THREE.Vector3(appContext.storedLineIntersect[1], -5, 0))
+  points2.push(new THREE.Vector3(appContext.storedLineIntersect[1], 40, 0))
+
+  const [newPoints2, setNewPoints2] = useState(points2)
+  const lineGeometry2 = new THREE.BufferGeometry();
+
+  //for dragging the line (Not used because it leads to very precise values) 
+  //Better to get input from user based on the GLTF they upload they can tell the intersection of the lines
+  // and that is used as the starting point from mesurement of depth and distance 
+
+  // const bind = useDrag(({ offset: [x,y] }) => {
+  //     const updatePoints = [];
+  
+  //     newPoints.pop();
+  //     newPoints.pop();
+
+  //     updatePoints.push(new THREE.Vector3((points[0].x +(x/aspect)), (points[0].y)+(-y/aspect), points[0].z))
+  //     updatePoints.push(new THREE.Vector3((points[1].x +(x/aspect)), (points[1].y)+(-y/aspect), points[1].z))
+  //     setNewPoints(updatePoints);
+
+  // }, { pointerEvents: true });
+  
+
+  const handleClickH = () => {
+      let moveHorizontal = window.prompt("Parallely move the horizontal line to?", appContext.storedLineIntersect[0])
+      valueH = appContext.storedLineIntersect[0];
+      if(moveHorizontal != null && !isNaN(moveHorizontal) && moveHorizontal != "") {
+        valueH = parseFloat(moveHorizontal) 
+      }
+      const updatePoints = [];
+  
+      newPoints.pop();
+      newPoints.pop();
+
+      updatePoints.push(new THREE.Vector3(-5, valueH, 0))
+      updatePoints.push(new THREE.Vector3(40, valueH, 0))
+      setNewPoints(updatePoints)
+  }
+
+  lineGeometry.setFromPoints(newPoints);
+  console.log("x,y: " + newPoints[0].x + "," + newPoints[0].y)
+  console.log("x,y: " + newPoints[1].x + "," + newPoints[1].y)
+
+  //for dragging the line (Not used because it leads to very precise values) 
+  //Better to get input from user based on the GLTF they upload they can tell the intersection of the lines
+  // and that is used as the starting point from mesurement of depth and distance 
+
+  // const bind2 = useDrag(({ offset: [x,y] }) => {
+  //     const updatePoints = [];
+  
+  //     newPoints2.pop();
+  //     newPoints2.pop();
+
+  //     updatePoints.push(new THREE.Vector3((points2[0].x +(x/aspect)), (points2[0].y)+(-y/aspect), points2[0].z))
+  //     updatePoints.push(new THREE.Vector3((points2[1].x +(x/aspect)), (points2[1].y)+(-y/aspect), points2[1].z))
+  //     setNewPoints2(updatePoints);
+
+  // }, { pointerEvents: true });
+
+  const handleClickV = () => {
+      let moveVertical = window.prompt("Parallely move the vertical line to?", appContext.storedLineIntersect[1])
+      //var value = 0;
+      console.log("moveVertical: " + moveVertical)
+      valueV = appContext.storedLineIntersect[1];
+      if(moveVertical != null && !isNaN(moveVertical) && moveVertical != "") {
+        valueV = parseFloat(moveVertical) 
+      }
+      const updatePoints = [];
+  
+      newPoints2.pop();
+      newPoints2.pop();
+      
+      console.log("valueV: " + valueV)
+      
+      console.log(lineIntersect)
+
+      updatePoints.push(new THREE.Vector3(valueV, -5, 0))
+      updatePoints.push(new THREE.Vector3(valueV, 40, 0))
+      setNewPoints2(updatePoints)   
+  }
+  
+  
+  lineGeometry2.setFromPoints(newPoints2);
+  console.log("x,y: " + newPoints2[0].x + "," + newPoints2[0].y)
+  console.log("x,y: " + newPoints2[1].x + "," + newPoints2[1].y)
+
+  var lineIntersect = new Array([valueH,valueV]);
+  
+  if(appContext.storedLineIntersect){
+    lineIntersect = appContext.storedLineIntersect.slice();
+  }
+
+  lineIntersect.splice(0,1,newPoints[0].y);
+  lineIntersect.splice(1,1,newPoints2[0].x);
+  console.log("Line Intersect Points - H: " + newPoints[0].y +", V " + newPoints2[0].x )
+  useMemo(() => appContext.setStoredLineIntersect(lineIntersect), [newPoints[0].y , newPoints2[0].x]);
+
+return (
+  <>
+    <group position={[0, -2.5, -10]}>
+      <mesh onClick={handleClickH}
+      //   {...bind()}
+      >
+          <line ref={ref} geometry={lineGeometry}>
+              <lineBasicMaterial attach="material" color={'#9c88ff'} linewidth={10} linecap={'round'} linejoin={'round'} />
+          </line>
+      </mesh>
+      
+      <mesh onClick={handleClickV}
+      //   {...bind2()}
+      >
+          <line ref={ref2} geometry={lineGeometry2}>
+              <lineBasicMaterial attach="material" color={'#9c88ff'} linewidth={10} linecap={'round'} linejoin={'round'} />
+          </line>
+      </mesh>
+  </group>
+  </>
+)
+}
+
 function App() {
  
   //State to store the values
@@ -254,6 +406,7 @@ function App() {
   const [storedObjectsOrder, setStoredObjectsOrder] = useState([]);
   const [objectConflicts, setObjectConflicts] = useState([]);
   const [objectConflictsLog, setObjectConflictsLog] = useState('');
+  const [storedLineIntersect, setStoredLineIntersect] = useState([0,0]);
 
   const showSettings = {
     showStoredObjectsUpload: showStoredObjectsUpload,
@@ -263,18 +416,24 @@ function App() {
     LOCAL_ORDER_KEY: LOCAL_ORDER_KEY,
     objectConflicts: objectConflicts,
     objectConflictsLog: objectConflictsLog,
+    storedLineIntersect: storedLineIntersect,
     setShowStoredObjectsUpload,
     setStoredObjectsUpload,
     setStoredObjectsId,
     setStoredObjectsOrder,
     setObjectConflicts,
-    setObjectConflictsLog
+    setObjectConflictsLog,
+    setStoredLineIntersect
   };
 
   const objectNumberRef = useRef();
   const orderNumberRef = useRef();
 
   useEffect(() => {
+    const lineIntersect = JSON.parse(localStorage.getItem(LOCAL_LINE_KEY));
+    if(lineIntersect && lineIntersect.length>0){
+      setStoredLineIntersect(lineIntersect);
+    }
     setStoredObjectsId(JSON.parse(localStorage.getItem(LOCAL_ID_KEY)));
     const orderObjects = JSON.parse(localStorage.getItem(LOCAL_ORDER_KEY));
     if(orderObjects && orderObjects.length>0){
@@ -284,9 +443,10 @@ function App() {
   }, [])
   
   useEffect(() => {
+    localStorage.setItem(LOCAL_LINE_KEY, JSON.stringify(storedLineIntersect))
     localStorage.setItem(LOCAL_ID_KEY, JSON.stringify(storedObjectId))
     localStorage.setItem(LOCAL_ORDER_KEY, JSON.stringify(storedObjectsOrder))
-  }, [storedObjectId,storedObjectsOrder])
+  }, [storedLineIntersect,storedObjectId,storedObjectsOrder])
 
   //console.log('Here ' + Object.values(storedObjectsOrder))
 
@@ -455,6 +615,7 @@ function App() {
       <div className='flexbox-interaction canvas'>
       {/* <Canvas camera={ {position: [2,2,10], fov: 70}} > */}
       <Canvas orthographic camera={ {position: [0,0,10], zoom: 25 }}>
+      <AppContext.Provider value={showSettings}>
         <group>
         <CameraController />
          
@@ -462,6 +623,7 @@ function App() {
         <directionalLight position={[5, 5, 5]} color={0xFFFFFF} />
         
         {/* <Model /> */}
+        <ControlLines />
         {/* <AddObjectsFromCSVModal show = {show} objects = {values} /> */}
          
         {/* <UploadObjects /> */}
@@ -469,6 +631,7 @@ function App() {
         {/* TODO: reduce the number of input parameters show? */}
         <UploadObjectFromLocalStorage show = 'true' objects = {storedObjectsUpload} order = {storedObjectsOrder} setObjectConflicts = {setObjectConflicts} objectConflicts = {objectConflicts} setObjectConflictsLog = {setObjectConflictsLog}/>
         </group>
+      </AppContext.Provider> 
       </Canvas>
       {/* <Order objects = {storedObjectsUpload} /> */}
       </div>
