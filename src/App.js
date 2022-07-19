@@ -344,10 +344,6 @@ function ControlLines() {
   
       newPoints2.pop();
       newPoints2.pop();
-      
-      console.log("valueV: " + valueV)
-      
-      console.log(lineIntersect)
 
       updatePoints.push(new THREE.Vector3(valueV, -5, 0))
       updatePoints.push(new THREE.Vector3(valueV, 40, 0))
@@ -370,9 +366,12 @@ function ControlLines() {
   console.log("Line Intersect Points - H: " + newPoints[0].y +", V " + newPoints2[0].x )
   useMemo(() => appContext.setStoredLineIntersect(lineIntersect), [newPoints[0].y , newPoints2[0].x]);
 
+  console.log("Line Geometry Horizontal: " +  Object.values(newPoints[0]) + " and " + Object.values(newPoints[1]))
+  console.log("Line Geometry Vertical: " + Object.values(newPoints2[0]) + " and " + Object.values(newPoints2[1]) )
+
 return (
   <>
-    <group position={[0, -2.5, -10]}>
+  <group>
       <mesh onClick={handleClickH}
       //   {...bind()}
       >
