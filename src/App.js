@@ -493,6 +493,8 @@ function App() {
 
     objectNumberRef.current.value = null;
     orderNumberRef.current.value = null;
+
+    window.location.reload(true);
   }
 
   const handleDelete = () => {
