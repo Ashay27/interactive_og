@@ -1,21 +1,23 @@
-import React, {useState, useRef, useContext } from "react";
+import React, {useState, useRef, useContext, useMemo } from "react";
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {useDrag} from '@use-gesture/react'
 import ObjectData from '../uitlegschemaAfstand.json';
+import AppContext from './AppContext';
 
 
 function Cylinder({ distance, diameter, depth, object, objects, order, distances, setObjectConflicts, objectConflicts, setObjectConflictsLog}) {
     var objectColor;
+    const appContext = useContext(AppContext);
 
     // This reference gives us direct access to the THREE.Mesh object
     const ref = useRef()
     // Hold state for hovered and clicked events
     const [hovered, hover] = useState(false)
     const [clicked, click] = useState(false)
-    const [position, setPosition] = useState([distance,-(parseFloat(depth) + parseFloat(diameter)/2 ),0]);
+    const [position, setPosition] = useState([appContext.storedLineIntersect[1] + distance, (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ),0]);
 
-    console.log("depth: " + depth)
+    console.log("depth: " + (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ))
     console.log("depth: " + (parseFloat(depth) + parseFloat(diameter)/2))
     
     const { size, viewport } = useThree();
@@ -29,9 +31,11 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
 
     const bind = useDrag(({ offset: [x] }) => {   
         const [,y, z] = position;
-        setPosition([(distance + (x/aspect)) , y , z]); // / props.aspect
-        console.log('position-> x: ' + (distance + (x/aspect)) + ' y: ' + y + ' z: ' + z);
+        setPosition([(appContext.storedLineIntersect[1] + distance + (x/aspect)) , y , z]); // / props.aspect
+        console.log('position-> x: ' + (appContext.storedLineIntersect[1] + distance + (x/aspect)) + ' y: ' + y + ' z: ' + z);
     }, { pointerEvents: true });
+
+    useMemo(() => setPosition([(appContext.storedLineIntersect[1] + distance ) , (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ) , 0]), [appContext.storedLineIntersect] );
 
     const handleClick = event => {
       click(!clicked);
