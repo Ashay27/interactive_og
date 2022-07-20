@@ -171,14 +171,14 @@ return (
     show={showPipeModal} 
     onHide={handleClose}>
     <Modal.Header closeButton>
-      <Modal.Title>Pipe details</Modal.Title>
+      <Modal.Title>Asset details</Modal.Title>
     </Modal.Header>
     <Modal.Body>
     <Form>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
           <Form.Label>Type</Form.Label>
           <Form.Select ref={optionNameRef}>
-            <option >Choose the type of pipe</option>
+            <option >Choose the type of asset you want to add</option>
             {ObjectData.afstand.map((object) => (
               <option value={object.Asset} >{object.Beschrijving} ({object.Categorie})</option>
             ))}
@@ -188,20 +188,20 @@ return (
             type="textarea"
             autoFocus
           /> */}
-          <Form.Label>Diameter</Form.Label>
+          <Form.Label>Diameter of this asset</Form.Label>
           <Form.Control
             ref = {diameterRef}
             type="decimal"
             autoFocus
           />
-          <Form.Label>Depth</Form.Label>
+          <Form.Label>Depth [length from the horizontal line to the top edge of this asset]</Form.Label>
           <Form.Control
             ref = {depthRef}
             type="decimal"
             //placeholder="name@example.com"
             autoFocus
           />
-          <Form.Label>Distance</Form.Label>
+          <Form.Label>Distance [length from the right edge of the previous asset (for first asset, length from the vertical line) to the left edge of this asset]</Form.Label>
           <Form.Control
             ref = {distanceRef}
             type="decimal"
@@ -210,7 +210,7 @@ return (
             //disabled 
           />
 
-          <Form.Label>Color</Form.Label>
+          <Form.Label>Color of this asset [yellow (#faf202) is reserved for selected object and red (#fc2808) is reserved for conflicts]</Form.Label>
           <SketchPicker
             onChange={(color) => {
               setSketchPickerColor(color.hex);
@@ -556,26 +556,30 @@ function App() {
 
         <div>
           <Form>
-          <Form.Label>Object Number</Form.Label>
+          <Form.Label>Object Number [current number from the profile]</Form.Label>
           <Form.Control
             ref = {objectNumberRef}
             type="number"
             
           />
-          <Form.Label>Change Order to</Form.Label>
+          <Form.Label>Change position of the current object to</Form.Label>
           <Form.Control
             ref = {orderNumberRef}
             type="number"
             
           />
+          <br/> <br/> 
           <Button onClick={handleChangeOrder}>
               Change order 
           </Button>
+          <br/>
+          <Form.Text classname = "text-muted">The object in current position will be deleted and inserted to the new position</Form.Text>
           <br/><br/>
           <Button onClick={handleDelete}>
               Delete object
           </Button>
-
+          <br/>
+          <Form.Text classname = "text-muted">The object in current position will be deleted and other objects to right will move one position left</Form.Text>
           <br/><br/>
           <Button onClick={handleClearData}>
               Clear all
