@@ -8,6 +8,7 @@ import AppContext from './AppContext';
 
 function Cylinder({ distance, diameter, depth, object, objects, order, distances, setObjectConflicts, objectConflicts, setObjectConflictsLog}) {
     var objectColor;
+    var cylinderDepth = 20;
     const appContext = useContext(AppContext);
 
     // This reference gives us direct access to the THREE.Mesh object
@@ -15,7 +16,7 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
     // Hold state for hovered and clicked events
     const [hovered, hover] = useState(false)
     const [clicked, click] = useState(false)
-    const [position, setPosition] = useState([appContext.storedLineIntersect[1] + distance, (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ),0]);
+    const [position, setPosition] = useState([appContext.storedLineIntersect[1] + distance, (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ), -cylinderDepth/2]);
 
     console.log("depth: " + (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ))
     console.log("depth: " + (parseFloat(depth) + parseFloat(diameter)/2))
@@ -25,7 +26,7 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
 
 
     // Rotate the mesh 
-    useFrame((state, delta) => (ref.current.rotation.x = 90))
+    useFrame((state, delta) => (ref.current.rotation.x = Math.PI/2))
 
     console.log(object.objectId)
 
@@ -35,7 +36,7 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
         console.log('position-> x: ' + (appContext.storedLineIntersect[1] + distance + (x/aspect)) + ' y: ' + y + ' z: ' + z);
     }, { pointerEvents: true });
 
-    useMemo(() => setPosition([(appContext.storedLineIntersect[1] + distance ) , (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ) , 0]), [appContext.storedLineIntersect] );
+    useMemo(() => setPosition([(appContext.storedLineIntersect[1] + distance ) , (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ) , -cylinderDepth/2]), [appContext.storedLineIntersect] );
 
     const handleClick = event => {
       click(!clicked);
@@ -178,7 +179,7 @@ function Cylinder({ distance, diameter, depth, object, objects, order, distances
         onClick={handleClick}
         onPointerOver={(event) => hover(true)}
         onPointerOut={(event) => hover(false)}>
-        <cylinderGeometry args={[diameter/2,diameter/2,1,50]} />
+        <cylinderGeometry args={[diameter/2,diameter/2,cylinderDepth,50]} />
         {/* <cylinderGeometry args={hovered ? [diameter,diameter,1,50] : [diameter/2,diameter/2,1,50]} /> */}
         <meshStandardMaterial color= {objectColor} wireframe ={hovered ? true : false}/>
       </mesh>
