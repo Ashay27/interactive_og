@@ -51,23 +51,71 @@ const Aspect = () => {
   return size.width / viewport.width;
 }
 
-const CameraController = () => {
+const CameraController = ({rotate}) => {
   const { camera, gl } = useThree();
   useEffect(
     () => {
       const controls = new OrbitControls(camera, gl.domElement);
-      gl.setPixelRatio(window.devicePixelRatio);
-      gl.setSize(window.innerWidth, window.innerHeight,true);
-
+          
+      console.log("rotate: " + rotate)
       controls.minDistance = 3;
       controls.maxDistance = 5;
-      controls.enableRotate = true;
+      controls.enableRotate = rotate;
+
+
+      function saveCameraPosition() {
+        localStorage.setItem('camera.hasPosition', 'true');
+
+        localStorage.setItem('camera.zoom', camera.zoom.toString());
+        localStorage.setItem('camera.position.x', camera.position.x.toString());
+        localStorage.setItem('camera.position.y', camera.position.y.toString());
+        localStorage.setItem('camera.position.z', camera.position.z.toString());
+      
+        localStorage.setItem('camera.rotation.x', camera.rotation.x.toString());
+        localStorage.setItem('camera.rotation.y', camera.rotation.y.toString());
+        localStorage.setItem('camera.rotation.z', camera.rotation.z.toString());
+      
+        localStorage.setItem('controls.target.x', controls.target.x.toString());
+        localStorage.setItem('controls.target.y', controls.target.y.toString());
+        localStorage.setItem('controls.target.z', controls.target.z.toString());
+      }
+      
+      function loadCameraLocation() {
+        if (localStorage.getItem('camera.hasPosition') !== 'true') return;
+
+        camera.position.x = parseFloat(localStorage.getItem('camera.position.x'));
+        camera.position.y = parseFloat(localStorage.getItem('camera.position.y'));
+        camera.position.z = parseFloat(localStorage.getItem('camera.position.z'));
+        camera.zoom = parseInt(localStorage.getItem('camera.zoom'));
+      
+        camera.rotation.x = parseFloat(localStorage.getItem('camera.rotation.x'));
+        camera.rotation.y = parseFloat(localStorage.getItem('camera.rotation.y'));
+        camera.rotation.z = parseFloat(localStorage.getItem('camera.rotation.z'));
+      
+        controls.target.x = parseFloat(localStorage.getItem('controls.target.x'));
+        controls.target.y = parseFloat(localStorage.getItem('controls.target.y'));
+        controls.target.z = parseFloat(localStorage.getItem('controls.target.z'));
+      }
+      
+      loadCameraLocation();
+      window.addEventListener('keydown', (e) => {
+        if (e.altKey && e.key === 'r') {
+          e.preventDefault();
+          saveCameraPosition();
+        }
+      });
+      console.log("camera.zoom: " + camera.zoom)
+
+      //if(!rotate){controls.reset()}
+
+      gl.setPixelRatio(window.devicePixelRatio);
+      gl.setSize(window.innerWidth, window.innerHeight,true);
       
       return () => {
         controls.dispose();
       };
     },
-    [camera, gl]
+    [camera, gl, rotate]
   );
   return null;
 };
@@ -397,6 +445,7 @@ function App() {
   //State to store the values
   const [values, setValues] = useState([]);
   const [show, setShow] = useState(false);
+  const [rotate, setRotate] = useState(false);
   
 
   const [showStoredObjectsUpload, setShowStoredObjectsUpload] = useState(false);
@@ -528,6 +577,9 @@ function App() {
       return
     }
   }
+  const handleRotate = () => {
+    setRotate(!rotate)
+  }
 
   function NewlineText(props) {
     const text = props.text;
@@ -552,6 +604,10 @@ function App() {
           <Dropdown.Item eventKey="2"><PipeModal/></Dropdown.Item>
           <Dropdown.Item eventKey="3"><OrderModal/></Dropdown.Item>
         </DropdownButton> */}
+                  
+        <Button onClick={handleRotate}>
+                  Rotate
+        </Button>
         
 
         <div>
@@ -622,7 +678,7 @@ function App() {
       <Canvas orthographic camera={ {position: [0,0,10], zoom: 25 }}>
       <AppContext.Provider value={showSettings}>
         <group>
-        <CameraController />
+        <CameraController rotate={rotate}/>
          
         <ambientLight color={0xFFFFFF} />
         <directionalLight position={[5, 5, 5]} color={0xFFFFFF} />
