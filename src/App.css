@@ -49,12 +49,8 @@
   position: fixed;
   flex-shrink: 0;
   width: 1200px;
-  height: auto;
-  /* min-height: 768px; */
-  max-height: 850px;
+  height: 1000px;
   margin-left: 2%;
-  /* margin-top: 2%; */
-  margin-top: 34%;
 }
 
 .background{

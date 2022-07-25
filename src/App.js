@@ -58,8 +58,6 @@ const CameraController = ({rotate}) => {
       const controls = new OrbitControls(camera, gl.domElement);
           
       console.log("rotate: " + rotate)
-      controls.minDistance = 3;
-      controls.maxDistance = 5;
       controls.enableRotate = rotate;
 
 
@@ -86,7 +84,7 @@ const CameraController = ({rotate}) => {
         camera.position.x = parseFloat(localStorage.getItem('camera.position.x'));
         camera.position.y = parseFloat(localStorage.getItem('camera.position.y'));
         camera.position.z = parseFloat(localStorage.getItem('camera.position.z'));
-        camera.zoom = parseInt(localStorage.getItem('camera.zoom'));
+        camera.zoom = parseFloat(localStorage.getItem('camera.zoom'));
       
         camera.rotation.x = parseFloat(localStorage.getItem('camera.rotation.x'));
         camera.rotation.y = parseFloat(localStorage.getItem('camera.rotation.y'));
@@ -102,14 +100,12 @@ const CameraController = ({rotate}) => {
         if (e.altKey && e.key === 'r') {
           e.preventDefault();
           saveCameraPosition();
+          console.log("Updated camera zoom: " + camera.zoom)
         }
       });
       console.log("camera.zoom: " + camera.zoom)
 
       //if(!rotate){controls.reset()}
-
-      gl.setPixelRatio(window.devicePixelRatio);
-      gl.setSize(window.innerWidth, window.innerHeight,true);
       
       return () => {
         controls.dispose();
@@ -581,6 +577,13 @@ function App() {
     setRotate(!rotate)
   }
 
+  function getZoom(){
+    if (localStorage.getItem('camera.hasPosition') !== 'true') {
+      return 25;
+    }
+    return parseFloat(localStorage.getItem('camera.zoom'));
+  }
+
   function NewlineText(props) {
     const text = props.text;
     const newText = text.split('\n').map(str => <p>{str}</p>);
@@ -675,7 +678,7 @@ function App() {
       
       <div className='flexbox-interaction canvas'>
       {/* <Canvas camera={ {position: [2,2,10], fov: 70}} > */}
-      <Canvas orthographic camera={ {position: [0,0,10], zoom: 25 }}>
+      <Canvas orthographic camera={ {position: [0,0,200], zoom: getZoom() , top:200, bottom:-200, left:200, right:200, near:0, far:2000 }}>
       <AppContext.Provider value={showSettings}>
         <group>
         <CameraController rotate={rotate}/>
