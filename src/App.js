@@ -279,7 +279,7 @@ return (
 }
 
 const Model = () => {
-  const gltf = useLoader(GLTFLoader, "./Lega Blocks - Haaksbergweg - Principe straat_noK&L.gltf");
+  const gltf = useLoader(GLTFLoader, "./Lega Blocks - Haaksbergweg - Principe straat_no K&L_moved to origin_reducedPolycount4.gltf");
   return (
     <>
       <primitive object={gltf.scene} scale={1} />
@@ -672,9 +672,9 @@ function App() {
       
       </div>
       
-      <div className='flexbox-interaction background'>
+      {/* <div className='flexbox-interaction background'>
       <img src = {background}  z-index = '-1'/>
-      </div>
+      </div> */}
       
       <div className='flexbox-interaction canvas'>
       {/* <Canvas camera={ {position: [2,2,10], fov: 70}} > */}
@@ -687,6 +687,10 @@ function App() {
         <directionalLight position={[5, 5, 5]} color={0xFFFFFF} />
         
         {/* <Model /> */}
+        <mesh rotation={[Math.PI/2,0,0]} position ={[20, 20, 0]} >
+        <gridHelper args={[45,90,"#deddd7","#deddd7"]} />
+        </mesh>
+        <Model />
         <ControlLines />
         {/* <AddObjectsFromCSVModal show = {show} objects = {values} /> */}
          
