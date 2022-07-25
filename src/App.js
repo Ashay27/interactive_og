@@ -683,10 +683,10 @@ function App() {
         <group>
         <CameraController rotate={rotate}/>
          
-        <ambientLight color={0xFFFFFF} />
-        <directionalLight position={[5, 5, 5]} color={0xFFFFFF} />
-        
-        {/* <Model /> */}
+        <ambientLight intensity={0.25} color={0xFFFFFF} />
+        <pointLight intensity={0.75} position={[500, 500, 1000]} />
+        {/* <directionalLight position={[100, 100, 100]} color={0xFFFFFF} /> */}
+
         <mesh rotation={[Math.PI/2,0,0]} position ={[20, 20, 0]} >
         <gridHelper args={[45,90,"#deddd7","#deddd7"]} />
         </mesh>
