@@ -19,6 +19,7 @@ import Papa from "papaparse";
 import UploadObjects from './Components/UploadObjects';
 import ObjectData from './uitlegschemaAfstand.json';
 import UploadObjectFromLocalStorage from './Components/UploadObjectFromLocalStorage';
+import GetAllObjects from './Components/GetAllObjects'
 import AppContext from './Components/AppContext';
 import ChangeOrder from './Components/ChangeOrder';
 import background from './haaksbergwegBackground.png'
@@ -121,42 +122,13 @@ function PipeModal(props) {
   const handleClose = () => setShowPipeModal(false);
   const handleShow = () => setShowPipeModal(true);
   const [sketchPickerColor, setSketchPickerColor] = useState("#BD9F9F");
-  const [objects, setObjects] = useState([]);
-
+  
   const appContext = useContext(AppContext);
   
   const optionNameRef = useRef();
   const distanceRef = useRef();
   const depthRef = useRef();
   const diameterRef = useRef();
-
-  // useEffect(() => {
-  //   const storedObjects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-  //   if (storedObjects) {
-  //     setObjects(storedObjects);
-  //     console.log(storedObjects);
-      
-  //     //window.storedObjectsUpload  = [...storedObjects]; 
-  //     //console.log(storedObjects[0].diameter);
-  //   }
-  // }, [])
-
-  useEffect(() => {
-    const storedObjects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    if (storedObjects) {
-      setObjects(storedObjects);
-      appContext.setStoredObjectsUpload(storedObjects);
-
-      console.log(storedObjects);
-      
-    }
-  }, [])
-  
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(objects))
-  }, [objects])
-
-  
 
   const handleUpload = () => {
     const optionName = optionNameRef.current.value;
@@ -180,17 +152,14 @@ function PipeModal(props) {
     appContext.setStoredObjectsId(appContext.storedObjectId)
     console.log(appContext.storedObjectId);
 
-    
-
-    setObjects(prevObjects => {
+    appContext.setStoredObjectsUpload(prevObjects => {
       return [...prevObjects,{diameter: {diameter}, depth:{depth}, distance: {distance}, assetId: {optionName}, objectId: (appContext.storedObjectId), color: {color} }]
     })
     
+    appContext.setUpdatedObjectId(appContext.storedObjectId)
+    appContext.setUpdatedState('ADDED')
 
-    appContext.setStoredObjectsOrder(prevOrder => {
-           return [...prevOrder, {objectId: appContext.storedObjectId}]
-     })
-    //console.log(Object.values(appContext.storedObjectsOrder))
+    console.log(Object.values(appContext.storedObjectsOrder))
 
     optionNameRef.current.value = null;
     distanceRef.current.value = null;
@@ -198,8 +167,6 @@ function PipeModal(props) {
     diameterRef.current.value = null;
 
     setShowPipeModal(false);
-    //showStoredObjectsUpload = true;
-    window.location.reload(true);
   }
 
 return (
@@ -451,6 +418,8 @@ function App() {
   const [objectConflicts, setObjectConflicts] = useState([]);
   const [objectConflictsLog, setObjectConflictsLog] = useState('');
   const [storedLineIntersect, setStoredLineIntersect] = useState([0,0]);
+  const [updatedObjectId, setUpdatedObjectId] = useState();
+  const [updatedState, setUpdatedState] = useState('NONE');
 
   const showSettings = {
     showStoredObjectsUpload: showStoredObjectsUpload,
@@ -461,19 +430,28 @@ function App() {
     objectConflicts: objectConflicts,
     objectConflictsLog: objectConflictsLog,
     storedLineIntersect: storedLineIntersect,
+    updatedObjectId: updatedObjectId,
+    updatedState: updatedState,
     setShowStoredObjectsUpload,
     setStoredObjectsUpload,
     setStoredObjectsId,
     setStoredObjectsOrder,
     setObjectConflicts,
     setObjectConflictsLog,
-    setStoredLineIntersect
+    setStoredLineIntersect,
+    setUpdatedObjectId,
+    setUpdatedState
   };
 
   const objectNumberRef = useRef();
   const orderNumberRef = useRef();
 
   useEffect(() => {
+    const storedObjects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+    if (storedObjects) {
+      setStoredObjectsUpload(storedObjects);
+      console.log(storedObjects);
+    }
     const lineIntersect = JSON.parse(localStorage.getItem(LOCAL_LINE_KEY));
     if(lineIntersect && lineIntersect.length>0){
       setStoredLineIntersect(lineIntersect);
@@ -487,10 +465,11 @@ function App() {
   }, [])
   
   useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(storedObjectsUpload))
     localStorage.setItem(LOCAL_LINE_KEY, JSON.stringify(storedLineIntersect))
     localStorage.setItem(LOCAL_ID_KEY, JSON.stringify(storedObjectId))
     localStorage.setItem(LOCAL_ORDER_KEY, JSON.stringify(storedObjectsOrder))
-  }, [storedLineIntersect,storedObjectId,storedObjectsOrder])
+  }, [storedObjectsUpload,storedLineIntersect,storedObjectId,storedObjectsOrder])
 
   //console.log('Here ' + Object.values(storedObjectsOrder))
 
@@ -520,26 +499,26 @@ function App() {
     hiddenFileInput.current.click();
   };
 
-  const handleChangeOrder = event => {
-    if (storedObjectsUpload === "" && storedObjectsUpload.length <= 1) return (
-      window.alert("INVALID. More than 1 objects required!"))
+  // const handleChangeOrder = () => {
+  //   if (storedObjectsUpload === "" && storedObjectsUpload.length <= 1) return (
+  //     window.alert("INVALID. More than 1 objects required!"))
 
-    if(objectNumberRef.current.value === '' || objectNumberRef.current.value <= 0 ) return (
-      window.alert("INVALID object number. Fill the correct objects number! \nIt should not be empty and greater than 0"))
-    else if (orderNumberRef.current.value === '' || orderNumberRef.current.value <= 0) return (
-      window.alert("INVALID order number. Fill the correct order number! \nIt should not be empty and greater than 0"))
+  //   if(objectNumberRef.current.value === '' || objectNumberRef.current.value <= 0 ) return (
+  //     window.alert("INVALID object number. Fill the correct objects number! \nIt should not be empty and greater than 0"))
+  //   else if (orderNumberRef.current.value === '' || orderNumberRef.current.value <= 0) return (
+  //     window.alert("INVALID order number. Fill the correct order number! \nIt should not be empty and greater than 0"))
 
-  //  if(storedObjectsOrder.length<2) return window.alert("INVALID. More than 1 objects required!")
-    var order = storedObjectsOrder.slice();
-    var tempObj = order.splice(objectNumberRef.current.value-1,1);
-    order.splice(orderNumberRef.current.value-1,0,tempObj[0]);
-    setStoredObjectsOrder(order);
+  // //  if(storedObjectsOrder.length<2) return window.alert("INVALID. More than 1 objects required!")
+  //   var order = storedObjectsOrder.slice();
+  //   var tempObj = order.splice(objectNumberRef.current.value-1,1);
+  //   order.splice(orderNumberRef.current.value-1,0,tempObj[0]);
+  //   setStoredObjectsOrder(order);
 
-    objectNumberRef.current.value = null;
-    orderNumberRef.current.value = null;
+  //   objectNumberRef.current.value = null;
+  //   orderNumberRef.current.value = null;
 
-    window.location.reload(true);
-  }
+  //   window.location.reload(true);
+  // }
 
   const handleDelete = () => {
     // Only deleting from order, since uploading objects only if they exist in order
@@ -555,11 +534,8 @@ function App() {
       window.alert("INVALID input at 'Change Order to'. \nIt should be empty"))
     
     var order = storedObjectsOrder.slice();
-    order.splice(objectNumberRef.current.value-1,1);
-    console.log({order});
-    setStoredObjectsOrder(order);
-
-    window.location.reload(true);
+    setUpdatedObjectId(order[objectNumberRef.current.value-1])
+    setUpdatedState('DELETED')
 
     objectNumberRef.current.value = null;
     orderNumberRef.current.value = null;
@@ -611,9 +587,12 @@ function App() {
         <Button onClick={handleRotate}>
                   Rotate
         </Button>
-        
+        <br/><br/>
 
         <div>
+        <PipeModal/>
+        <br/><br/>
+
           <Form>
           <Form.Label>Object Number [current number from the profile]</Form.Label>
           <Form.Control
@@ -621,7 +600,7 @@ function App() {
             type="number"
             
           />
-          <Form.Label>Change position of the current object to</Form.Label>
+          {/*<Form.Label>Change position of the current object to</Form.Label>
           <Form.Control
             ref = {orderNumberRef}
             type="number"
@@ -630,15 +609,15 @@ function App() {
           <br/> <br/> 
           <Button onClick={handleChangeOrder}>
               Change order 
-          </Button>
+          </Button> 
           <br/>
           <Form.Text classname = "text-muted">The object in current position will be deleted and inserted to the new position</Form.Text>
-          <br/><br/>
+          <br/><br/>*/}
           <Button onClick={handleDelete}>
               Delete object
           </Button>
           <br/>
-          <Form.Text classname = "text-muted">The object in current position will be deleted and other objects to right will move one position left</Form.Text>
+          <Form.Text classname = "text-muted">The object in current position will be deleted</Form.Text>
           <br/><br/>
           <Button onClick={handleClearData}>
               Clear all
@@ -647,15 +626,11 @@ function App() {
 
           </Form>
           <br/>
-            
-          <PipeModal/>
-          <br/><br/>
-           
           
 
-          <Button onClick={handleClick}>
+          {/* <Button onClick={handleClick}>
               Upload a file
-          </Button>
+          </Button> */}
           
           <input
             type = "file"
@@ -688,7 +663,7 @@ function App() {
         {/* <directionalLight position={[100, 100, 100]} color={0xFFFFFF} /> */}
 
         <mesh rotation={[Math.PI/2,0,0]} position ={[20, 20, 0]} >
-        <gridHelper args={[45,90,"#deddd7","#deddd7"]} />
+        <gridHelper args={[45,90,"#f0f0ed","#f0f0ed"]} />
         </mesh>
         <Model />
         <ControlLines />
@@ -697,7 +672,8 @@ function App() {
         {/* <UploadObjects /> */}
 
         {/* TODO: reduce the number of input parameters show? */}
-        <UploadObjectFromLocalStorage show = 'true' objects = {storedObjectsUpload} order = {storedObjectsOrder} setObjectConflicts = {setObjectConflicts} objectConflicts = {objectConflicts} setObjectConflictsLog = {setObjectConflictsLog}/>
+        {/* <UploadObjectFromLocalStorage show = 'true' objects = {storedObjectsUpload} order = {storedObjectsOrder} setObjectConflicts = {setObjectConflicts} objectConflicts = {objectConflicts} setObjectConflictsLog = {setObjectConflictsLog}/> */}
+        <GetAllObjects storedObjectsOrder = {storedObjectsOrder} updatedObjectId = {updatedObjectId} updatedState ={updatedState} />
         </group>
       </AppContext.Provider> 
       </Canvas>
