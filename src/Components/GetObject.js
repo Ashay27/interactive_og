@@ -8,6 +8,8 @@ import { useSpring , a} from '@react-spring/three'
 
 const LOCAL_STORAGE_KEY = 'localData.objects'
 const LOCAL_ORDER_KEY = 'localData.order'
+const HART = ["CAI/T", "Data", "E (LS)", "E (MS)_t", "E (MS)_d", "E (HS)", "Boom 1", "Boom 2", "Boom 3"]
+const RAND = ["DWA_t", "DWA_d", "DWA+RWA (gemengd)_t", "DWA+RWA (gemengd)_d", "HWA/ RWA", "PL", "Warmte_HT", "Warmte_MT", "Warmte LT", "W_t", "W_d", "G_t", "G_d", "O.A.T.", "Gebouwen", "DWA_t_Exception", "DWA_d_Exception", "HWA/ RWA_Exception" ]
 
 function Cylinder({objectId}) {
   var objectColor;
@@ -151,19 +153,31 @@ function Cylinder({objectId}) {
         //comparing the objects to the left and right (if exists) in each iteration
         for (let x = 1; x <= order.length ; x++) {
           var findCurrentObject = appContext.storedObjectsUpload.find(object => object.objectId == order[index]);
-          var currentObjectDistance = Object.values(findCurrentObject.distance)[0];
+          
           // select neighbour object to the left and compare distances for conflicts
           if(i-x >= 0){
+            var currentObjectDistance = Object.values(findCurrentObject.distance)[0];
+            if(RAND.includes(Object.values(findCurrentObject.assetId)[0])){
+              console.log("Get CURRENT OBJECT distance to edge")
+              currentObjectDistance -= ((Object.values(findCurrentObject.diameter)[0])/2);
+            }else console.log("Get CURRENT OBJECT distance to center")
+
             var findNeighbourObject = appContext.storedObjectsUpload.find(object => object.objectId == order[i-x])
             
             //NOTE: currently to identify conflicts, distance measured from center to center of the objects is used.
             
             var neighbourObjectDistance = Object.values(findNeighbourObject.distance)[0];
+            if(RAND.includes(Object.values(findNeighbourObject.assetId)[0])){
+              console.log("Get NEIGHBOUR OBJECT distance to edge")
+              neighbourObjectDistance += ((Object.values(findNeighbourObject.diameter)[0])/2)
+            }else console.log("Get NEIGHBOUR OBJECT distance to center")
+
             var distanceBetweenObjects = currentObjectDistance - neighbourObjectDistance //distances[index] - distances[i-x];
             console.log("currentObjectDistance: " + currentObjectDistance + " neighbourObjectDistance: " + neighbourObjectDistance + " distanceBetweenObjects: " + distanceBetweenObjects)
             
             var uitlegschemaDistance, neighbourObjectAssetId;
             
+            //TODO: Fix this
             //get the minimum distance for corresponding object types from Uitlegschema 
             ObjectData.afstand.map((o) => { 
               if(o.Asset == Object.values(findCurrentObject.assetId)[0] ){
@@ -176,13 +190,13 @@ function Cylinder({objectId}) {
                 if(o.Asset.includes("Boom")|| o.Asset.includes("Gebouwen")){
                   if(neighbourObjectAssetCat === "t"){
                     uitlegschemaDistance = o[neighbourObjectAssetName.toString()]
-                    uitlegschemaDistance = (uitlegschemaDistance.toString().split("&",2)[0])
+                    uitlegschemaDistance = parseFloat(uitlegschemaDistance.toString().split("&",2)[0])
                     console.log(uitlegschemaDistance)
                     if(uitlegschemaDistance.includes("|") && parseFloat(diameter)<=0.2){
-                      uitlegschemaDistance = (uitlegschemaDistance.toString().split("|",2)[0])
+                      uitlegschemaDistance = parseFloat(uitlegschemaDistance.toString().split("|",2)[0])
                       console.log ("using G_t <= 200mm")
                     }else if((uitlegschemaDistance.includes("|") && parseFloat(diameter)>0.2)){
-                      uitlegschemaDistance = (uitlegschemaDistance.toString().split("|",2)[1])
+                      uitlegschemaDistance = parseFloat(uitlegschemaDistance.toString().split("|",2)[1])
                       console.log ("using G_t > 200mm")
                     }
                     uitlegschemaDistance = parseFloat(uitlegschemaDistance)
@@ -213,21 +227,58 @@ function Cylinder({objectId}) {
 
            // select neighbour object to the right and compare distances for conflicts
           if(i+x < order.length){
+            var currentObjectDistance = Object.values(findCurrentObject.distance)[0];
+            if(RAND.includes(Object.values(findCurrentObject.assetId)[0])){
+              console.log("Get CURRENT OBJECT distance to edge")
+              currentObjectDistance += ((Object.values(findCurrentObject.diameter)[0])/2);
+            }else console.log("Get CURRENT OBJECT distance to center")
+
             var findNeighbourObject = appContext.storedObjectsUpload.find(object => object.objectId == order[i+x])
             
             var neighbourObjectDistance = Object.values(findNeighbourObject.distance)[0];
+            if(RAND.includes(Object.values(findNeighbourObject.assetId)[0])){
+              console.log("Get NEIGHBOUR OBJECT distance to edge")
+              neighbourObjectDistance -= ((Object.values(findNeighbourObject.diameter)[0])/2)
+            }else console.log("Get NEIGHBOUR OBJECT distance to center")
+
             var distanceBetweenObjects = neighbourObjectDistance - currentObjectDistance;
-            
+            console.log("currentObjectDistance: " + currentObjectDistance + " neighbourObjectDistance: " + neighbourObjectDistance + " distanceBetweenObjects: " + distanceBetweenObjects)
+
             var uitlegschemaDistance, neighbourObjectAssetId;
 
+            //TODO: Fix this
             //get the minimum distance for corresponding object types from Uitlegschema 
             ObjectData.afstand.map((o) => { 
               if(o.Asset == Object.values(findCurrentObject.assetId)[0] ){
                 neighbourObjectAssetId = Object.values(findNeighbourObject.assetId)[0]
-                neighbourObjectAssetId = neighbourObjectAssetId.toString().split("_",1)[0];
-                console.log("neighbourObjectAssetId: " +  neighbourObjectAssetId)
-                
-                uitlegschemaDistance = o[neighbourObjectAssetId.toString()]
+                var neighbourObjectAssetName = neighbourObjectAssetId.toString().split("_",2)[0];
+                console.log("neighbourObjectAssetName: " +  neighbourObjectAssetName)
+                console.log("o.Asset: " + o.Asset)
+
+                var neighbourObjectAssetCat = neighbourObjectAssetId.toString().split("_",2)[1];
+                console.log("neighbourObjectAssetCat: " +  neighbourObjectAssetCat)
+                if(o.Asset.includes("Boom")|| o.Asset.includes("Gebouwen")){ //current asset
+                  if(neighbourObjectAssetCat === "t"){
+                    uitlegschemaDistance = o[neighbourObjectAssetName.toString()]
+                    uitlegschemaDistance = parseFloat(uitlegschemaDistance.toString().split("&",2)[0])
+                    console.log(uitlegschemaDistance)
+                    if(uitlegschemaDistance.includes("|") && parseFloat(diameter)<=0.2){
+                      uitlegschemaDistance = parseFloat(uitlegschemaDistance.toString().split("|",2)[0])
+                      console.log ("using G_t <= 200mm")
+                    }else if((uitlegschemaDistance.includes("|") && parseFloat(diameter)>0.2)){
+                      uitlegschemaDistance = parseFloat(uitlegschemaDistance.toString().split("|",2)[1])
+                      console.log ("using G_t > 200mm")
+                    }
+                    uitlegschemaDistance = parseFloat(uitlegschemaDistance)
+                  }else if(neighbourObjectAssetCat === "d"){
+                    uitlegschemaDistance = o[neighbourObjectAssetName.toString()]
+                    uitlegschemaDistance = parseFloat(uitlegschemaDistance.toString().split("&",2)[1])
+                  }else{
+                    uitlegschemaDistance = parseFloat(o[neighbourObjectAssetName.toString()])
+                  }
+              }else{
+                uitlegschemaDistance = parseFloat(o[neighbourObjectAssetName.toString()])
+              }                
                 console.log("uitlegschemaDistance: " + uitlegschemaDistance )
               }})
 
