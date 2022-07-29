@@ -90,6 +90,12 @@ function Cylinder({objectId}) {
       if(!active) {
         console.log("Drag ended")
         var newValue = parseFloat(distance) + parseFloat(x/aspect);
+        //On drag end, the whole asset should be within the two vertical lines else it comes back to the original position.
+        if(newValue< (parseFloat(diameter)/2) || newValue>= (appContext.storedLineIntersect[2] - appContext.storedLineIntersect[1] - (parseFloat(diameter)/2))){
+          console.log("Boundary exceeded")
+          setPosition({position: [(appContext.storedLineIntersect[1] + parseFloat(distance) ) ,(appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ), -cylinderDepth/2 ]});
+          return;
+        }
         var updatedObject = appContext.storedObjectsUpload.slice();
         
         var foundIndex = updatedObject.findIndex(object => object.objectId == objectId)
@@ -116,7 +122,8 @@ function Cylinder({objectId}) {
       }
   }, 
   { axis: 'x',
-    delay:true}
+    delay:true
+  }
   );
 
   
