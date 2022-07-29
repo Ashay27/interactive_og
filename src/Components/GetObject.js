@@ -83,7 +83,7 @@ function Cylinder({objectId}) {
   // )
 
   const bind = useDrag(({ movement: [x], active }) => {   
-      setPosition({position: [(appContext.storedLineIntersect[1] + parseFloat(distance) + (x/aspect)) ,(appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ), -cylinderDepth/2 ]}); // / props.aspect
+      setPosition.start({position: [(appContext.storedLineIntersect[1] + parseFloat(distance) + (x/aspect)) ,(appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ), -cylinderDepth/2 ]}); // / props.aspect
       console.log('position-> x: ' + (appContext.storedLineIntersect[1] + parseFloat(distance) + (x/aspect)) + ' y: ' + (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2))  + ' z: ' + -cylinderDepth/2);
       
       //when drag end
@@ -93,7 +93,7 @@ function Cylinder({objectId}) {
         //On drag end, the whole asset should be within the two vertical lines else it comes back to the original position.
         if(newValue< (parseFloat(diameter)/2) || newValue>= (appContext.storedLineIntersect[2] - appContext.storedLineIntersect[1] - (parseFloat(diameter)/2))){
           console.log("Boundary exceeded")
-          setPosition({position: [(appContext.storedLineIntersect[1] + parseFloat(distance) ) ,(appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ), -cylinderDepth/2 ]});
+          setPosition.start({position: [(appContext.storedLineIntersect[1] + parseFloat(distance) ) ,(appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ), -cylinderDepth/2 ]});
           return;
         }
         var updatedObject = appContext.storedObjectsUpload.slice();
@@ -128,7 +128,7 @@ function Cylinder({objectId}) {
 
   
 
-  useMemo(() => setPosition({position: [(appContext.storedLineIntersect[1] + parseFloat(distance)) , (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ) , -cylinderDepth/2]}), [appContext.storedLineIntersect, parseFloat(distance)] );
+  useMemo(() => setPosition.start({position: [(appContext.storedLineIntersect[1] + parseFloat(distance)) , (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ) , -cylinderDepth/2]}), [appContext.storedLineIntersect, parseFloat(distance)] );
 
   const handleClick = event => {
     click(!clicked);
