@@ -258,6 +258,7 @@ function ControlLines() {
   const appContext = useContext(AppContext);
   var valueH;
   var valueV;
+  var valueV2;
 
   useEffect(() => {
     var storedIntersect = JSON.parse(localStorage.getItem(LOCAL_LINE_KEY));
@@ -273,6 +274,7 @@ function ControlLines() {
     
   const ref = useRef()
   const ref2 = useRef()
+  const ref3 = useRef()
 
   const points = []
   points.push(new THREE.Vector3(-5, appContext.storedLineIntersect[0], 0)) 
@@ -289,6 +291,13 @@ function ControlLines() {
 
   const [newPoints2, setNewPoints2] = useState(points2)
   const lineGeometry2 = new THREE.BufferGeometry();
+
+  const points3 = []
+  points3.push(new THREE.Vector3(appContext.storedLineIntersect[2], -5, 0))
+  points3.push(new THREE.Vector3(appContext.storedLineIntersect[2], 40, 0))
+
+  const [newPoints3, setNewPoints3] = useState(points3)
+  const lineGeometry3 = new THREE.BufferGeometry();
 
   //for dragging the line (Not used because it leads to very precise values) 
   //Better to get input from user based on the GLTF they upload they can tell the intersection of the lines
@@ -366,7 +375,30 @@ function ControlLines() {
   console.log("x,y: " + newPoints2[0].x + "," + newPoints2[0].y)
   console.log("x,y: " + newPoints2[1].x + "," + newPoints2[1].y)
 
-  var lineIntersect = new Array([valueH,valueV]);
+  const handleClickV2 = () => {
+    let moveVertical = window.prompt("Parallely move the vertical line to?", appContext.storedLineIntersect[2])
+    //var value = 0;
+    console.log("moveVertical: " + moveVertical)
+    valueV2 = appContext.storedLineIntersect[2];
+    if(moveVertical != null && !isNaN(moveVertical) && moveVertical != "") {
+      valueV2 = parseFloat(moveVertical) 
+    }
+    const updatePoints = [];
+
+    newPoints3.pop();
+    newPoints3.pop();
+
+    updatePoints.push(new THREE.Vector3(valueV2, -5, 0))
+    updatePoints.push(new THREE.Vector3(valueV2, 40, 0))
+    setNewPoints3(updatePoints)   
+  }
+
+
+  lineGeometry3.setFromPoints(newPoints3);
+  console.log("x,y: " + newPoints3[0].x + "," + newPoints3[0].y)
+  console.log("x,y: " + newPoints3[1].x + "," + newPoints3[1].y)
+
+  var lineIntersect = new Array([valueH,valueV,valueV2]);
   
   if(appContext.storedLineIntersect){
     lineIntersect = appContext.storedLineIntersect.slice();
@@ -374,17 +406,18 @@ function ControlLines() {
 
   lineIntersect.splice(0,1,newPoints[0].y);
   lineIntersect.splice(1,1,newPoints2[0].x);
-  console.log("Line Intersect Points - H: " + newPoints[0].y +", V " + newPoints2[0].x )
-  useMemo(() => appContext.setStoredLineIntersect(lineIntersect), [newPoints[0].y , newPoints2[0].x]);
+  lineIntersect.splice(2,1,newPoints3[0].x);
+  console.log("Line Intersect Points - H: " + newPoints[0].y +", V " + newPoints2[0].x + ", V2 " + newPoints3[0].x )
+  useMemo(() => appContext.setStoredLineIntersect(lineIntersect), [newPoints[0].y , newPoints2[0].x, newPoints3[0].x]);
 
   console.log("Line Geometry Horizontal: " +  Object.values(newPoints[0]) + " and " + Object.values(newPoints[1]))
   console.log("Line Geometry Vertical: " + Object.values(newPoints2[0]) + " and " + Object.values(newPoints2[1]) )
+  console.log("Line Geometry Vertical2: " + Object.values(newPoints3[0]) + " and " + Object.values(newPoints3[1]) )
 
 return (
   <>
   <group>
       <mesh onClick={handleClickH}
-      //   {...bind()}
       >
           <line ref={ref} geometry={lineGeometry}>
               <lineBasicMaterial attach="material" color={'#9c88ff'} linewidth={10} linecap={'round'} linejoin={'round'} />
@@ -395,6 +428,13 @@ return (
       //   {...bind2()}
       >
           <line ref={ref2} geometry={lineGeometry2}>
+              <lineBasicMaterial attach="material" color={'#9c88ff'} linewidth={10} linecap={'round'} linejoin={'round'} />
+          </line>
+      </mesh>
+
+      <mesh onClick={handleClickV2}
+      >
+          <line ref={ref3} geometry={lineGeometry3}>
               <lineBasicMaterial attach="material" color={'#9c88ff'} linewidth={10} linecap={'round'} linejoin={'round'} />
           </line>
       </mesh>
@@ -417,7 +457,7 @@ function App() {
   const [storedObjectsOrder, setStoredObjectsOrder] = useState([]);
   const [objectConflicts, setObjectConflicts] = useState([]);
   const [objectConflictsLog, setObjectConflictsLog] = useState('');
-  const [storedLineIntersect, setStoredLineIntersect] = useState([0,0]);
+  const [storedLineIntersect, setStoredLineIntersect] = useState([0,0,25]);
   const [updatedObjectId, setUpdatedObjectId] = useState();
   const [updatedState, setUpdatedState] = useState('NONE');
 
