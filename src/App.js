@@ -199,20 +199,20 @@ return (
             type="textarea"
             autoFocus
           /> */}
-          <Form.Label>Diameter of this asset</Form.Label>
+          <Form.Label>Diameter of this asset (in meters)</Form.Label>
           <Form.Control
             ref = {diameterRef}
             type="decimal"
             autoFocus
           />
-          <Form.Label>Depth [length from the horizontal line to the top edge of this asset]</Form.Label>
+          <Form.Label>Depth (in meters) [length from the horizontal line to the top edge of this asset]</Form.Label>
           <Form.Control
             ref = {depthRef}
             type="decimal"
             //placeholder="name@example.com"
             autoFocus
           />
-          <Form.Label>Distance [length from the right edge of the previous asset (for first asset, length from the vertical line) to the left edge of this asset]</Form.Label>
+          <Form.Label>Distance (in meters) [length from the right edge of the previous asset (for first asset, length from the vertical line) to the left edge of this asset]</Form.Label>
           <Form.Control
             ref = {distanceRef}
             type="decimal"
