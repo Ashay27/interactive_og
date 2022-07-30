@@ -570,15 +570,13 @@ function App() {
     else if ( objectNumberRef.current.value > storedObjectsOrder.length) return (
         window.alert("INVALID object number. \nThis should be less than or equal to the current number of objects in the profile.")
       )
-    else if (!(orderNumberRef.current.value === ''))  return (
-      window.alert("INVALID input at 'Change Order to'. \nIt should be empty"))
-    
+   
     var order = storedObjectsOrder.slice();
     setUpdatedObjectId(order[objectNumberRef.current.value-1])
     setUpdatedState('DELETED')
 
     objectNumberRef.current.value = null;
-    orderNumberRef.current.value = null;
+    
   }
 
   const handleClearData = () => {
