@@ -449,6 +449,7 @@ function App() {
   const [values, setValues] = useState([]);
   const [show, setShow] = useState(false);
   const [rotate, setRotate] = useState(false);
+  const [showGrid, setShowGrid] = useState(false);
   
 
   const [showStoredObjectsUpload, setShowStoredObjectsUpload] = useState(false);
@@ -591,6 +592,10 @@ function App() {
     setRotate(!rotate)
   }
 
+  const handleGrid = () => {
+    setShowGrid(!showGrid)
+  }
+
   function getZoom(){
     if (localStorage.getItem('camera.hasPosition') !== 'true') {
       return 25;
@@ -625,6 +630,10 @@ function App() {
         <Button onClick={handleRotate}>
                   Rotate
         </Button>
+        <Button onClick= {handleGrid}>
+                  Grid
+        </Button>
+        
         <br/><br/>
 
         <div>
@@ -700,8 +709,8 @@ function App() {
         <pointLight intensity={0.75} position={[500, 500, 1000]} />
         {/* <directionalLight position={[100, 100, 100]} color={0xFFFFFF} /> */}
 
-        <mesh rotation={[Math.PI/2,0,0]} position ={[20, 20, 0]} >
-        <gridHelper args={[45,90,"#f0f0ed","#f0f0ed"]} />
+        <mesh rotation={[Math.PI/2,0,0]} position ={[30, 30, 0]} visible ={showGrid} >
+        <gridHelper args={[100,200,"#f0f0ed","#f0f0ed"]} />
         </mesh>
         <Model />
         <ControlLines />
