@@ -409,6 +409,11 @@ function Cylinder({objectId}) {
         <Modal.Body>
             <Form>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            <Form.Label>Type</Form.Label>
+            <Form.Control
+              disabled
+              defaultValue={Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).assetId)[0]}
+            />
               <Form.Label>Diameter of this asset (in meters)</Form.Label>
                <Form.Control
                 ref = {diameterRef}
