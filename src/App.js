@@ -171,7 +171,7 @@ function PipeModal(props) {
 
 return (
   <>
-  <Button className="nextButton" onClick={handleShow}>
+  <Button className = "B" onClick={handleShow}>
     Add Object
   </Button>
 
@@ -627,53 +627,35 @@ function App() {
           <Dropdown.Item eventKey="3"><OrderModal/></Dropdown.Item>
         </DropdownButton> */}
                   
-        <Button onClick={handleRotate}>
+        <Button className = "B" onClick={handleRotate}>
                   Rotate
         </Button>
-        <Button onClick= {handleGrid}>
+        <Button  className = "B" onClick= {handleGrid}>
                   Grid
         </Button>
         
-        <br/><br/>
+        
 
         <div>
         <PipeModal/>
         <br/><br/>
 
           <Form>
-          <Form.Label>Object Number [current number from the profile]</Form.Label>
-          <Form.Control
-            ref = {objectNumberRef}
-            type="number"
-            
-          />
-          {/*<Form.Label>Change position of the current object to</Form.Label>
-          <Form.Control
-            ref = {orderNumberRef}
-            type="number"
-            
-          />
-          <br/> <br/> 
-          <Button onClick={handleChangeOrder}>
-              Change order 
-          </Button> 
-          <br/>
-          <Form.Text classname = "text-muted">The object in current position will be deleted and inserted to the new position</Form.Text>
-          <br/><br/>*/}
-          <Button onClick={handleDelete}>
-              Delete object
-          </Button>
-          <br/>
-          <Form.Text classname = "text-muted">The object in current position will be deleted</Form.Text>
-          <br/><br/>
-          <Button onClick={handleClearData}>
-              Clear all
-          </Button>
-          
-
+              <Form.Label>Object Number [current number from the profile]</Form.Label>
+              <Form.Control
+                ref = {objectNumberRef}
+                type="number" 
+              />
+              <Button className = "B" onClick={handleDelete}>
+                  Delete object
+              </Button>
+              <br/>
+              <Form.Text classname = "text-muted">The object in current position will be deleted</Form.Text>
           </Form>
           <br/>
-          
+          <Button className = "B" onClick={handleClearData}>
+              Clear all
+          </Button>
 
           {/* <Button onClick={handleClick}>
               Upload a file
