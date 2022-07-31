@@ -122,7 +122,8 @@ function PipeModal(props) {
   const handleClose = () => setShowPipeModal(false);
   const handleShow = () => setShowPipeModal(true);
   const [sketchPickerColor, setSketchPickerColor] = useState("#BD9F9F");
-  
+
+  const ASSET_TYPE_TEXT = 'Choose the type of asset you want to add'
   const appContext = useContext(AppContext);
   
   const optionNameRef = useRef();
@@ -137,8 +138,8 @@ function PipeModal(props) {
     const diameter = diameterRef.current.value;
     const color = sketchPickerColor;
 
-    //TODO: Validate if input of distance, depth and diameter is not string (only float and number is valid) and is greater than 0
-    if (optionName === 'Choose the type of pipe') return window.alert("Please choose the type of object")
+    //TODO: Validate if input of distance, depth and diameter is string (only float and number is valid) and is greater than 0
+    if (optionName === ASSET_TYPE_TEXT) return window.alert("Please choose the type of asset")
     else if (distance === '') return
     else if (depth === '') return
     else if (diameter === '') return  
@@ -189,7 +190,7 @@ return (
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
           <Form.Label>Type</Form.Label>
           <Form.Select ref={optionNameRef}>
-            <option >Choose the type of asset you want to add</option>
+            <option>{ASSET_TYPE_TEXT}</option>
             {ObjectData.afstand.map((object) => (
               <option value={object.Asset} >{object.Beschrijving} ({object.Categorie})</option>
             ))}
