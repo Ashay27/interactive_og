@@ -58,3 +58,19 @@
   min-width: 80%;
   flex-shrink: 0;
 }
+
+.tooltiptext {
+  background-color:  whitesmoke;
+  text-align: center;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: x-large;
+  font-weight: bold;
+  text-shadow: 0.5px 0.5px 1px black;
+  width:max-content;
+
+  position: absolute;
+  z-index: 1;
+  top: 5cm;
+  margin-left: -60px;
+}

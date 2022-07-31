@@ -5,6 +5,8 @@ import {useDrag} from '@use-gesture/react'
 import ObjectData from '../uitlegschemaAfstand.json';
 import AppContext from './AppContext';
 import { useSpring , a} from '@react-spring/three'
+import { Html} from "@react-three/drei/web"
+import "../App.css"
 
 const LOCAL_STORAGE_KEY = 'localData.objects'
 const LOCAL_ORDER_KEY = 'localData.order'
@@ -370,6 +372,15 @@ function Cylinder({objectId}) {
       onPointerOut={(event) => hover(false)}>
       <cylinderGeometry args={[diameter/2,diameter/2,cylinderDepth,50]} />
       <meshStandardMaterial color= {objectColor} wireframe ={hovered ? true : false}/>
+      {hovered && (
+        <Html>
+          <div className="tooltiptext">
+          <p style={{color:objectColor}} >
+          {Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).assetId)[0]}
+          </p>
+          </div>
+        </Html>
+      )}
     </a.mesh>
     </>
   )
