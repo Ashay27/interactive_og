@@ -7,6 +7,7 @@ import AppContext from './AppContext';
 import { useSpring , a} from '@react-spring/three'
 import { Html} from "@react-three/drei/web"
 import "../App.css"
+import {Button, Form, Modal} from 'react-bootstrap';
 
 const LOCAL_STORAGE_KEY = 'localData.objects'
 const LOCAL_ORDER_KEY = 'localData.order'
@@ -132,7 +133,7 @@ function Cylinder({objectId}) {
 
   
 
-  useMemo(() => setPosition.start({position: [(appContext.storedLineIntersect[1] + parseFloat(distance)) , (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ) , -cylinderDepth/2]}), [appContext.storedLineIntersect, parseFloat(distance)] );
+  useMemo(() => setPosition.start({position: [(appContext.storedLineIntersect[1] + parseFloat(distance)) , (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ) , -cylinderDepth/2]}), [appContext.storedLineIntersect, parseFloat(distance), parseFloat(depth), parseFloat(diameter) ]);
 
   const handleClick = event => {
     click(!clicked);
@@ -357,6 +358,91 @@ function Cylinder({objectId}) {
       objectColor = "#faf202";
     }
 
+  
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const handleClose = () => setShowUpdateModal(false);
+    const handleShow = () => setShowUpdateModal(true);
+  
+    function AssetUpdateModal(props) {
+    
+    const depthRef = useRef();
+    const diameterRef = useRef();
+  
+  
+      const handleUpdate = () => {
+
+        if (depthRef.current.value === '') return
+        else if (diameterRef.current.value === '') return  
+
+        var updatedObject = appContext.storedObjectsUpload.slice();
+        
+        var foundIndex = updatedObject.findIndex(object => object.objectId == objectId)
+        updatedObject[foundIndex].diameter.diameter = diameterRef.current.value; 
+        updatedObject[foundIndex].depth.depth = depthRef.current.value;
+        
+        console.log("Updated object diameter: " + Object.values(updatedObject.find(object => object.objectId == objectId).diameter)[0])  
+        console.log("Updated object depth: " + Object.values(updatedObject.find(object => object.objectId == objectId).depth)[0])
+        
+        appContext.setStoredObjectsUpload(updatedObject);
+        console.log(appContext.storedObjectsUpload)
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(appContext.storedObjectsUpload))
+
+        //TODO IDEA: Order is not recalculated should I? 
+
+        depthRef.current.value = null;
+        diameterRef.current.value = null;
+    
+        setShowUpdateModal(false);
+      }
+  
+      return(
+     
+        <>
+          <Modal {...props} size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+        centered
+        show={showUpdateModal} 
+        onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Update asset details</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <Form>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>Diameter of this asset (in meters)</Form.Label>
+               <Form.Control
+                ref = {diameterRef}
+                type="decimal"
+                defaultValue = {Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).diameter)[0]}
+                autoFocus
+            />
+  
+            <Form.Label>Depth (in meters) [length from the horizontal line to the top edge of this asset]</Form.Label>
+            <Form.Control
+              ref = {depthRef}
+              type="decimal"
+              defaultValue = {Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).depth)[0]}
+            />
+  
+            </Form.Group>
+            </Form>  
+          </Modal.Body>
+  
+          <Modal.Footer>
+            <>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleUpdate}>
+            Update the asset
+          </Button>
+          </>
+        </Modal.Footer>
+          </Modal>  
+        </>
+    )
+  }
+
   // Return the view, these are regular Threejs elements expressed in JSX
   return (
     <>
@@ -368,6 +454,7 @@ function Cylinder({objectId}) {
       //onClick={(event) => click(!clicked)}
       //show object Name on single click and conflicts on Double click
       onClick={handleClick}
+      onDoubleClick={handleShow}
       onPointerOver={(event) => hover(true)}
       onPointerOut={(event) => hover(false)}>
       <cylinderGeometry args={[diameter/2,diameter/2,cylinderDepth,50]} />
@@ -381,6 +468,11 @@ function Cylinder({objectId}) {
           </div>
         </Html>
       )}
+      {
+        <Html>
+          <AssetUpdateModal/>
+        </Html>
+      }
     </a.mesh>
     </>
   )
