@@ -218,7 +218,7 @@ return (
             //placeholder="name@example.com"
             autoFocus
           />
-          <Form.Label>Distance (in meters) [length from the right edge of the previous asset (for first asset, length from the vertical line) to the left edge of this asset]</Form.Label>
+          <Form.Label>Distance (in meters) [length from the vertical line to the center of this asset]</Form.Label>
           <Form.Control
             ref = {distanceRef}
             type="decimal"
