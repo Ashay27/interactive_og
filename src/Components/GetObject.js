@@ -13,6 +13,7 @@ const LOCAL_STORAGE_KEY = 'localData.objects'
 const LOCAL_ORDER_KEY = 'localData.order'
 const HART = ["CAI/T", "Data", "E (LS)", "E (MS)_t", "E (MS)_d", "E (HS)", "Boom 1", "Boom 2", "Boom 3"]
 const RAND = ["DWA_t", "DWA_d", "DWA+RWA (gemengd)_t", "DWA+RWA (gemengd)_d", "HWA/ RWA", "PL", "Warmte_HT", "Warmte_MT", "Warmte LT", "W_t", "W_d", "G_t", "G_d", "O.A.T.", "Gebouwen", "DWA_t_Exception", "DWA_d_Exception", "HWA/ RWA_Exception" ]
+const VERTICAL = ["Boom 1", "Boom 2", "Boom 3", "Gebouwen"]
 
 function Cylinder({objectId}) {
   var objectColor;
@@ -31,6 +32,14 @@ function Cylinder({objectId}) {
   // Hold state for hovered and clicked events
   const [hovered, hover] = useState(false)
   const [clicked, click] = useState(false)
+
+  var rotation = 0; 
+  // Rotate the mesh 
+  if(!(VERTICAL.includes(Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).assetId)[0]))){
+    rotation = Math.PI/2;
+  }else cylinderDepth = diameter;
+
+  useFrame((state, delta) => ref.current.rotation.x = rotation)
   
   const [position, setPosition] = useSpring(() => ({ position: [appContext.storedLineIntersect[1] + parseFloat(distance), (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ), -cylinderDepth/2] }))
 
@@ -39,10 +48,6 @@ function Cylinder({objectId}) {
   
   const { size, viewport } = useThree();
   const aspect = size.width / viewport.width;
-
-
-  // Rotate the mesh 
-  useFrame((state, delta) => (ref.current.rotation.x = Math.PI/2))
 
   console.log(objectId)
 
