@@ -442,7 +442,7 @@ return (
       <mesh onClick={handleClickV2}
       >
           <line ref={ref3} geometry={lineGeometry3}>
-              <lineBasicMaterial attach="material" color={'#9c88ff'} linewidth={10} linecap={'round'} linejoin={'round'} />
+              <lineBasicMaterial attach="material" color={'#1bdcf5'} linewidth={10} linecap={'round'} linejoin={'round'} />
           </line>
       </mesh>
   </group>

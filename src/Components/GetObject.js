@@ -104,6 +104,7 @@ function Cylinder({objectId}) {
         if(newValue< (parseFloat(diameter)/2) || newValue>= (appContext.storedLineIntersect[2] - appContext.storedLineIntersect[1] - (parseFloat(diameter)/2))){
           console.log("Boundary exceeded")
           setPosition.start({position: [(appContext.storedLineIntersect[1] + parseFloat(distance) ) ,(appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ), -cylinderDepth/2 ]});
+          window.alert("Boundary exceeded. Keep the assets within the vertical lines.")
           return;
         }
         var updatedObject = appContext.storedObjectsUpload.slice();
