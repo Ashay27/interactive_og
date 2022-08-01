@@ -43,6 +43,7 @@ function Cylinder({objectId}) {
   
   const [position, setPosition] = useSpring(() => ({ position: [appContext.storedLineIntersect[1] + parseFloat(distance), (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ), -cylinderDepth/2] }))
 
+  console.log('position-> x: ' + (appContext.storedLineIntersect[1] + parseFloat(distance) ) + ' y: ' + (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2))  + ' z: ' + -cylinderDepth/2)
   console.log("depth: " + (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ))
   console.log("depth: " + (parseFloat(depth) + parseFloat(diameter)/2))
   
