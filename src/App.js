@@ -479,6 +479,7 @@ function App() {
     objectConflictsLog: objectConflictsLog,
     storedLineIntersect: storedLineIntersect,
     updatedObjectId: updatedObjectId,
+    rotate:rotate,
     updatedState: updatedState,
     setShowStoredObjectsUpload,
     setStoredObjectsUpload,
@@ -488,7 +489,8 @@ function App() {
     setObjectConflictsLog,
     setStoredLineIntersect,
     setUpdatedObjectId,
-    setUpdatedState
+    setUpdatedState,
+    setRotate
   };
 
   const objectNumberRef = useRef();

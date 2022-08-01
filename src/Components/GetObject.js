@@ -93,6 +93,7 @@ function Cylinder({objectId}) {
   // )
 
   const bind = useDrag(({ movement: [x], active }) => {   
+      appContext.setRotate(false)
       setPosition.start({position: [(appContext.storedLineIntersect[1] + parseFloat(distance) + (x/aspect)) ,(appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ), -cylinderDepth/2 ]}); // / props.aspect
       console.log('position-> x: ' + (appContext.storedLineIntersect[1] + parseFloat(distance) + (x/aspect)) + ' y: ' + (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2))  + ' z: ' + -cylinderDepth/2);
       
