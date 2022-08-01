@@ -121,7 +121,8 @@ function PipeModal(props) {
   const [showPipeModal, setShowPipeModal] = useState(false);
   const handleClose = () => setShowPipeModal(false);
   const handleShow = () => setShowPipeModal(true);
-  const [sketchPickerColor, setSketchPickerColor] = useState("#BD9F9F");
+  // For choice of color
+  //const [sketchPickerColor, setSketchPickerColor] = useState("#BD9F9F");
 
   const ASSET_TYPE_TEXT = 'Choose the type of asset you want to add'
   const appContext = useContext(AppContext);
@@ -136,13 +137,17 @@ function PipeModal(props) {
     const distance = distanceRef.current.value;
     const depth = depthRef.current.value;
     const diameter = diameterRef.current.value;
-    const color = sketchPickerColor;
+    // For choice of color
+    //const color = sketchPickerColor;
 
     //TODO: Validate if input of distance, depth and diameter is string (only float and number is valid) and is greater than 0
     if (optionName === ASSET_TYPE_TEXT) return window.alert("Please choose the type of asset")
     else if (distance === '') return
     else if (depth === '') return
     else if (diameter === '') return  
+
+    var color = ObjectData.afstand.find(o => o.Asset == optionName).Color;
+    console.log("color: " + color)
     
     // const object =[{'diameter': diameter, 'depth': depth}];
     // console.log(object);
@@ -222,13 +227,14 @@ return (
             //disabled 
           />
 
+          {/* For choice of color
           <Form.Label>Color of this asset [yellow (#faf202) is reserved for selected object and red (#fc2808) is reserved for conflicts]</Form.Label>
           <SketchPicker
             onChange={(color) => {
               setSketchPickerColor(color.hex);
             }}
             color={sketchPickerColor}
-          />
+          /> */}
                      
           </Form.Group>
        </Form>
@@ -610,6 +616,17 @@ function App() {
     
     return newText;
   }
+
+  var legendObjects = storedObjectsOrder.slice();
+  var currentObjects = storedObjectsUpload.slice();
+  console.log("legend Objects: " + legendObjects)
+  if(legendObjects.length>0){
+    currentObjects = currentObjects.filter(o => legendObjects.includes(o.objectId)) //.filter(o => o.objectId == element )
+    console.log("currentObjects: " + Object.values(currentObjects[0]))
+  }
+
+  let uniqueColors = [...new Set(currentObjects.map(o => Object.values(o.color)[0]))];
+  console.log(uniqueColors);
   
   return (
     <AppContext.Provider value={showSettings}>
@@ -621,6 +638,20 @@ function App() {
         <p> Click on an object to see the related conflicts </p>
         <NewlineText text={objectConflictsLog} />
     </div>
+
+    <div class='my-legend'>
+      <div class='legend-title'>Legend</div>
+      <div class='legend-scale'>
+        <ul class='legend-labels'>
+        {(legendObjects.length>0)?(uniqueColors.map((object) => (
+          <li><span style={{background:object}}></span>
+          {Object.values(currentObjects.find(o => Object.values(o.color) == object).assetId)[0]}</li>
+            ))): null}
+          <li><span style={{background:"#faf202"}}></span>Selected</li>
+          <li><span style={{background:"#fc2808"}}></span>Conflict</li>
+        </ul>
+      </div>
+      </div>
       
       < div className= "flexbox-interaction buttons">
         {/* <DropdownButton as={ButtonGroup} title="Add" id="bg-nested-dropdown">
@@ -709,8 +740,6 @@ function App() {
       </Canvas>
       {/* <Order objects = {storedObjectsUpload} /> */}
       </div>
-
-      
       
     </div>
     </AppContext.Provider>
