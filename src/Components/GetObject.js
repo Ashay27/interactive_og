@@ -502,7 +502,7 @@ function Cylinder({objectId}) {
       {assetId.includes("Boom") ? 
       <mesh position ={[0, parseFloat(height)/2 + parseFloat(diameter)/2, 0]}>
       <cylinderGeometry args={[parseFloat(trunkDia/2),parseFloat(trunkDia/2),parseFloat(height),50]} /> 
-      <meshStandardMaterial color= {'#754007'} wireframe ={hovered ? true : false}/>
+      <meshStandardMaterial color= {clicked ? "#faf202" : '#754007'} wireframe ={hovered ? true : false}/>
         <mesh position ={[0, parseFloat(height/2 + crown - 0.1 ), 0]}>
         <sphereGeometry args={[parseFloat(crown)]} /> 
         <meshStandardMaterial color= {objectColor} wireframe ={hovered ? true : false}/>
