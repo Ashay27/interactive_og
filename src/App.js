@@ -8,7 +8,7 @@ import "/node_modules/materialize-css/dist/js/materialize.min.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { SketchPicker } from "react-color";
 
-import {Button, Form, Modal} from 'react-bootstrap';
+import {Button, Form, Modal, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import Dropdown from 'react-bootstrap/Dropdown'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import DropdownButton from 'react-bootstrap/DropdownButton'
@@ -175,11 +175,17 @@ function PipeModal(props) {
     setShowPipeModal(false);
   }
 
+  const addAssetTooltip = props => (
+    <Tooltip {...props}>Add an asset to the profile</Tooltip>
+  );
+
 return (
   <>
+  <OverlayTrigger placement="left" overlay={addAssetTooltip}>
   <Button className = "B" onClick={handleShow}>
-    Add Object
+    Add Asset
   </Button>
+  </OverlayTrigger>
 
   <Modal {...props}  
     size="lg"
@@ -244,7 +250,7 @@ return (
         Close
       </Button>
       <Button variant="primary" onClick={handleUpload}>
-        Upload the object
+        Upload Asset
       </Button>
     </Modal.Footer>
   </Modal>
@@ -627,6 +633,18 @@ function App() {
 
   let uniqueColors = [...new Set(currentObjects.map(o => Object.values(o.color)[0]))];
   console.log(uniqueColors);
+
+  const clearAllTooltip = props => (
+    <Tooltip {...props}>This will clear all assets from the profile</Tooltip>
+  );
+
+  const gridTooltip = props => (
+    <Tooltip {...props}>Enable/Disable grid to measure (Each grid is 0.5 m)</Tooltip>
+  );
+
+  const rotateViewTooltip = props => (
+    <Tooltip {...props}>Turn on/off view rotation (Press Alt+R to save rotation settings)</Tooltip>
+  );
   
   return (
     <AppContext.Provider value={showSettings}>
@@ -658,13 +676,16 @@ function App() {
           <Dropdown.Item eventKey="2"><PipeModal/></Dropdown.Item>
           <Dropdown.Item eventKey="3"><OrderModal/></Dropdown.Item>
         </DropdownButton> */}
-                  
+        <OverlayTrigger placement="left" overlay={rotateViewTooltip}>          
         <Button className = "B" onClick={handleRotate}>
-                  Rotate
+                  Rotate View
         </Button>
-        <Button  className = "B" onClick= {handleGrid}>
-                  Grid
-        </Button>
+        </OverlayTrigger>
+        <OverlayTrigger placement="left" overlay={gridTooltip}>
+          <Button  className = "B" onClick= {handleGrid}>
+                    View Grid
+          </Button>
+        </OverlayTrigger>
         
         
 
@@ -685,9 +706,11 @@ function App() {
               <Form.Text classname = "text-muted">The object in current position will be deleted</Form.Text>
           </Form> */}
           <br/>
-          <Button variant="danger" className = "B" onClick={handleClearData}>
-              Clear all
-          </Button>
+          <OverlayTrigger placement="left" overlay={clearAllTooltip}>
+            <Button variant="danger" className = "B" onClick={handleClearData}>
+                Clear all
+            </Button>
+          </OverlayTrigger>
 
           {/* <Button onClick={handleClick}>
               Upload a file
