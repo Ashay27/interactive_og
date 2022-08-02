@@ -424,14 +424,13 @@ function ControlLines() {
 return (
   <>
   <group>
-      <mesh onClick={handleClickH}
-      >
+      <mesh onDoubleClick={handleClickH}>
           <line ref={ref} geometry={lineGeometry}>
               <lineBasicMaterial attach="material" color={'#9c88ff'} linewidth={10} linecap={'round'} linejoin={'round'} />
           </line>
       </mesh>
       
-      <mesh onClick={handleClickV}
+      <mesh onDoubleClick={handleClickV}
       //   {...bind2()}
       >
           <line ref={ref2} geometry={lineGeometry2}>
@@ -439,8 +438,7 @@ return (
           </line>
       </mesh>
 
-      <mesh onClick={handleClickV2}
-      >
+      <mesh onDoubleClick={handleClickV2}>
           <line ref={ref3} geometry={lineGeometry3}>
               <lineBasicMaterial attach="material" color={'#1bdcf5'} linewidth={10} linecap={'round'} linejoin={'round'} />
           </line>
