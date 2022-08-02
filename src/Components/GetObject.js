@@ -397,8 +397,11 @@ function Cylinder({objectId}) {
 
   
     const [showUpdateModal, setShowUpdateModal] = useState(false);
-    const handleClose = () => setShowUpdateModal(false);
-    const handleShow = () => setShowUpdateModal(true);
+    const handleClose = () => { setShowUpdateModal(false);
+      click(false); };
+    const handleShow = () => {setShowUpdateModal(true);
+      click(false);
+    }
   
     function AssetUpdateModal(props) {
     
@@ -428,8 +431,22 @@ function Cylinder({objectId}) {
 
         depthRef.current.value = null;
         diameterRef.current.value = null;
-    
+        
+        click(false);
         setShowUpdateModal(false);
+      }
+
+      const handleDelete = () => {
+        var order = appContext.storedObjectsOrder.slice();
+        order = order.filter(o => !(o == objectId))
+        
+        appContext.setStoredObjectsOrder(order);
+        localStorage.setItem(LOCAL_ORDER_KEY, JSON.stringify(order))
+        
+        console.log(Object.values(appContext.storedObjectsOrder))
+        
+        click(false);
+        setShowUpdateModal(false);  
       }
   
       return(
@@ -476,7 +493,10 @@ function Cylinder({objectId}) {
             Close
           </Button>
           <Button variant="primary" onClick={handleUpdate}>
-            Update the asset
+            Update asset
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete asset
           </Button>
           </>
         </Modal.Footer>

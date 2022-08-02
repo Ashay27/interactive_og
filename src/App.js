@@ -670,7 +670,7 @@ function App() {
 
         <div>
         <PipeModal/>
-        <br/><br/>
+        {/* <br/><br/>
 
           <Form>
               <Form.Label>Object Number [current number from the profile]</Form.Label>
@@ -683,9 +683,9 @@ function App() {
               </Button>
               <br/>
               <Form.Text classname = "text-muted">The object in current position will be deleted</Form.Text>
-          </Form>
+          </Form> */}
           <br/>
-          <Button className = "B" onClick={handleClearData}>
+          <Button variant="danger" className = "B" onClick={handleClearData}>
               Clear all
           </Button>
 
