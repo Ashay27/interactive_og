@@ -14,6 +14,7 @@ const LOCAL_ORDER_KEY = 'localData.order'
 const HART = ["CAI/T", "Data", "E (LS)", "E (MS)_t", "E (MS)_d", "E (HS)", "Boom 1", "Boom 2", "Boom 3"]
 const RAND = ["DWA_t", "DWA_d", "DWA+RWA (gemengd)_t", "DWA+RWA (gemengd)_d", "HWA/ RWA", "PL", "Warmte_HT", "Warmte_MT", "Warmte LT", "W_t", "W_d", "G_t", "G_d", "O.A.T.", "Gebouwen", "DWA_t_Exception", "DWA_d_Exception", "HWA/ RWA_Exception" ]
 const VERTICAL = ["Boom 1", "Boom 2", "Boom 3", "Gebouwen"]
+var height, crown, trunkDia;
 
 function Cylinder({objectId}) {
   var objectColor;
@@ -22,6 +23,7 @@ function Cylinder({objectId}) {
   var distance = Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).distance)[0]
   var depth = Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).depth)[0]
   var diameter = Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).diameter)[0]
+  var assetId = Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).assetId)[0]
   objectColor = Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).color)[0];
   console.log("distance: " + distance)
   console.log("depth: " + depth)
@@ -38,6 +40,32 @@ function Cylinder({objectId}) {
   if(!(VERTICAL.includes(Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).assetId)[0]))){
     rotation = Math.PI/2;
   }else cylinderDepth = diameter;
+
+  switch (assetId) {
+    case "Boom 1":
+      height = 16;
+      crown = diameter/2;
+      trunkDia = 0.6;
+      break;
+    
+    case "Boom 2":
+      height = 13;
+      crown = diameter/2;
+      trunkDia = 0.3;
+      break;
+    
+    case "Boom 3":
+      height = 8;
+      crown = diameter/2;
+      trunkDia = 0.1;
+      break;
+
+    default:
+      height = 0;
+      crown = 0;
+      trunkDia = 0;
+      break;
+  }
 
   useFrame((state, delta) => ref.current.rotation.x = rotation)
   
@@ -470,6 +498,18 @@ function Cylinder({objectId}) {
       onDoubleClick={handleShow}
       onPointerOver={(event) => hover(true)}
       onPointerOut={(event) => hover(false)}>
+      {assetId.includes("Boom") ? 
+      <mesh position ={[0, parseFloat(height)/2 + parseFloat(diameter)/2, 0]}>
+      <cylinderGeometry args={[parseFloat(trunkDia/2),parseFloat(trunkDia/2),parseFloat(height),50]} /> 
+      <meshStandardMaterial color= {'#754007'} wireframe ={hovered ? true : false}/>
+        <mesh position ={[0, parseFloat(height/2 + crown - 0.1 ), 0]}>
+        <sphereGeometry args={[parseFloat(crown)]} /> 
+        <meshStandardMaterial color= {objectColor} wireframe ={hovered ? true : false}/>
+        </mesh>
+      </mesh>
+      :
+      null
+      }
       <cylinderGeometry args={[diameter/2,diameter/2,cylinderDepth,50]} />
       <meshStandardMaterial color= {objectColor} wireframe ={hovered ? true : false}/>
       {hovered && (
