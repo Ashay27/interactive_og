@@ -37,7 +37,7 @@ function Cylinder({objectId}) {
 
   var rotation = 0; 
   // Rotate the mesh 
-  if(!(VERTICAL.includes(Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).assetId)[0]))){
+  if(!(VERTICAL.includes(assetId))){
     rotation = Math.PI/2;
   }else cylinderDepth = diameter;
 
@@ -174,9 +174,10 @@ function Cylinder({objectId}) {
   const handleClick = event => {
     click(!clicked);
     appContext.setObjectConflicts([])
+    console.log("Asset clicked: " + assetId)
 
     if(!clicked){
-    var conflictLog = "\n These are the conflicts for the selected object " + Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).assetId)[0];
+    var conflictLog = "\n These are the conflicts for the selected object " + assetId;
     var conflictExist = false;
     var order = appContext.storedObjectsOrder.slice();
     console.log("Order: " + order)
@@ -448,7 +449,7 @@ function Cylinder({objectId}) {
             <Form.Label>Type</Form.Label>
             <Form.Control
               disabled
-              defaultValue={Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).assetId)[0]}
+              defaultValue={assetId}
             />
               <Form.Label>Diameter of this asset (in meters)</Form.Label>
                <Form.Control
@@ -516,7 +517,7 @@ function Cylinder({objectId}) {
         <Html>
           <div className="tooltiptext">
           <p style={{color:objectColor}} >
-          {Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).assetId)[0]}
+          {assetId}
           </p>
           </div>
         </Html>
