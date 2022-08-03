@@ -1,6 +1,6 @@
 
 import './App.css';
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import React, {Suspense, useContext, useEffect, useMemo, useRef, useState , useReducer} from 'react'
 import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber'
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls' ;
@@ -29,6 +29,14 @@ const LOCAL_STORAGE_KEY = 'localData.objects'
 const LOCAL_ID_KEY = 'localData.id'
 const LOCAL_ORDER_KEY = 'localData.order'
 const LOCAL_LINE_KEY = 'localData.lineIntersect'
+const [DEFAULT,ROTATE,FRONT,TOP, DRAG] = ['DEFAULT', 'ROTATE', 'FRONT', 'TOP', 'DRAG']
+
+const initialState = { view: DEFAULT,
+  positionX: 30,
+  positionY: 20,
+  positionZ: 200,
+  rotate: true
+}
 
 // localStorage.clear();
 
@@ -52,15 +60,15 @@ const Aspect = () => {
   return size.width / viewport.width;
 }
 
-const CameraController = ({rotate}) => {
+const CameraController = () => {
+  const {viewState} = useContext(AppContext);
   const { camera, gl } = useThree();
   useEffect(
     () => {
       const controls = new OrbitControls(camera, gl.domElement);
           
-      console.log("rotate: " + rotate)
-      controls.enableRotate = rotate;
-
+      console.log("View: " + viewState.view)
+      controls.enableRotate = (viewState.rotate);
 
       function saveCameraPosition() {
         localStorage.setItem('camera.hasPosition', 'true');
@@ -79,40 +87,26 @@ const CameraController = ({rotate}) => {
         localStorage.setItem('controls.target.z', controls.target.z.toString());
       }
       
-      function loadCameraLocation() {
-        if (localStorage.getItem('camera.hasPosition') !== 'true') return;
-
-        camera.position.x = parseFloat(localStorage.getItem('camera.position.x'));
-        camera.position.y = parseFloat(localStorage.getItem('camera.position.y'));
-        camera.position.z = parseFloat(localStorage.getItem('camera.position.z'));
-        camera.zoom = parseFloat(localStorage.getItem('camera.zoom'));
-      
-        camera.rotation.x = parseFloat(localStorage.getItem('camera.rotation.x'));
-        camera.rotation.y = parseFloat(localStorage.getItem('camera.rotation.y'));
-        camera.rotation.z = parseFloat(localStorage.getItem('camera.rotation.z'));
-      
-        controls.target.x = parseFloat(localStorage.getItem('controls.target.x'));
-        controls.target.y = parseFloat(localStorage.getItem('controls.target.y'));
-        controls.target.z = parseFloat(localStorage.getItem('controls.target.z'));
-      }
-      
-      loadCameraLocation();
       window.addEventListener('keydown', (e) => {
-        if (e.altKey && e.key === 'r') {
-          e.preventDefault();
-          saveCameraPosition();
-          console.log("Updated camera zoom: " + camera.zoom)
-        }
+          if (e.altKey && e.key === 'r') {
+            e.preventDefault();
+            saveCameraPosition();
+            console.log("Rotate view saved")
+          }
       });
       console.log("camera.zoom: " + camera.zoom)
 
       //if(!rotate){controls.reset()}
       
+    if(viewState.view != DRAG){
+    camera.position.set(viewState.positionX,viewState.positionY,viewState.positionZ);
+    controls.update();
+    } 
       return () => {
         controls.dispose();
       };
     },
-    [camera, gl, rotate]
+    [camera, gl, viewState]
   );
   return null;
 };
@@ -459,8 +453,9 @@ function App() {
   //State to store the values
   const [values, setValues] = useState([]);
   const [show, setShow] = useState(false);
-  const [rotate, setRotate] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
+
+  const [viewState, dispatch] = useReducer(viewReducer, initialState)
   
 
   const [showStoredObjectsUpload, setShowStoredObjectsUpload] = useState(false);
@@ -483,8 +478,8 @@ function App() {
     objectConflictsLog: objectConflictsLog,
     storedLineIntersect: storedLineIntersect,
     updatedObjectId: updatedObjectId,
-    rotate:rotate,
     updatedState: updatedState,
+    viewState:viewState,
     setShowStoredObjectsUpload,
     setStoredObjectsUpload,
     setStoredObjectsId,
@@ -494,7 +489,7 @@ function App() {
     setStoredLineIntersect,
     setUpdatedObjectId,
     setUpdatedState,
-    setRotate
+    dispatch
   };
 
   const objectNumberRef = useRef();
@@ -526,6 +521,48 @@ function App() {
   }, [storedObjectsUpload,storedLineIntersect,storedObjectId,storedObjectsOrder])
 
   //console.log('Here ' + Object.values(storedObjectsOrder))
+
+  function viewReducer(state, action) {
+    switch (action.type) {
+      case FRONT:
+        return {...state,
+        view: FRONT, 
+        positionX: 0,
+        positionY: 0,
+        positionZ: 200,
+        rotate: false
+      }
+      case TOP:
+        return {...state,
+          view: TOP,
+          positionX: 0,
+          positionY: 200,
+          positionZ: 0,
+          rotate: false
+      }
+      case ROTATE:
+        return {...state,
+          view: ROTATE,
+          positionX: localStorage.getItem('camera.hasPosition') != 'true' ? 30 : parseFloat(localStorage.getItem('camera.position.x')),
+          positionY: localStorage.getItem('camera.hasPosition') != 'true' ? 20 : parseFloat(localStorage.getItem('camera.position.y')),
+          positionZ: localStorage.getItem('camera.hasPosition') != 'true' ? 200 : parseFloat(localStorage.getItem('camera.position.z')),
+          rotate: true
+      }
+      case DRAG:
+        return {...state,
+        view: DRAG,
+        rotate: false
+      }
+      
+      default:
+        return { view: DEFAULT,
+          positionX: 30,
+          positionY: 20,
+          positionZ: 200,
+          rotate: true
+      }
+    }
+}
 
 
   const changeHandler = (event) => {
@@ -601,9 +638,6 @@ function App() {
       return
     }
   }
-  const handleRotate = () => {
-    setRotate(!rotate)
-  }
 
   const handleGrid = () => {
     setShowGrid(!showGrid)
@@ -643,7 +677,15 @@ function App() {
   );
 
   const rotateViewTooltip = props => (
-    <Tooltip {...props}>Turn on/off view rotation (Press Alt+R to save rotation settings)</Tooltip>
+    <Tooltip {...props}>Turn on view rotation (Press Alt+R to save rotation settings)</Tooltip>
+  );
+
+  const frontViewTooltip = props => (
+    <Tooltip {...props}>Turn on front view</Tooltip>
+  );
+
+  const topViewTooltip = props => (
+    <Tooltip {...props}>Turn on top view</Tooltip>
   );
   
   return (
@@ -677,10 +719,23 @@ function App() {
           <Dropdown.Item eventKey="3"><OrderModal/></Dropdown.Item>
         </DropdownButton> */}
         <OverlayTrigger placement="left" overlay={rotateViewTooltip}>          
-        <Button className = "B" onClick={handleRotate}>
+        <Button className = "B" onClick={() => dispatch({ type: ROTATE })}>
                   Rotate View
         </Button>
         </OverlayTrigger>
+
+        <OverlayTrigger placement="left" overlay={frontViewTooltip}>          
+        <Button className = "B" onClick={() => dispatch({ type: FRONT })}>
+                  Front View
+        </Button>
+        </OverlayTrigger>
+
+        <OverlayTrigger placement="left" overlay={topViewTooltip}>          
+        <Button className = "B" onClick={() => dispatch({ type: TOP })}>
+                  Top View
+        </Button>
+        </OverlayTrigger>
+
         <OverlayTrigger placement="left" overlay={gridTooltip}>
           <Button  className = "B" onClick= {handleGrid}>
                     View Grid
@@ -740,24 +795,34 @@ function App() {
       <Canvas orthographic camera={ {position: [0,0,200], zoom: getZoom() , top:200, bottom:-200, left:200, right:200, near:0, far:2000 }}>
       <AppContext.Provider value={showSettings}>
         <group>
-        <CameraController rotate={rotate}/>
-         
-        <ambientLight intensity={0.25} color={0xFFFFFF} />
-        <pointLight intensity={0.75} position={[500, 500, 1000]} />
-        {/* <directionalLight position={[100, 100, 100]} color={0xFFFFFF} /> */}
+        <Suspense fallback={null}>
+          <CameraController />
+          
+          <ambientLight intensity={0.25} color={0xFFFFFF} />
+          <pointLight intensity={0.75} position={[500, 500, 1000]} />
+          {/* <directionalLight position={[100, 100, 100]} color={0xFFFFFF} /> */}
 
-        <mesh rotation={[Math.PI/2,0,0]} position ={[30, 30, 0]} visible ={showGrid} >
-        <gridHelper args={[100,200,"#f0f0ed","#f0f0ed"]} />
-        </mesh>
-        <Model />
-        <ControlLines />
-        {/* <AddObjectsFromCSVModal show = {show} objects = {values} /> */}
-         
-        {/* <UploadObjects /> */}
+          <mesh rotation={[Math.PI/2,0,0]} position ={[30, 30, 0]} visible ={showGrid} >
+          <gridHelper args={[100,200,"#f0f0ed","#f0f0ed"]} />
+          </mesh>
+        </Suspense>  
+          
+        <Suspense fallback={null}>
+          <mesh position={[-20,-10,0]}>
+            <Model />
+            
+            <ControlLines />
+            {/* <AddObjectsFromCSVModal show = {show} objects = {values} /> */}
+            
+            {/* <UploadObjects /> */}
 
-        {/* TODO: reduce the number of input parameters show? */}
-        {/* <UploadObjectFromLocalStorage show = 'true' objects = {storedObjectsUpload} order = {storedObjectsOrder} setObjectConflicts = {setObjectConflicts} objectConflicts = {objectConflicts} setObjectConflictsLog = {setObjectConflictsLog}/> */}
-        <GetAllObjects storedObjectsOrder = {storedObjectsOrder} updatedObjectId = {updatedObjectId} updatedState ={updatedState} />
+            {/* TODO: reduce the number of input parameters show? */}
+            {/* <UploadObjectFromLocalStorage show = 'true' objects = {storedObjectsUpload} order = {storedObjectsOrder} setObjectConflicts = {setObjectConflicts} objectConflicts = {objectConflicts} setObjectConflictsLog = {setObjectConflictsLog}/> */}
+            
+            <GetAllObjects storedObjectsOrder = {storedObjectsOrder} updatedObjectId = {updatedObjectId} updatedState ={updatedState} />
+            
+          </mesh>
+        </Suspense>
         </group>
       </AppContext.Provider> 
       </Canvas>
