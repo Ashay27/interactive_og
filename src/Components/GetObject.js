@@ -11,7 +11,7 @@ import {Button, Form, Modal} from 'react-bootstrap';
 
 const LOCAL_STORAGE_KEY = 'localData.objects'
 const LOCAL_ORDER_KEY = 'localData.order'
-const [FRONT,TOP, ROTATE, DRAG, PERSPECTIVE] = ['FRONT', 'TOP', 'ROTATE', 'DRAG', 'PERSPECTIVE']
+const [FRONT,TOP, ROTATE, PERSPECTIVE] = ['FRONT', 'TOP', 'ROTATE', 'PERSPECTIVE']
 const HART = ["CAI/T", "Data", "E (LS)", "E (MS)_t", "E (MS)_d", "E (HS)", "Boom 1", "Boom 2", "Boom 3"]
 const RAND = ["DWA_t", "DWA_d", "DWA+RWA (gemengd)_t", "DWA+RWA (gemengd)_d", "HWA/ RWA", "PL", "Warmte_HT", "Warmte_MT", "Warmte LT", "W_t", "W_d", "G_t", "G_d", "O.A.T.", "Gebouwen", "DWA_t_Exception", "DWA_d_Exception", "HWA/ RWA_Exception" ]
 const VERTICAL = ["Boom 1", "Boom 2", "Boom 3", "Gebouwen"]
@@ -35,6 +35,7 @@ function Cylinder({objectId}) {
   // Hold state for hovered and clicked events
   const [hovered, hover] = useState(false)
   const [clicked, click] = useState(false)
+  const [dragged, setdragged] = useState(false)
   const isMounted = useRef(false)
 
   var rotation = 0; 
@@ -124,10 +125,13 @@ function Cylinder({objectId}) {
   // )
 
   const bind = useDrag(({ movement: [x], active, cancel }) => {   
-    if(appContext.viewState.view != ROTATE){
-      if(appContext.viewState.view != FRONT && appContext.viewState.view != TOP && appContext.viewState.view != PERSPECTIVE){
-        appContext.dispatch({ type: DRAG })
-      }
+    if(appContext.viewState.view == ROTATE){ 
+      setPosition.start({position: [(appContext.storedLineIntersect[1] + parseFloat(distance) ) ,(appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ), -cylinderDepth/2 ]});
+      setdragged(true)   
+      cancel()
+      return
+    }
+    
       setPosition.start({position: [(appContext.storedLineIntersect[1] + parseFloat(distance) + (x/aspect)) ,(appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ), -cylinderDepth/2 ]}); // / props.aspect
       console.log('position-> x: ' + (appContext.storedLineIntersect[1] + parseFloat(distance) + (x/aspect)) + ' y: ' + (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2))  + ' z: ' + -cylinderDepth/2);
       
@@ -166,16 +170,18 @@ function Cylinder({objectId}) {
         appContext.setStoredObjectsOrder(order);
         localStorage.setItem(LOCAL_ORDER_KEY, JSON.stringify(order))
       }
-    } else {
-      window.alert("Drag is not possible while rotation is on. Switching to Perspective view.")
-      cancel()
-      appContext.dispatch({ type: PERSPECTIVE })
-    }
+   
   }, 
   { axis: 'x',
     delay:true
   }
   );
+
+  if(dragged){
+    window.alert("Drag is not possible while rotation is on. Switching to Perspective view.")
+    appContext.dispatch({ type: PERSPECTIVE })
+    setdragged(false)   
+  }
 
   
 
@@ -394,7 +400,10 @@ function Cylinder({objectId}) {
     if(isMounted.current){
       appContext.setSelectedObjectId(objectId)
       console.log("Selected Object: " + objectId)
-    } else isMounted.current = true;
+    } else {isMounted.current = true;
+      appContext.setObjectConflicts([]);
+      appContext.setObjectConflictsLog('');
+    }
 
     console.log("appContext.updatedState: " + appContext.updatedState)
     

@@ -29,7 +29,7 @@ const LOCAL_STORAGE_KEY = 'localData.objects'
 const LOCAL_ID_KEY = 'localData.id'
 const LOCAL_ORDER_KEY = 'localData.order'
 const LOCAL_LINE_KEY = 'localData.lineIntersect'
-const [DEFAULT,ROTATE,FRONT,TOP, DRAG, PERSPECTIVE] = ['DEFAULT', 'ROTATE', 'FRONT', 'TOP', 'DRAG', 'PERSPECTIVE']
+const [DEFAULT,ROTATE,FRONT,TOP, PERSPECTIVE] = ['DEFAULT', 'ROTATE', 'FRONT', 'TOP', 'PERSPECTIVE']
 
 const initialState = { 
   view: PERSPECTIVE,
@@ -99,19 +99,16 @@ const CameraController = () => {
 
       //if(!rotate){controls.reset()}
       
-    if(viewState.view != DRAG){
+
     camera.position.set(viewState.positionX,viewState.positionY,viewState.positionZ);
-    if(viewState.view != ROTATE && localStorage.getItem('camera.hasPosition') != 'true') {
+    if(viewState.view == ROTATE && localStorage.getItem('camera.hasPosition') == 'true') {
+      console.log("Getting camera rotation")
       camera.rotation.x = parseFloat(localStorage.getItem('camera.rotation.x'));
       camera.rotation.y = parseFloat(localStorage.getItem('camera.rotation.y'));
       camera.rotation.z = parseFloat(localStorage.getItem('camera.rotation.z'));
     }
     controls.update();
-    } else {
-      camera.position.set(camera.position.x,camera.position.y,camera.position.z);
-      camera.rotation.set(camera.rotation.x,camera.rotation.y,camera.rotation.z)
-      controls.update();
-    } 
+
       return () => {
         controls.dispose();
       };
@@ -569,12 +566,6 @@ function App() {
           positionZ: localStorage.getItem('camera.hasPosition') != 'true' ? 200 : parseFloat(localStorage.getItem('camera.position.z')),
           rotate: false
       }
-      case DRAG:
-        return {...state,
-        view: DRAG,
-        rotate: false
-      }
-      
       default:
         return { view: DEFAULT,
           positionX: 30,
