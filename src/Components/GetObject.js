@@ -1,4 +1,4 @@
-import React, {useState, useRef, useContext, useMemo } from "react";
+import React, {useState, useRef, useContext, useMemo, useEffect } from "react";
 import { useFrame, useThree } from '@react-three/fiber'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {useDrag} from '@use-gesture/react'
@@ -35,6 +35,7 @@ function Cylinder({objectId}) {
   // Hold state for hovered and clicked events
   const [hovered, hover] = useState(false)
   const [clicked, click] = useState(false)
+  const isMounted = useRef(false)
 
   var rotation = 0; 
   // Rotate the mesh 
@@ -176,8 +177,10 @@ function Cylinder({objectId}) {
     click(!clicked);
     appContext.setObjectConflicts([])
     console.log("Asset clicked: " + assetId)
+  }
 
-    if(!clicked){
+  useEffect(() => {
+    appContext.setObjectConflicts([])
     var conflictLog = "\n These are the conflicts for the selected object " + assetId;
     var conflictExist = false;
     var order = appContext.storedObjectsOrder.slice();
@@ -379,29 +382,52 @@ function Cylinder({objectId}) {
 
     //for logging the conflicts in UI in App.js
     appContext.setObjectConflictsLog(conflictLog);
+
+
+    if(isMounted.current){
+      appContext.setSelectedObjectId(objectId)
+      console.log("Selected Object: " + objectId)
+    } else isMounted.current = true;
+
+    console.log("appContext.updatedState: " + appContext.updatedState)
+    
+    if((clicked && appContext.selectedObjectId == objectId) || appContext.updatedState == 'ADDED' ){
+      appContext.setSelectedObjectId(0);
+      console.log("No selected object")
+      appContext.setObjectConflicts([]);
+      appContext.setObjectConflictsLog('');
+      if(appContext.updatedState == 'ADDED') appContext.setUpdatedState('NONE')
     }
   }
   
+  }, [clicked])
 
-  console.log( appContext.objectConflicts)
+ 
   //Add condition to choose the choosen color of the object or the conflict color or color when selected and update in meshStandardMaterial with a variable
 
-  if(!clicked){
+  if(appContext.selectedObjectId != objectId){
     if(appContext.objectConflicts.includes(objectId)){
       objectColor = "#fc2808";
     } else {
         objectColor = Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).color)[0];
     } 
-  } else if(clicked){
+  } else if(appContext.selectedObjectId == objectId ){
       objectColor = "#faf202";
     }
 
   
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const handleClose = () => { setShowUpdateModal(false);
-      click(false); };
+      appContext.setSelectedObjectId(0);
+      console.log("No selected object")
+      appContext.setObjectConflicts([]);
+      appContext.setObjectConflictsLog(''); 
+    }
     const handleShow = () => {setShowUpdateModal(true);
-      click(false);
+      appContext.setSelectedObjectId(0);
+      console.log("No selected object")
+      appContext.setObjectConflicts([]);
+      appContext.setObjectConflictsLog('');
     }
   
     function AssetUpdateModal(props) {
@@ -433,8 +459,7 @@ function Cylinder({objectId}) {
         depthRef.current.value = null;
         diameterRef.current.value = null;
         
-        click(false);
-        setShowUpdateModal(false);
+        handleClose();
       }
 
       const handleDelete = () => {
@@ -446,8 +471,7 @@ function Cylinder({objectId}) {
         
         console.log(Object.values(appContext.storedObjectsOrder))
         
-        click(false);
-        setShowUpdateModal(false);  
+        handleClose();
       }
   
       return(
@@ -523,7 +547,7 @@ function Cylinder({objectId}) {
       {assetId.includes("Boom") ? 
       <mesh position ={[0, parseFloat(height)/2 + parseFloat(diameter)/2, 0]}>
       <cylinderGeometry args={[parseFloat(trunkDia/2),parseFloat(trunkDia/2),parseFloat(height),50]} /> 
-      <meshStandardMaterial color= {clicked ? "#faf202" : '#754007'} wireframe ={hovered ? true : false}/>
+      <meshStandardMaterial color= {(appContext.selectedObjectId == objectId || appContext.objectConflicts.includes(objectId)) ? objectColor : '#754007'} wireframe ={hovered ? true : false}/>
         <mesh position ={[0, parseFloat(height/2 + crown - 0.1 ), 0]}>
         <sphereGeometry args={[parseFloat(crown)]} /> 
         <meshStandardMaterial color= {objectColor} wireframe ={hovered ? true : false}/>

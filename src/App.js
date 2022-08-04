@@ -467,6 +467,7 @@ function App() {
   const [storedLineIntersect, setStoredLineIntersect] = useState([0,0,25]);
   const [updatedObjectId, setUpdatedObjectId] = useState();
   const [updatedState, setUpdatedState] = useState('NONE');
+  const [selectedObjectId, setSelectedObjectId] = useState(0);
 
   const showSettings = {
     showStoredObjectsUpload: showStoredObjectsUpload,
@@ -480,6 +481,7 @@ function App() {
     updatedObjectId: updatedObjectId,
     updatedState: updatedState,
     viewState:viewState,
+    selectedObjectId:selectedObjectId,
     setShowStoredObjectsUpload,
     setStoredObjectsUpload,
     setStoredObjectsId,
@@ -489,7 +491,8 @@ function App() {
     setStoredLineIntersect,
     setUpdatedObjectId,
     setUpdatedState,
-    dispatch
+    dispatch,
+    setSelectedObjectId
   };
 
   const objectNumberRef = useRef();

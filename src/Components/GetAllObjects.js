@@ -25,7 +25,6 @@ if(updatedState === 'ADDED'){
     localStorage.setItem(LOCAL_ORDER_KEY, JSON.stringify(order))
 
     console.log(Object.values(storedObjectsOrder))
-    appContext.setUpdatedState('NONE')
 }
 
 if(updatedState === 'DELETED'){
