@@ -175,7 +175,6 @@ function Cylinder({objectId}) {
 
   const handleClick = event => {
     click(!clicked);
-    appContext.setObjectConflicts([])
     console.log("Asset clicked: " + assetId)
   }
 
@@ -398,7 +397,6 @@ function Cylinder({objectId}) {
       appContext.setObjectConflictsLog('');
       if(appContext.updatedState == 'ADDED') appContext.setUpdatedState('NONE')
     }
-  }
   
   }, [clicked])
 
