@@ -178,7 +178,6 @@ function Cylinder({objectId}) {
   );
 
   if(dragged){
-    window.alert("Drag is not possible while rotation is on. Switching to Perspective view.")
     appContext.dispatch({ type: PERSPECTIVE })
     setdragged(false)   
   }
