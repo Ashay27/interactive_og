@@ -11,7 +11,7 @@ import {Button, Form, Modal} from 'react-bootstrap';
 
 const LOCAL_STORAGE_KEY = 'localData.objects'
 const LOCAL_ORDER_KEY = 'localData.order'
-const DRAG = 'DRAG'
+const [FRONT,TOP, ROTATE, DRAG, PERSPECTIVE] = ['FRONT', 'TOP', 'ROTATE', 'DRAG', 'PERSPECTIVE']
 const HART = ["CAI/T", "Data", "E (LS)", "E (MS)_t", "E (MS)_d", "E (HS)", "Boom 1", "Boom 2", "Boom 3"]
 const RAND = ["DWA_t", "DWA_d", "DWA+RWA (gemengd)_t", "DWA+RWA (gemengd)_d", "HWA/ RWA", "PL", "Warmte_HT", "Warmte_MT", "Warmte LT", "W_t", "W_d", "G_t", "G_d", "O.A.T.", "Gebouwen", "DWA_t_Exception", "DWA_d_Exception", "HWA/ RWA_Exception" ]
 const VERTICAL = ["Boom 1", "Boom 2", "Boom 3", "Gebouwen"]
@@ -123,8 +123,11 @@ function Cylinder({objectId}) {
   //   }
   // )
 
-  const bind = useDrag(({ movement: [x], active }) => {   
-      appContext.dispatch({ type: DRAG })
+  const bind = useDrag(({ movement: [x], active, cancel }) => {   
+    if(appContext.viewState.view != ROTATE){
+      if(appContext.viewState.view != FRONT && appContext.viewState.view != TOP && appContext.viewState.view != PERSPECTIVE){
+        appContext.dispatch({ type: DRAG })
+      }
       setPosition.start({position: [(appContext.storedLineIntersect[1] + parseFloat(distance) + (x/aspect)) ,(appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ), -cylinderDepth/2 ]}); // / props.aspect
       console.log('position-> x: ' + (appContext.storedLineIntersect[1] + parseFloat(distance) + (x/aspect)) + ' y: ' + (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2))  + ' z: ' + -cylinderDepth/2);
       
@@ -163,6 +166,11 @@ function Cylinder({objectId}) {
         appContext.setStoredObjectsOrder(order);
         localStorage.setItem(LOCAL_ORDER_KEY, JSON.stringify(order))
       }
+    } else {
+      window.alert("Drag is not possible while rotation is on. Switching to Perspective view.")
+      cancel()
+      appContext.dispatch({ type: PERSPECTIVE })
+    }
   }, 
   { axis: 'x',
     delay:true

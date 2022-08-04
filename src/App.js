@@ -29,13 +29,14 @@ const LOCAL_STORAGE_KEY = 'localData.objects'
 const LOCAL_ID_KEY = 'localData.id'
 const LOCAL_ORDER_KEY = 'localData.order'
 const LOCAL_LINE_KEY = 'localData.lineIntersect'
-const [DEFAULT,ROTATE,FRONT,TOP, DRAG] = ['DEFAULT', 'ROTATE', 'FRONT', 'TOP', 'DRAG']
+const [DEFAULT,ROTATE,FRONT,TOP, DRAG, PERSPECTIVE] = ['DEFAULT', 'ROTATE', 'FRONT', 'TOP', 'DRAG', 'PERSPECTIVE']
 
-const initialState = { view: DEFAULT,
-  positionX: 30,
-  positionY: 20,
-  positionZ: 200,
-  rotate: true
+const initialState = { 
+  view: PERSPECTIVE,
+  positionX: localStorage.getItem('camera.hasPosition') != 'true' ? 30 : parseFloat(localStorage.getItem('camera.position.x')),
+  positionY: localStorage.getItem('camera.hasPosition') != 'true' ? 20 : parseFloat(localStorage.getItem('camera.position.y')),
+  positionZ: localStorage.getItem('camera.hasPosition') != 'true' ? 200 : parseFloat(localStorage.getItem('camera.position.z')),
+  rotate: false
 }
 
 // localStorage.clear();
@@ -100,7 +101,16 @@ const CameraController = () => {
       
     if(viewState.view != DRAG){
     camera.position.set(viewState.positionX,viewState.positionY,viewState.positionZ);
+    if(viewState.view != ROTATE && localStorage.getItem('camera.hasPosition') != 'true') {
+      camera.rotation.x = parseFloat(localStorage.getItem('camera.rotation.x'));
+      camera.rotation.y = parseFloat(localStorage.getItem('camera.rotation.y'));
+      camera.rotation.z = parseFloat(localStorage.getItem('camera.rotation.z'));
+    }
     controls.update();
+    } else {
+      camera.position.set(camera.position.x,camera.position.y,camera.position.z);
+      camera.rotation.set(camera.rotation.x,camera.rotation.y,camera.rotation.z)
+      controls.update();
     } 
       return () => {
         controls.dispose();
@@ -551,6 +561,14 @@ function App() {
           positionZ: localStorage.getItem('camera.hasPosition') != 'true' ? 200 : parseFloat(localStorage.getItem('camera.position.z')),
           rotate: true
       }
+      case PERSPECTIVE:
+        return {...state,
+          view: PERSPECTIVE,
+          positionX: localStorage.getItem('camera.hasPosition') != 'true' ? 30 : parseFloat(localStorage.getItem('camera.position.x')),
+          positionY: localStorage.getItem('camera.hasPosition') != 'true' ? 20 : parseFloat(localStorage.getItem('camera.position.y')),
+          positionZ: localStorage.getItem('camera.hasPosition') != 'true' ? 200 : parseFloat(localStorage.getItem('camera.position.z')),
+          rotate: false
+      }
       case DRAG:
         return {...state,
         view: DRAG,
@@ -690,6 +708,10 @@ function App() {
   const topViewTooltip = props => (
     <Tooltip {...props}>Turn on top view</Tooltip>
   );
+
+  const persViewTooltip = props => (
+    <Tooltip {...props}>Turn on perspective (3D) view</Tooltip>
+  );
   
   return (
     <AppContext.Provider value={showSettings}>
@@ -723,7 +745,7 @@ function App() {
         </DropdownButton> */}
         <OverlayTrigger placement="left" overlay={rotateViewTooltip}>          
         <Button className = "B" onClick={() => dispatch({ type: ROTATE })}>
-                  Rotate View
+                  View rotation
         </Button>
         </OverlayTrigger>
 
@@ -736,6 +758,12 @@ function App() {
         <OverlayTrigger placement="left" overlay={topViewTooltip}>          
         <Button className = "B" onClick={() => dispatch({ type: TOP })}>
                   Top View
+        </Button>
+        </OverlayTrigger>
+
+        <OverlayTrigger placement="left" overlay={persViewTooltip}>          
+        <Button className = "B" onClick={() => dispatch({ type: PERSPECTIVE })}>
+                  Perspective View
         </Button>
         </OverlayTrigger>
 
