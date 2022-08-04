@@ -35,7 +35,6 @@ function Cylinder({objectId}) {
   // Hold state for hovered and clicked events
   const [hovered, hover] = useState(false)
   const [clicked, click] = useState(false)
-  const [dragged, setdragged] = useState(false)
   const isMounted = useRef(false)
 
   var rotation = 0; 
@@ -124,10 +123,9 @@ function Cylinder({objectId}) {
   //   }
   // )
 
-  const bind = useDrag(({ movement: [x], active, cancel }) => {   
+  const bind = useDrag(({ movement: [x], active, cancel, enabled }) => {   
     if(appContext.viewState.view == ROTATE){ 
-      setPosition.start({position: [(appContext.storedLineIntersect[1] + parseFloat(distance) ) ,(appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ), -cylinderDepth/2 ]});
-      setdragged(true)   
+      enabled = false;
       cancel()
       return
     }
@@ -176,12 +174,6 @@ function Cylinder({objectId}) {
     delay:true
   }
   );
-
-  if(dragged){
-    appContext.dispatch({ type: PERSPECTIVE })
-    setdragged(false)   
-  }
-
   
 
   useMemo(() => setPosition.start({position: [(appContext.storedLineIntersect[1] + parseFloat(distance)) , (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ) , -cylinderDepth/2]}), [appContext.storedLineIntersect, parseFloat(distance), parseFloat(depth), parseFloat(diameter) ]);
