@@ -197,20 +197,20 @@ function Cylinder({objectId}) {
           
           // select neighbour object to the left and compare distances for conflicts
           if(i-x >= 0){
-            var currentObjectDistance = Object.values(findCurrentObject.distance)[0];
+            var currentObjectDistance = parseFloat(Object.values(findCurrentObject.distance)[0]);
             if(RAND.includes(Object.values(findCurrentObject.assetId)[0])){
               console.log("Get CURRENT OBJECT distance to edge")
-              currentObjectDistance -= ((Object.values(findCurrentObject.diameter)[0])/2);
+              currentObjectDistance -= parseFloat((Object.values(findCurrentObject.diameter)[0])/2);
             }else console.log("Get CURRENT OBJECT distance to center")
 
             var findNeighbourObject = appContext.storedObjectsUpload.find(object => object.objectId == order[i-x])
             
             //NOTE: currently to identify conflicts, distance measured from center to center of the objects is used.
             
-            var neighbourObjectDistance = Object.values(findNeighbourObject.distance)[0];
+            var neighbourObjectDistance = parseFloat(Object.values(findNeighbourObject.distance)[0]);
             if(RAND.includes(Object.values(findNeighbourObject.assetId)[0])){
               console.log("Get NEIGHBOUR OBJECT distance to edge")
-              neighbourObjectDistance += ((Object.values(findNeighbourObject.diameter)[0])/2)
+              neighbourObjectDistance += parseFloat((Object.values(findNeighbourObject.diameter)[0])/2)
             }else console.log("Get NEIGHBOUR OBJECT distance to center")
 
             var distanceBetweenObjects = currentObjectDistance - neighbourObjectDistance //distances[index] - distances[i-x];
@@ -286,18 +286,18 @@ function Cylinder({objectId}) {
 
            // select neighbour object to the right and compare distances for conflicts
           if(i+x < order.length){
-            var currentObjectDistance = Object.values(findCurrentObject.distance)[0];
+            var currentObjectDistance = parseFloat(Object.values(findCurrentObject.distance)[0]);
             if(RAND.includes(Object.values(findCurrentObject.assetId)[0])){
               console.log("Get CURRENT OBJECT distance to edge")
-              currentObjectDistance += ((Object.values(findCurrentObject.diameter)[0])/2);
+              currentObjectDistance += parseFloat((Object.values(findCurrentObject.diameter)[0])/2);
             }else console.log("Get CURRENT OBJECT distance to center")
 
             var findNeighbourObject = appContext.storedObjectsUpload.find(object => object.objectId == order[i+x])
             
-            var neighbourObjectDistance = Object.values(findNeighbourObject.distance)[0];
+            var neighbourObjectDistance = parseFloat(Object.values(findNeighbourObject.distance)[0]);
             if(RAND.includes(Object.values(findNeighbourObject.assetId)[0])){
               console.log("Get NEIGHBOUR OBJECT distance to edge")
-              neighbourObjectDistance -= ((Object.values(findNeighbourObject.diameter)[0])/2)
+              neighbourObjectDistance -= parseFloat((Object.values(findNeighbourObject.diameter)[0])/2)
             }else console.log("Get NEIGHBOUR OBJECT distance to center")
 
             var distanceBetweenObjects = neighbourObjectDistance - currentObjectDistance;
