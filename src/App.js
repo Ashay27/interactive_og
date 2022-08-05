@@ -7,8 +7,9 @@ import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls' ;
 import "/node_modules/materialize-css/dist/js/materialize.min.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { SketchPicker } from "react-color";
+import RangeSlider from 'react-bootstrap-range-slider';
 
-import {Button, Form, Modal, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {Button, Form, Modal, OverlayTrigger, Tooltip, Col, Row, ToggleButton} from 'react-bootstrap';
 import Dropdown from 'react-bootstrap/Dropdown'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import DropdownButton from 'react-bootstrap/DropdownButton'
@@ -30,6 +31,7 @@ const LOCAL_ID_KEY = 'localData.id'
 const LOCAL_ORDER_KEY = 'localData.order'
 const LOCAL_LINE_KEY = 'localData.lineIntersect'
 const [DEFAULT,ROTATE,FRONT,TOP, PERSPECTIVE] = ['DEFAULT', 'ROTATE', 'FRONT', 'TOP', 'PERSPECTIVE']
+const NOVALUE = ["Boom 1", "Boom 2", "Boom 3", "Gebouwen"]
 
 const initialState = { 
   view: PERSPECTIVE,
@@ -119,13 +121,45 @@ const CameraController = () => {
 };
 
 function PipeModal(props) {
-  const [showPipeModal, setShowPipeModal] = useState(false);
-  const handleClose = () => setShowPipeModal(false);
-  const handleShow = () => setShowPipeModal(true);
-  // For choice of color
-  //const [sketchPickerColor, setSketchPickerColor] = useState("#BD9F9F");
-
   const ASSET_TYPE_TEXT = 'Choose the type of asset you want to add'
+
+  const [diaOverride, setDiaOverride] = useState(false);
+  const [showPipeModal, setShowPipeModal] = useState(false);
+  
+  const handleClose = () => {setShowPipeModal(false);
+    setAssetName(ASSET_TYPE_TEXT)
+ }
+  const handleShow = () => setShowPipeModal(true);
+
+  const [ assetName, setAssetName ] = useState(ASSET_TYPE_TEXT);
+  const [ diameterValue, setDiameterValue ] = useState(0);
+  const [ finalDiameterValue, setFinalDiameterValue ] = useState(null);
+  const [ userDiameterValue, setUserDiameterValue ] = useState(null);
+  const [ minDiameterValue, setMinDiameterValue ] = useState(0);
+  const [ maxDiameterValue, setMaxDiameterValue ] = useState(0);
+  var chooseAssetDisabled = false;
+  
+  var ulsDiaMin = 0;
+  var ulsDiaMax = 0;
+
+  useMemo(()=> {
+    if(assetName != ASSET_TYPE_TEXT && !(NOVALUE.includes(assetName))){
+    ulsDiaMin = (ObjectData.afstand.find((object) => object.Asset == (assetName).toString()).Diameter).toString().includes("-") ? parseFloat((ObjectData.afstand.find((object) => object.Asset == assetName).Diameter).split("-",2)[0]) : parseFloat((ObjectData.afstand.find((object) => object.Asset == assetName).Diameter))
+    ulsDiaMax = (ObjectData.afstand.find((object) => object.Asset == (assetName).toString()).Diameter).toString().includes("-") ? parseFloat((ObjectData.afstand.find((object) => object.Asset == assetName).Diameter).split("-",2)[1]) : parseFloat((ObjectData.afstand.find((object) => object.Asset == assetName).Diameter))
+    setUserDiameterValue(null);
+    setDiameterValue(ulsDiaMin)
+    setMinDiameterValue(ulsDiaMin)
+    setMaxDiameterValue(ulsDiaMax)
+    setDiaOverride(false)
+    }else{
+      setMinDiameterValue("")
+    }
+  }, [assetName])
+
+  const handleOverride = () => {
+    setDiaOverride(!diaOverride)
+  }
+
   const appContext = useContext(AppContext);
   
   const optionNameRef = useRef();
@@ -137,9 +171,7 @@ function PipeModal(props) {
     const optionName = optionNameRef.current.value;
     const distance = distanceRef.current.value;
     const depth = depthRef.current.value;
-    const diameter = diameterRef.current.value;
-    // For choice of color
-    //const color = sketchPickerColor;
+    const diameter = diaOverride ? userDiameterValue : diameterValue;
 
     //TODO: Validate if input of distance, depth and diameter is string (only float and number is valid) and is greater than 0
     if (optionName === ASSET_TYPE_TEXT) return window.alert("Please choose the type of asset")
@@ -168,12 +200,13 @@ function PipeModal(props) {
 
     console.log(Object.values(appContext.storedObjectsOrder))
 
-    optionNameRef.current.value = null;
+    optionNameRef.current.value = ASSET_TYPE_TEXT;
     distanceRef.current.value = null;
     depthRef.current.value = null;
     diameterRef.current.value = null;
 
-    setShowPipeModal(false);
+    chooseAssetDisabled = false;
+    handleClose();
   }
 
   const addAssetTooltip = props => (
@@ -201,47 +234,84 @@ return (
     <Form>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
           <Form.Label>Type</Form.Label>
-          <Form.Select ref={optionNameRef}>
+          {(assetName != ASSET_TYPE_TEXT ) ? chooseAssetDisabled=true: chooseAssetDisabled=false}
+          <Form.Select ref={optionNameRef} onChange={(e) => setAssetName(e.target.value)} disabled={chooseAssetDisabled}>
             <option>{ASSET_TYPE_TEXT}</option>
             {ObjectData.afstand.map((object) => (
               <option value={object.Asset} >{object.Beschrijving} ({object.Categorie})</option>
             ))}
           </Form.Select>
-          {/* <Form.Label>Name</Form.Label>
-          <Form.Control
-            type="textarea"
-            autoFocus
-          /> */}
+
+         {useMemo(() => (showPipeModal && (assetName != ASSET_TYPE_TEXT) ?
+          <>
           <Form.Label>Diameter of this asset (in meters)</Form.Label>
-          <Form.Control
-            ref = {diameterRef}
-            type="decimal"
-            autoFocus
-          />
+          {(minDiameterValue != maxDiameterValue && !NOVALUE.includes(assetName) ) ?
+            <Form.Group as={Row}>         
+              <Col xs="9">
+               <RangeSlider
+                 disabled = {diaOverride}
+                 value={diameterValue}
+                 onChange={(e) => setDiameterValue(e.target.value)}
+                 onAfterChange={(e) => setFinalDiameterValue(e.target.value)}
+                 min = {minDiameterValue}
+                 max = {maxDiameterValue}
+                 step = {0.001}
+                 tooltipPlacement='top'
+                 variant = 'primary'
+               /> 
+              </Col> 
+              <Col xs="3">
+               <Form.Control 
+               disabled
+               value={ diameterValue}
+               />
+              </Col>
+              <Col xs="5">
+              <ToggleButton
+                  className="mb-2"
+                  id="toggle-check"
+                  type="checkbox"
+                  variant="outline-primary"
+                  checked={diaOverride}
+                  onClick={handleOverride}
+                >
+                    Override Diameter Range
+                </ToggleButton>
+                </Col>
+                <Col xs="4">
+               <Form.Control 
+               disabled = {!diaOverride}
+               value={(userDiameterValue != null || userDiameterValue != '') ? userDiameterValue: null }
+               onChange={(e) => setUserDiameterValue(e.target.value)} 
+               placeholder="Overrided diameter value"
+               type="decimal"
+               autoFocus
+               />
+              </Col>
+           </Form.Group>
+           : 
+           <Form.Control
+             onChange={(e) => {setUserDiameterValue(e.target.value) 
+              setDiaOverride(true) }}
+             defaultValue = {minDiameterValue}
+             type="decimal"
+             autoFocus
+           />
+         }
+
           <Form.Label>Depth (in meters) [length from the horizontal line to the top edge of this asset]</Form.Label>
           <Form.Control
             ref = {depthRef}
             type="decimal"
-            //placeholder="name@example.com"
-            autoFocus
+            placeholder={(ObjectData.afstand.find((object) => object.Asset == assetName).Depth).toString()}
           />
           <Form.Label>Distance (in meters) [length from the left vertical line to the center of this asset]</Form.Label>
           <Form.Control
             ref = {distanceRef}
-            type="decimal"
-            //value = "1"
-            autoFocus
-            //disabled 
+            type="decimal" 
           />
-
-          {/* For choice of color
-          <Form.Label>Color of this asset [yellow (#faf202) is reserved for selected object and red (#fc2808) is reserved for conflicts]</Form.Label>
-          <SketchPicker
-            onChange={(color) => {
-              setSketchPickerColor(color.hex);
-            }}
-            color={sketchPickerColor}
-          /> */}
+          </>
+          : null ), [assetName, diameterValue, minDiameterValue, maxDiameterValue, userDiameterValue, diaOverride, showPipeModal])} 
                      
           </Form.Group>
        </Form>
