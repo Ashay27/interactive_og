@@ -505,7 +505,12 @@ function Cylinder({objectId}) {
                 type="decimal"
                 defaultValue = {Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).diameter)[0]}
                 autoFocus
-            />
+            />  
+            <Form.Text className="text-muted">
+              Uitlegschema recommendation: {(ObjectData.afstand.find((object) => object.Asset == assetId).Diameter).toString()}
+            </Form.Text>
+            
+            <br/>
   
             <Form.Label>Depth (in meters) [length from the horizontal line to the top edge of this asset]</Form.Label>
             <Form.Control
@@ -513,6 +518,9 @@ function Cylinder({objectId}) {
               type="decimal"
               defaultValue = {Object.values(appContext.storedObjectsUpload.find(object => object.objectId == objectId).depth)[0]}
             />
+            <Form.Text className="text-muted">
+              Uitlegschema recommendation: {(ObjectData.afstand.find((object) => object.Asset == assetId).Depth).toString()}
+            </Form.Text>
   
             </Form.Group>
             </Form>  
