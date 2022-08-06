@@ -9,7 +9,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { SketchPicker } from "react-color";
 import RangeSlider from 'react-bootstrap-range-slider';
 
-import {Button, Form, Modal, OverlayTrigger, Tooltip, Col, Row, ToggleButton} from 'react-bootstrap';
+import {Button, Form, Modal, OverlayTrigger, Tooltip, Col, Row, ToggleButton, Table} from 'react-bootstrap';
 import Dropdown from 'react-bootstrap/Dropdown'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import DropdownButton from 'react-bootstrap/DropdownButton'
@@ -725,6 +725,105 @@ function App() {
     setShowGrid(!showGrid)
   }
 
+  function SavedAssetModal(props) {
+  
+    const [showSavedAssetModal, setShowSavedAssetModal] = useState(false);
+    
+    const handleCloseAssetModal = () => setShowSavedAssetModal(false);
+    const handleShowAssetModal = () => {
+    handleSave();
+    setShowSavedAssetModal(true);}
+    const [saveObjects, setSaveObjects] = useState([]);
+
+
+  const handleSave = () => {
+    var currentObjects = storedObjectsUpload.slice();
+    
+    var currentOrder = storedObjectsOrder.slice();
+    var tempSaveObjects = currentObjects.filter(o => currentOrder.includes(o.objectId))
+        
+    tempSaveObjects.sort((a, b) => {
+          return a.distance.distance - b.distance.distance;
+        });
+
+    tempSaveObjects.map((o,i) => o.order = (i+1))
+    console.log(tempSaveObjects)
+    var deletedObject=[]
+    deletedObject = currentObjects.filter(o => !currentOrder.includes(o.objectId))
+    deletedObject.map(o => o.order = "Deleted")
+    console.log(deletedObject)
+
+    tempSaveObjects = [...tempSaveObjects, ...deletedObject]
+    console.log(tempSaveObjects)
+  
+    setSaveObjects(tempSaveObjects)
+  }
+
+  const saveTooltip = props => (
+    <Tooltip {...props}>Check all the assets</Tooltip>
+  );
+
+  return(
+    <>
+    <OverlayTrigger placement="left" overlay={saveTooltip}>
+      <Button className = "B" onClick={handleShowAssetModal}>
+        Show all assets
+      </Button>
+      </OverlayTrigger>
+     
+    
+      <Modal {...props} size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+    centered
+    show={showSavedAssetModal} 
+    onHide={handleCloseAssetModal}>
+      <Modal.Header closeButton>
+        <Modal.Title>All asset details</Modal.Title>
+    </Modal.Header>
+      <Modal.Body>
+        <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Order</th>
+            <th>Object Id</th>
+            <th>Object Name</th>
+            <th>Diameter</th>
+            <th>Depth</th>
+            <th>Distance</th>
+          </tr>
+        </thead>
+        <tbody>
+         
+        {saveObjects.map((obj,i) => (
+          <tr data-index={i}>           
+            <td>{i}</td>
+            <td>{obj.order}</td>
+            <td>{obj.objectId}</td>
+            <td>{obj.assetId.optionName}</td>
+            <td>{obj.diameter.diameter}</td>
+            <td>{obj.depth.depth}</td>
+            <td>{obj.distance.distance}</td>
+            </tr>
+        ))}
+         
+        </tbody>
+        </Table>
+      </Modal.Body>
+
+      <Modal.Footer>
+        <>
+      <Button variant="secondary" onClick={handleCloseAssetModal}>
+        Close
+      </Button>
+      </>
+    </Modal.Footer>
+      </Modal>
+    </>
+)
+
+}
+
   function getZoom(){
     if (localStorage.getItem('camera.hasPosition') !== 'true') {
       return 25;
@@ -838,6 +937,8 @@ function App() {
 
         <div>
         <PipeModal/>
+
+        <SavedAssetModal/>
         {/* <br/><br/>
 
           <Form>
