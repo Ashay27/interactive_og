@@ -872,6 +872,9 @@ function App() {
   let uniqueColors = [...new Set(currentObjects.map(o => Object.values(o.color)[0]))];
   console.log(uniqueColors);
 
+  const uploadModalTooltip = props => (
+    <Tooltip {...props}>Add 3D modal to the profile</Tooltip>
+  );
   const clearAllTooltip = props => (
     <Tooltip {...props}>This will clear all assets from the profile</Tooltip>
   );
@@ -977,9 +980,11 @@ function App() {
               <Form.Text classname = "text-muted">The object in current position will be deleted</Form.Text>
           </Form> */}
           <br/>
+          <OverlayTrigger placement="left" overlay={uploadModalTooltip}>
           <Button onClick={handleClick} className = "B">
               Upload a 3D Model
           </Button>
+          </OverlayTrigger>
           <br/>
           <OverlayTrigger placement="left" overlay={clearAllTooltip}>
             <Button variant="danger" className = "B" onClick={handleClearData}>
