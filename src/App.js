@@ -330,8 +330,9 @@ return (
 }
 
 const Model = () => {
-  const gltf = useLoader(GLTFLoader, "./Lega Blocks - Haaksbergweg - Principe straat_no K&L_moved to origin_reducedPolycount4.gltf");
-  return (
+const {filePath} = useContext(AppContext)
+const gltf = useLoader(GLTFLoader, filePath);
+  return (  
     <>
       <primitive object={gltf.scene} scale={1} />
     </>
@@ -545,6 +546,7 @@ function App() {
   const [updatedObjectId, setUpdatedObjectId] = useState();
   const [updatedState, setUpdatedState] = useState('NONE');
   const [selectedObjectId, setSelectedObjectId] = useState(0);
+  const [filePath, setFilePath] = useState("./Lega Blocks - Haaksbergweg - Principe straat_no K&L_moved to origin_reducedPolycount4.gltf");
 
   const showSettings = {
     showStoredObjectsUpload: showStoredObjectsUpload,
@@ -559,6 +561,7 @@ function App() {
     updatedState: updatedState,
     viewState:viewState,
     selectedObjectId:selectedObjectId,
+    filePath: filePath,
     setShowStoredObjectsUpload,
     setStoredObjectsUpload,
     setStoredObjectsId,
@@ -569,7 +572,8 @@ function App() {
     setUpdatedObjectId,
     setUpdatedState,
     dispatch,
-    setSelectedObjectId
+    setSelectedObjectId,
+    setFilePath
   };
 
   const objectNumberRef = useRef();
@@ -666,11 +670,30 @@ function App() {
     Papa.unparse(values);
   }
 
-  const hiddenFileInput = useRef();
+  const hiddenFileInput = useRef(null);
 
-  const handleClick = event => {
+  const handleClick = () => {
     hiddenFileInput.current.click();
   };
+
+  const modelHandler= (event) => {
+    const fileObj = event.target.files && event.target.files[0];
+    if (!fileObj) {
+      return;
+    }
+    console.log('fileObj is', fileObj);
+
+    event.target.value = null;
+
+    console.log(event.target.files);
+
+    console.log(fileObj);
+    console.log(fileObj.name);
+    if(fileObj.size > 50000000) { 
+      console.log("Cancel Upload")
+      return window.alert("File size too big")};
+    setFilePath(fileObj.name)
+  }
 
   // const handleChangeOrder = () => {
   //   if (storedObjectsUpload === "" && storedObjectsUpload.length <= 1) return (
@@ -954,22 +977,22 @@ function App() {
               <Form.Text classname = "text-muted">The object in current position will be deleted</Form.Text>
           </Form> */}
           <br/>
+          <Button onClick={handleClick} className = "B">
+              Upload a 3D Model
+          </Button>
+          <br/>
           <OverlayTrigger placement="left" overlay={clearAllTooltip}>
             <Button variant="danger" className = "B" onClick={handleClearData}>
                 Clear all
             </Button>
           </OverlayTrigger>
-
-          {/* <Button onClick={handleClick}>
-              Upload a file
-          </Button> */}
           
           <input
             type = "file"
             id="file-input"
             ref={hiddenFileInput}
-            onChange={changeHandler}
-            accept=".csv"
+            onChange={modelHandler}
+            accept=".gltf, .glb, .obj"
             style={{display: 'none'}}
           />
         </div>
