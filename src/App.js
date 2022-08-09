@@ -165,7 +165,6 @@ function PipeModal(props) {
   const optionNameRef = useRef();
   const distanceRef = useRef();
   const depthRef = useRef();
-  const diameterRef = useRef();
 
   const handleUpload = () => {
     const optionName = optionNameRef.current.value;
@@ -203,7 +202,6 @@ function PipeModal(props) {
     optionNameRef.current.value = ASSET_TYPE_TEXT;
     distanceRef.current.value = null;
     depthRef.current.value = null;
-    diameterRef.current.value = null;
 
     chooseAssetDisabled = false;
     handleClose();
@@ -765,23 +763,22 @@ function App() {
 
 
   const handleSave = () => {
-    var currentObjects = storedObjectsUpload.slice();
+    var currentObjects2 = storedObjectsUpload.slice();
     
     var currentOrder = storedObjectsOrder.slice();
-    var tempSaveObjects = currentObjects.filter(o => currentOrder.includes(o.objectId))
+    var tempSaveObjects = currentObjects2.filter(o => currentOrder.includes(o.objectId))
         
     tempSaveObjects.sort((a, b) => {
           return a.distance.distance - b.distance.distance;
         });
 
-    tempSaveObjects.map((o,i) => o.order = (i+1))
     console.log(tempSaveObjects)
-    var deletedObject=[]
-    deletedObject = currentObjects.filter(o => !currentOrder.includes(o.objectId))
-    deletedObject.map(o => o.order = "Deleted")
-    console.log(deletedObject)
+    var deletedObject = currentObjects2.filter(o => !currentOrder.includes(o.objectId))
+    var tempDeletedObj = deletedObject.slice()
+    
+    console.log(tempDeletedObj)
 
-    tempSaveObjects = [...tempSaveObjects, ...deletedObject]
+    tempSaveObjects = [...tempSaveObjects, ...tempDeletedObj]
     console.log(tempSaveObjects)
   
     setSaveObjects(tempSaveObjects)
@@ -789,7 +786,7 @@ function App() {
 
   const handleRestore = (i, event) => {
     event.stopPropagation();
-    setRestore(!restore)
+    setRestore(true)
     console.log(restore)
     
     setRestoreObjectId(saveObjects[i].objectId);
@@ -845,13 +842,16 @@ function App() {
         {saveObjects.map((obj,i) => (
           <tr data-index={i}>           
             <td>{i+1}</td>
-            <td>{obj.order}</td>
+            <td>{(storedObjectsOrder.findIndex(objectId => objectId == obj.objectId)) >= 0 
+                  ? (storedObjectsOrder.findIndex(objectId => objectId == obj.objectId) + 1) 
+                  : (storedObjectsOrder.findIndex(objectId => objectId == obj.objectId))}
+            </td>
             <td>{obj.objectId}</td>
             <td>{obj.assetId.optionName}</td>
             <td>{obj.diameter.diameter}</td>
             <td>{obj.depth.depth}</td>
             <td>{obj.distance.distance}</td>
-            <td>{obj.order == "Deleted" ? (<ToggleButton
+            <td>{(storedObjectsOrder.findIndex(objectId => objectId == obj.objectId)) < 0 ? (<ToggleButton
                   //ref={assetIdRef}
                   className="mb-2"
                   id="toggle-check"
