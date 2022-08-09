@@ -752,11 +752,16 @@ function App() {
   
     const [showSavedAssetModal, setShowSavedAssetModal] = useState(false);
     
-    const handleCloseAssetModal = () => setShowSavedAssetModal(false);
+    const handleCloseAssetModal = () => {setShowSavedAssetModal(false);
+      setRestore(false)
+      setRestoreObjectId(0)
+    }
     const handleShowAssetModal = () => {
     handleSave();
     setShowSavedAssetModal(true);}
     const [saveObjects, setSaveObjects] = useState([]);
+    const [restore, setRestore] = useState(false);
+    const [restoreObjectId, setRestoreObjectId] = useState(0);
 
 
   const handleSave = () => {
@@ -782,15 +787,33 @@ function App() {
     setSaveObjects(tempSaveObjects)
   }
 
+  const handleRestore = (i, event) => {
+    event.stopPropagation();
+    setRestore(!restore)
+    console.log(restore)
+    
+    setRestoreObjectId(saveObjects[i].objectId);
+    console.log(saveObjects[i].objectId)
+    
+  }
+
+  useEffect(() => {
+    if(restore != false && restoreObjectId != 0){
+    setUpdatedObjectId(restoreObjectId)
+    setUpdatedState('ADDED')
+    setRestoreObjectId(0);
+    }
+  }, [restore])
+
   const saveTooltip = props => (
-    <Tooltip {...props}>Check all the assets</Tooltip>
+    <Tooltip {...props}>Check details of all the assets</Tooltip>
   );
 
   return(
     <>
     <OverlayTrigger placement="left" overlay={saveTooltip}>
       <Button className = "B" onClick={handleShowAssetModal}>
-        Show all assets
+        Asset Details
       </Button>
       </OverlayTrigger>
      
@@ -809,24 +832,47 @@ function App() {
           <tr>
             <th>#</th>
             <th>Order</th>
-            <th>Object Id</th>
-            <th>Object Name</th>
+            <th>Asset Id</th>
+            <th>Asset Name</th>
             <th>Diameter</th>
             <th>Depth</th>
             <th>Distance</th>
+            <th>Restore</th>
           </tr>
         </thead>
         <tbody>
          
         {saveObjects.map((obj,i) => (
           <tr data-index={i}>           
-            <td>{i}</td>
+            <td>{i+1}</td>
             <td>{obj.order}</td>
             <td>{obj.objectId}</td>
             <td>{obj.assetId.optionName}</td>
             <td>{obj.diameter.diameter}</td>
             <td>{obj.depth.depth}</td>
             <td>{obj.distance.distance}</td>
+            <td>{obj.order == "Deleted" ? (<ToggleButton
+                  //ref={assetIdRef}
+                  className="mb-2"
+                  id="toggle-check"
+                  type="checkbox"
+                  variant="outline-primary"
+                  checked= {restore}
+                  onClick={(event) => handleRestore(i,event)}
+                >
+                  Restore Asset
+                </ToggleButton> )
+                : ( <ToggleButton
+                disabled
+                className="mb-2"
+                id="toggle-check"
+                type="checkbox"
+                variant="outline-primary"
+              >
+                   Restore Asset
+                </ToggleButton>
+                )}
+                </td>
             </tr>
         ))}
          
@@ -910,10 +956,10 @@ function App() {
         <NewlineText text={objectConflictsLog} />
     </div>
 
-    <div class='my-legend'>
-      <div class='legend-title'>Legend</div>
-      <div class='legend-scale'>
-        <ul class='legend-labels'>
+    <div className='my-legend'>
+      <div className='legend-title'>Legend</div>
+      <div className='legend-scale'>
+        <ul className='legend-labels'>
         {(legendObjects.length>0)?(uniqueColors.map((object) => (
           <li><span style={{background:object}}></span>
           {Object.values(currentObjects.find(o => Object.values(o.color) == object).assetId)[0]}</li>
