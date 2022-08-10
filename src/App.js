@@ -649,6 +649,115 @@ function App() {
 }
 
 
+
+function TransferDataModal(props) {
+  
+  const [showTransferDataModal, setShowTransferDataModal] = useState(false);
+  const [downloadData, setDownloadData] = useState(false);
+  const textAreaRef = useRef();
+  
+  const handleCloseTransferDataModal = () => {
+    setShowTransferDataModal(false);
+    setDownloadData(false)
+    
+  }
+  const handleShowTransferDataModal = () => {
+  setShowTransferDataModal(true);
+}
+
+const handleDownloadData = () => {
+  setDownloadData(true)
+  console.log(getLocalStorage())
+}
+
+
+function getLocalStorage() {
+  var a = {};
+  for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      var v = localStorage.getItem(k);
+      a[k] = v;
+  }
+  var s = JSON.stringify(a);
+  return s;
+}
+
+function writeLocalStorage(data) {
+  var o = JSON.parse(data);
+  for (var property in o) {
+      if (o.hasOwnProperty(property)) {
+          localStorage.setItem(property, o[property]);
+      }
+  }
+}
+
+const handleUploadData = () => {
+  setDownloadData(false)
+  writeLocalStorage(textAreaRef.current.value)
+  handleCloseTransferDataModal()
+  window.location.reload()
+}
+
+const transferDataToolip = props => (
+  <Tooltip {...props}>Download/Upload profile data</Tooltip>
+);
+
+const downloadDataToolip = props => (
+  <Tooltip {...props}>Download profile data for use in another browser</Tooltip>
+);
+
+const uploadDataToolip = props => (
+  <Tooltip {...props}>Upload data from another profile</Tooltip>
+);
+
+return(
+  <>
+ <OverlayTrigger placement="left" overlay={transferDataToolip}>
+    <Button onClick={handleShowTransferDataModal} className = "B">
+      Download/Upload
+    </Button>
+ </OverlayTrigger>
+  
+    <Modal {...props} size="lg"
+    aria-labelledby="contained-modal-title-vcenter"
+  centered
+  show={showTransferDataModal} 
+  onHide={handleCloseTransferDataModal}>
+    <Modal.Header closeButton>
+      <Modal.Title>Save data</Modal.Title>
+  </Modal.Header>
+    <Modal.Body>
+    <Form>
+    <Form.Group className="mb-1" >
+      <Form.Control className="h-100 w-100" as="textarea" rows={7}  ref = {textAreaRef} readOnly = {downloadData}>
+        {downloadData ? textAreaRef.current.value= getLocalStorage() : null} 
+      </Form.Control>
+      </Form.Group>
+      </Form>
+    </Modal.Body>
+
+    <Modal.Footer>
+      <>
+  <OverlayTrigger placement="left" overlay={downloadDataToolip}>
+    <Button onClick={handleDownloadData} className = "B">
+      Download
+    </Button>
+  </OverlayTrigger>
+  <OverlayTrigger placement="left" overlay={uploadDataToolip}>
+    <Button onClick={handleUploadData} className = "B">
+      Upload
+    </Button>
+  </OverlayTrigger>
+    <Button variant="secondary" onClick={handleCloseTransferDataModal}>
+      Close
+    </Button>
+    </>
+  </Modal.Footer>
+    </Modal>
+  </>
+)
+}
+
   const changeHandler = (event) => {
     // Passing file data (event.target.files[0]) to parse using Papa.parse
     Papa.parse(event.target.files[0], {
@@ -1011,6 +1120,8 @@ function App() {
         <PipeModal/>
 
         <SavedAssetModal/>
+
+        <TransferDataModal/>
         {/* <br/><br/>
 
           <Form>
