@@ -7,7 +7,7 @@ import AppContext from './AppContext';
 import { useSpring , a} from '@react-spring/three'
 import { Html} from "@react-three/drei/web"
 import "../App.css"
-import {Button, Form, Modal} from 'react-bootstrap';
+import {Button, Form, Modal, Stack} from 'react-bootstrap';
 
 const LOCAL_STORAGE_KEY = 'localData.objects'
 const LOCAL_ORDER_KEY = 'localData.order'
@@ -489,17 +489,17 @@ function Cylinder({objectId}) {
         show={showUpdateModal} 
         onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Update asset details</Modal.Title>
+            <Modal.Title className="text-primary h4">Update asset details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <Form>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Type</Form.Label>
+            <Form.Group className="mb-3">
+            <Form.Label className="mt-3 text-primary h6">Type</Form.Label>
             <Form.Control
               disabled
               defaultValue={assetId}
             />
-              <Form.Label>Diameter of this asset (in meters)</Form.Label>
+              <Form.Label className="mt-3 text-primary h6">Diameter of this asset (in meters)</Form.Label>
                <Form.Control
                 ref = {diameterRef}
                 type="decimal"
@@ -509,10 +509,11 @@ function Cylinder({objectId}) {
             <Form.Text className="text-muted">
               Uitlegschema recommendation: {(ObjectData.afstand.find((object) => object.Asset == assetId).Diameter).toString()}
             </Form.Text>
-            
-            <br/>
   
-            <Form.Label>Depth (in meters) [length from the horizontal line to the top edge of this asset]</Form.Label>
+            <Stack gap={1}>
+              <Form.Label className="mt-3 text-primary h6">Depth (in meters)</Form.Label>
+              <Form.Label className="text-secondary">Length from the horizontal line to the top edge of this asset</Form.Label>
+            </Stack>
             <Form.Control
               ref = {depthRef}
               type="decimal"
@@ -528,15 +529,17 @@ function Cylinder({objectId}) {
   
           <Modal.Footer>
             <>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleUpdate}>
-            Update asset
-          </Button>
-          <Button variant="danger" onClick={handleDelete}>
-            Delete asset
-          </Button>
+            <Stack direction="horizontal" gap={2}>
+              <Button variant="secondary" onClick={handleClose}>
+                Close
+              </Button>
+              <Button variant="primary" onClick={handleUpdate}>
+                Update asset
+              </Button>
+              <Button variant="danger" onClick={handleDelete}>
+                Delete asset
+              </Button>
+            </Stack>
           </>
         </Modal.Footer>
           </Modal>  

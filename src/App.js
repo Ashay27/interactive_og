@@ -9,7 +9,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { SketchPicker } from "react-color";
 import RangeSlider from 'react-bootstrap-range-slider';
 
-import {Button, Form, Modal, OverlayTrigger, Tooltip, Col, Row, ToggleButton, Table} from 'react-bootstrap';
+import {Button, Form, Modal, OverlayTrigger, Tooltip, Col, Row, ToggleButton, Table, Stack} from 'react-bootstrap';
 import Dropdown from 'react-bootstrap/Dropdown'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import DropdownButton from 'react-bootstrap/DropdownButton'
@@ -221,17 +221,17 @@ return (
 
   <Modal {...props}  
     size="lg"
-    aria-labelledby="contained-modal-title-vcenter"
     centered
+    backdrop="static"
     show={showPipeModal} 
     onHide={handleClose}>
     <Modal.Header closeButton>
-      <Modal.Title>Asset details</Modal.Title>
+      <Modal.Title className="text-primary h4" >Asset details</Modal.Title>
     </Modal.Header>
     <Modal.Body>
     <Form>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-          <Form.Label>Type</Form.Label>
+          <Form.Group className="mb-2">
+          <Form.Label className="mt-3 text-primary h6">Type</Form.Label>
           {(assetName != ASSET_TYPE_TEXT ) ? chooseAssetDisabled=true: chooseAssetDisabled=false}
           <Form.Select ref={optionNameRef} onChange={(e) => setAssetName(e.target.value)} disabled={chooseAssetDisabled}>
             <option>{ASSET_TYPE_TEXT}</option>
@@ -242,7 +242,7 @@ return (
 
          {useMemo(() => (showPipeModal && (assetName != ASSET_TYPE_TEXT) ?
           <>
-          <Form.Label>Diameter of this asset (in meters)</Form.Label>
+          <Form.Label className="mt-3 text-primary h6">Diameter of this asset (in meters)</Form.Label>
           {(minDiameterValue != maxDiameterValue && !NOVALUE.includes(assetName) ) ?
             <Form.Group as={Row}>         
               <Col xs="9">
@@ -297,17 +297,31 @@ return (
            />
          }
 
-          <Form.Label>Depth (in meters) [length from the horizontal line to the top edge of this asset]</Form.Label>
+         <Stack gap={1}>
+            <Form.Label className="mt-3 text-primary h6">Depth (in meters)</Form.Label>
+            <Form.Label className="text-secondary">Length from the horizontal line to the top edge of this asset</Form.Label>
+         </Stack>
           <Form.Control
             ref = {depthRef}
             type="decimal"
             placeholder={(ObjectData.afstand.find((object) => object.Asset == assetName).Depth).toString()}
           />
-          <Form.Label>Distance (in meters) [length from the left vertical line to the center of this asset]</Form.Label>
+          <Form.Text muted>
+            Use point for decimal places. For example 2.50
+            Please do not use comma or alphabets in the field. 
+          </Form.Text>
+          <Stack gap={1}>
+            <Form.Label className="mt-3 text-primary h6">Distance (in meters)</Form.Label>
+            <Form.Label className="text-secondary">Length from the left vertical line to the center of this asset</Form.Label>
+          </Stack>
           <Form.Control
             ref = {distanceRef}
             type="decimal" 
           />
+          <Form.Text muted>
+            Use point for decimal places. For example 2.50
+            Please do not use comma or alphabets in the field. 
+          </Form.Text>
           </>
           : null ), [assetName, diameterValue, minDiameterValue, maxDiameterValue, userDiameterValue, diaOverride, showPipeModal])} 
                      
@@ -315,12 +329,14 @@ return (
        </Form>
       </Modal.Body>
     <Modal.Footer>
+    <Stack direction="horizontal" gap={2}>
       <Button variant="secondary" onClick={handleClose}>
         Close
       </Button>
       <Button variant="primary" onClick={handleUpload}>
         Upload Asset
       </Button>
+      </Stack>
     </Modal.Footer>
   </Modal>
 </>
@@ -724,7 +740,7 @@ return(
   show={showTransferDataModal} 
   onHide={handleCloseTransferDataModal}>
     <Modal.Header closeButton>
-      <Modal.Title>Save data</Modal.Title>
+      <Modal.Title className="text-primary h4">Download data from this profile, or Upload asset data to this profile</Modal.Title>
   </Modal.Header>
     <Modal.Body>
     <Form>
@@ -738,19 +754,21 @@ return(
 
     <Modal.Footer>
       <>
-  <OverlayTrigger placement="left" overlay={downloadDataToolip}>
-    <Button onClick={handleDownloadData} className = "B">
-      Download
-    </Button>
-  </OverlayTrigger>
-  <OverlayTrigger placement="left" overlay={uploadDataToolip}>
-    <Button onClick={handleUploadData} className = "B">
-      Upload
-    </Button>
-  </OverlayTrigger>
-    <Button variant="secondary" onClick={handleCloseTransferDataModal}>
-      Close
-    </Button>
+      <Stack direction="horizontal" gap={2}>
+        <OverlayTrigger placement="left" overlay={downloadDataToolip}>
+          <Button onClick={handleDownloadData} className = "B">
+            Download
+          </Button>
+        </OverlayTrigger>
+        <OverlayTrigger placement="left" overlay={uploadDataToolip}>
+          <Button onClick={handleUploadData} className = "B">
+            Upload
+          </Button>
+        </OverlayTrigger>
+          <Button variant="secondary" onClick={handleCloseTransferDataModal}>
+            Close
+          </Button>
+      </Stack>
     </>
   </Modal.Footer>
     </Modal>
@@ -930,7 +948,7 @@ return(
     show={showSavedAssetModal} 
     onHide={handleCloseAssetModal}>
       <Modal.Header closeButton>
-        <Modal.Title>All asset details</Modal.Title>
+        <Modal.Title className="text-primary h4">All asset details</Modal.Title>
     </Modal.Header>
       <Modal.Body>
         <Table striped bordered hover>
