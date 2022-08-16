@@ -18,12 +18,13 @@
   display: flex;
   flex-wrap: wrap;
   position: relative;
+  height: 95vh;
+  width: 75vw;
 }
 
-.flexbox-interaction{
-  margin: 0.5%;
-  border: 3px solid #333;
-
+.flexbox-interaction{  
+  width: inherit;
+  
 }
 
 .conflicts-log{
@@ -32,6 +33,7 @@
   right: 2%;
   width: 22%;
   height: auto;
+  border: 2px dashed #333;
 }
 
 .buttons{
@@ -45,12 +47,18 @@
   border-color: black; */
 }
 
+.grid{
+  display: grid;
+  grid-gap: 1vw;
+  grid-template-columns: auto auto;
+}
+
 .canvas{
-  position: fixed;
   flex-shrink: 0;
-  width: 1200px;
-  height: 1000px;
-  margin-left: 2%;
+  height:95vh;
+  width: 60vw;
+  margin: 2vh 0vw 2vh 2vw ;
+  border: 3px solid #333;
 }
 
 .background{
@@ -81,12 +89,13 @@
  }
 
  .my-legend {
-  max-width: 300px !important;
-  position: fixed;
-  bottom: 60%;
-  right: 5%;
+  flex-shrink: 0;
+  width: fit-content;
+  height: fit-content;
   border: 2px dashed #333;
   padding: 5px;
+  align-self: center;
+  margin-left: -2vw ;
   }
 
  .my-legend .legend-title {

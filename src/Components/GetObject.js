@@ -225,7 +225,6 @@ function Cylinder({objectId}) {
             
             var uitlegschemaDistance, neighbourObjectAssetId;
             
-            //TODO: Fix this for E (LS)
             //get the minimum distance for corresponding object types from Uitlegschema 
             ObjectData.afstand.map((o) => { 
               if(o.Asset == Object.values(findCurrentObject.assetId)[0] ){
@@ -267,11 +266,7 @@ function Cylinder({objectId}) {
                   console.log("using G_t > 200mm")
                   uitlegschemaDistance = parseFloat(o[neighbourObjectAssetName.toString()].split("/",2)[1])
                 }
-              }
-              // else if(o.Asset.includes("E (LS)") && neighbourObjectAssetId == "E (LS)"){
-              //   //TODO ?
-              //   uitlegschemaDistance = parseFloat(o[neighbourObjectAssetName.toString()])
-              // }  
+              }  
               else{
                 uitlegschemaDistance = parseFloat(o[neighbourObjectAssetName.toString()])
               }                  
@@ -312,7 +307,6 @@ function Cylinder({objectId}) {
 
             var uitlegschemaDistance, neighbourObjectAssetId;
 
-            //TODO: Fix this for E (LS)
             //get the minimum distance for corresponding object types from Uitlegschema 
             ObjectData.afstand.map((o) => { 
               if(o.Asset == Object.values(findCurrentObject.assetId)[0] ){
@@ -354,11 +348,7 @@ function Cylinder({objectId}) {
                   console.log("using G_t > 200mm")
                   uitlegschemaDistance = parseFloat(o[neighbourObjectAssetName.toString()].split("/",2)[1])
                 }
-              }
-              // else if(o.Asset.includes("E (LS)") && neighbourObjectAssetId == "E (LS)"){
-              //   //TODO ?
-              //   uitlegschemaDistance = parseFloat(o[neighbourObjectAssetName.toString()])
-              // }  
+              }  
               else{
                 uitlegschemaDistance = parseFloat(o[neighbourObjectAssetName.toString()])
               }                  
@@ -460,7 +450,9 @@ function Cylinder({objectId}) {
         console.log(appContext.storedObjectsUpload)
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(appContext.storedObjectsUpload))
 
-        //TODO IDEA: Order is not recalculated should I? 
+        //TODO IDEA: Order is not recalculated. Should I? 
+        //Comment: Order is calculated based on the distance. And distances are calculated till the center of asset and the center won't change on update of diameter and depth.
+        // Only matters for conflict detection, which calculates the distances on click. So, the conflict detection should work fine.
 
         depthRef.current.value = null;
         diameterRef.current.value = null;
@@ -484,7 +476,8 @@ function Cylinder({objectId}) {
      
         <>
           <Modal {...props} size="lg"
-          aria-labelledby="contained-modal-title-vcenter"
+          backdrop="static"
+          scrollable
         centered
         show={showUpdateModal} 
         onHide={handleClose}>
@@ -530,13 +523,13 @@ function Cylinder({objectId}) {
           <Modal.Footer>
             <>
             <Stack direction="horizontal" gap={2}>
-              <Button variant="secondary" onClick={handleClose}>
+              <Button className="B btn-sm" variant="secondary" onClick={handleClose}>
                 Close
               </Button>
-              <Button variant="primary" onClick={handleUpdate}>
+              <Button className="B btn-sm" variant="primary" onClick={handleUpdate}>
                 Update asset
               </Button>
-              <Button variant="danger" onClick={handleDelete}>
+              <Button className="B btn-sm" variant="danger" onClick={handleDelete}>
                 Delete asset
               </Button>
             </Stack>

@@ -214,13 +214,14 @@ function PipeModal(props) {
 return (
   <>
   <OverlayTrigger placement="left" overlay={addAssetTooltip}>
-  <Button className = "B" onClick={handleShow}>
+  <Button className = "B btn-sm" onClick={handleShow}>
     Add Asset
   </Button>
   </OverlayTrigger>
 
   <Modal {...props}  
     size="lg"
+    scrollable
     centered
     backdrop="static"
     show={showPipeModal} 
@@ -266,7 +267,7 @@ return (
               </Col>
               <Col xs="5">
               <ToggleButton
-                  className="mb-2"
+                  className="mb-2 btn-sm"
                   id="toggle-check"
                   type="checkbox"
                   variant="outline-primary"
@@ -330,10 +331,10 @@ return (
       </Modal.Body>
     <Modal.Footer>
     <Stack direction="horizontal" gap={2}>
-      <Button variant="secondary" onClick={handleClose}>
+      <Button className="B btn-sm" variant="secondary" onClick={handleClose}>
         Close
       </Button>
-      <Button variant="primary" onClick={handleUpload}>
+      <Button className="B btn-sm" variant="primary" onClick={handleUpload}>
         Upload Asset
       </Button>
       </Stack>
@@ -452,7 +453,7 @@ function ControlLines() {
   // }, { pointerEvents: true });
 
   const handleClickV = () => {
-      let moveVertical = window.prompt("Parallely move the vertical line to?", appContext.storedLineIntersect[1])
+      let moveVertical = window.prompt("Parallely move the first vertical line to?", appContext.storedLineIntersect[1])
       //var value = 0;
       console.log("moveVertical: " + moveVertical)
       valueV = appContext.storedLineIntersect[1];
@@ -475,7 +476,7 @@ function ControlLines() {
   console.log("x,y: " + newPoints2[1].x + "," + newPoints2[1].y)
 
   const handleClickV2 = () => {
-    let moveVertical = window.prompt("Parallely move the vertical line to?", appContext.storedLineIntersect[2])
+    let moveVertical = window.prompt("Parallely move the second vertical line to?", appContext.storedLineIntersect[2])
     //var value = 0;
     console.log("moveVertical: " + moveVertical)
     valueV2 = appContext.storedLineIntersect[2];
@@ -729,13 +730,13 @@ const uploadDataToolip = props => (
 return(
   <>
  <OverlayTrigger placement="left" overlay={transferDataToolip}>
-    <Button onClick={handleShowTransferDataModal} className = "B">
+    <Button onClick={handleShowTransferDataModal} className = "B btn-sm">
       Download/Upload
     </Button>
  </OverlayTrigger>
   
     <Modal {...props} size="lg"
-    aria-labelledby="contained-modal-title-vcenter"
+    backdrop="static"
   centered
   show={showTransferDataModal} 
   onHide={handleCloseTransferDataModal}>
@@ -756,16 +757,16 @@ return(
       <>
       <Stack direction="horizontal" gap={2}>
         <OverlayTrigger placement="left" overlay={downloadDataToolip}>
-          <Button onClick={handleDownloadData} className = "B">
+          <Button onClick={handleDownloadData} className = "B btn-sm">
             Download
           </Button>
         </OverlayTrigger>
         <OverlayTrigger placement="left" overlay={uploadDataToolip}>
-          <Button onClick={handleUploadData} className = "B">
+          <Button onClick={handleUploadData} className = "B btn-sm">
             Upload
           </Button>
         </OverlayTrigger>
-          <Button variant="secondary" onClick={handleCloseTransferDataModal}>
+          <Button variant="secondary" onClick={handleCloseTransferDataModal} className="B btn-sm">
             Close
           </Button>
       </Stack>
@@ -936,17 +937,19 @@ return(
   return(
     <>
     <OverlayTrigger placement="left" overlay={saveTooltip}>
-      <Button className = "B" onClick={handleShowAssetModal}>
+      <Button className = "B btn-sm" onClick={handleShowAssetModal}>
         Asset Details
       </Button>
       </OverlayTrigger>
      
     
-      <Modal {...props} size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-    centered
-    show={showSavedAssetModal} 
-    onHide={handleCloseAssetModal}>
+      <Modal {...props} 
+      size="xl"
+      backdrop="static"
+      centered
+      scrollable
+      show={showSavedAssetModal} 
+      onHide={handleCloseAssetModal}>
       <Modal.Header closeButton>
         <Modal.Title className="text-primary h4">All asset details</Modal.Title>
     </Modal.Header>
@@ -980,7 +983,7 @@ return(
             <td>{obj.distance.distance}</td>
             <td>{(storedObjectsOrder.findIndex(objectId => objectId == obj.objectId)) < 0 ? (<ToggleButton
                   //ref={assetIdRef}
-                  className="mb-2"
+                  className="mb-2 btn-sm"
                   id="toggle-check"
                   type="checkbox"
                   variant="outline-primary"
@@ -991,7 +994,7 @@ return(
                 </ToggleButton> )
                 : ( <ToggleButton
                 disabled
-                className="mb-2"
+                className="mb-2 btn-sm"
                 id="toggle-check"
                 type="checkbox"
                 variant="outline-primary"
@@ -1009,7 +1012,7 @@ return(
 
       <Modal.Footer>
         <>
-      <Button variant="secondary" onClick={handleCloseAssetModal}>
+      <Button variant="secondary" onClick={handleCloseAssetModal} className="B btn-sm">
         Close
       </Button>
       </>
@@ -1083,19 +1086,7 @@ return(
         <NewlineText text={objectConflictsLog} />
     </div>
 
-    <div className='my-legend'>
-      <div className='legend-title'>Legend</div>
-      <div className='legend-scale'>
-        <ul className='legend-labels'>
-        {(legendObjects.length>0)?(uniqueColors.map((object) => (
-          <li><span style={{background:object}}></span>
-          {Object.values(currentObjects.find(o => Object.values(o.color) == object).assetId)[0]}</li>
-            ))): null}
-          <li><span style={{background:"#faf202"}}></span>Selected</li>
-          <li><span style={{background:"#fc2808"}}></span>Conflict</li>
-        </ul>
-      </div>
-      </div>
+    
       
       < div className= "flexbox-interaction buttons">
         {/* <DropdownButton as={ButtonGroup} title="Add" id="bg-nested-dropdown">
@@ -1103,31 +1094,31 @@ return(
           <Dropdown.Item eventKey="3"><OrderModal/></Dropdown.Item>
         </DropdownButton> */}
         <OverlayTrigger placement="left" overlay={rotateViewTooltip}>          
-        <Button className = "B" onClick={() => dispatch({ type: ROTATE })}>
+        <Button className = "B btn-sm" onClick={() => dispatch({ type: ROTATE })}>
                   View rotation
         </Button>
         </OverlayTrigger>
 
         <OverlayTrigger placement="left" overlay={frontViewTooltip}>          
-        <Button className = "B" onClick={() => dispatch({ type: FRONT })}>
+        <Button className = "B btn-sm" onClick={() => dispatch({ type: FRONT })}>
                   Front View
         </Button>
         </OverlayTrigger>
 
         <OverlayTrigger placement="left" overlay={topViewTooltip}>          
-        <Button className = "B" onClick={() => dispatch({ type: TOP })}>
+        <Button className = "B btn-sm" onClick={() => dispatch({ type: TOP })}>
                   Top View
         </Button>
         </OverlayTrigger>
 
         <OverlayTrigger placement="left" overlay={persViewTooltip}>          
-        <Button className = "B" onClick={() => dispatch({ type: PERSPECTIVE })}>
+        <Button className = "B btn-sm" onClick={() => dispatch({ type: PERSPECTIVE })}>
                   Perspective View
         </Button>
         </OverlayTrigger>
 
         <OverlayTrigger placement="left" overlay={gridTooltip}>
-          <Button  className = "B" onClick= {handleGrid}>
+          <Button  className = "B btn-sm" onClick= {handleGrid}>
                     View Grid
           </Button>
         </OverlayTrigger>
@@ -1156,13 +1147,13 @@ return(
           </Form> */}
           <br/>
           <OverlayTrigger placement="left" overlay={uploadModalTooltip}>
-          <Button onClick={handleClick} className = "B">
+          <Button onClick={handleClick} className = "B btn-sm">
               Upload a 3D Model
           </Button>
           </OverlayTrigger>
           <br/>
           <OverlayTrigger placement="left" overlay={clearAllTooltip}>
-            <Button variant="danger" className = "B" onClick={handleClearData}>
+            <Button variant="danger" className = "B btn-sm" onClick={handleClearData}>
                 Clear all
             </Button>
           </OverlayTrigger>
@@ -1185,7 +1176,7 @@ return(
       {/* <div className='flexbox-interaction background'>
       <img src = {background}  z-index = '-1'/>
       </div> */}
-      
+    <div className='flexbox-interaction grid'>
       <div className='flexbox-interaction canvas'>
       {/* <Canvas camera={ {position: [2,2,10], fov: 70}} > */}
       <Canvas orthographic camera={ {position: [0,0,200], zoom: getZoom() , top:200, bottom:-200, left:200, right:200, near:0, far:2000 }}>
@@ -1204,7 +1195,7 @@ return(
         </Suspense>  
           
         <Suspense fallback={null}>
-          <mesh position={[-20,-10,0]}>
+          <mesh position={[-15,-10,0]}>
             <Model />
             
             <ControlLines />
@@ -1224,6 +1215,21 @@ return(
       </Canvas>
       {/* <Order objects = {storedObjectsUpload} /> */}
       </div>
+      
+        <div className='my-legend'>
+          <div className='legend-title'>Legend</div>
+          <div className='legend-scale'>
+            <ul className='legend-labels'>
+            {(legendObjects.length>0)?(uniqueColors.map((object) => (
+              <li><span style={{background:object}}></span>
+              {Object.values(currentObjects.find(o => Object.values(o.color) == object).assetId)[0]}</li>
+                ))): null}
+              <li><span style={{background:"#faf202"}}></span>Selected</li>
+              <li><span style={{background:"#fc2808"}}></span>Conflict</li>
+            </ul>
+          </div>
+        </div>
+    </div>
       
     </div>
     </AppContext.Provider>
