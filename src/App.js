@@ -561,7 +561,7 @@ function App() {
   const [updatedObjectId, setUpdatedObjectId] = useState();
   const [updatedState, setUpdatedState] = useState('NONE');
   const [selectedObjectId, setSelectedObjectId] = useState(0);
-  const [filePath, setFilePath] = useState("./Lega Blocks - Haaksbergweg - Principe straat_no K&L_moved to origin_reducedPolycount4.gltf");
+  const [filePath, setFilePath] = useState("./Haaksbergweg - bg.gltf");
 
   const showSettings = {
     showStoredObjectsUpload: showStoredObjectsUpload,
