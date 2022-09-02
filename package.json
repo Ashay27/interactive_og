@@ -1,7 +1,7 @@
 {
   "name": "interactive-react-og",
   "version": "0.1.0",
-  "homepage": "https://Ashay27.github.io/interactive-app",
+  "homepage": "https://Ashay27.github.io/interactive_og",
   "dependencies": {
     "@react-spring/three": "^9.4.4",
     "@react-three/drei": "^9.18.0",
