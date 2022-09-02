@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/interactive-app/static/css/main.cfe8ec6f.css",
-    "main.js": "/interactive-app/static/js/main.6fe1fcc4.js",
-    "static/media/haaksbergwegBackground.png": "/interactive-app/static/media/haaksbergwegBackground.6e7b958e68ca4d77b485.png",
-    "index.html": "/interactive-app/index.html",
-    "main.cfe8ec6f.css.map": "/interactive-app/static/css/main.cfe8ec6f.css.map",
-    "main.6fe1fcc4.js.map": "/interactive-app/static/js/main.6fe1fcc4.js.map"
+    "main.css": "/interactive_og/static/css/main.cfe8ec6f.css",
+    "main.js": "/interactive_og/static/js/main.af16c618.js",
+    "static/media/haaksbergwegBackground.png": "/interactive_og/static/media/haaksbergwegBackground.6e7b958e68ca4d77b485.png",
+    "index.html": "/interactive_og/index.html",
+    "main.cfe8ec6f.css.map": "/interactive_og/static/css/main.cfe8ec6f.css.map",
+    "main.af16c618.js.map": "/interactive_og/static/js/main.af16c618.js.map"
   },
   "entrypoints": [
     "static/css/main.cfe8ec6f.css",
-    "static/js/main.6fe1fcc4.js"
+    "static/js/main.af16c618.js"
   ]
 }
