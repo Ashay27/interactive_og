@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls' ;
 import "/node_modules/materialize-css/dist/js/materialize.min.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter";
 import { SketchPicker } from "react-color";
 import RangeSlider from 'react-bootstrap-range-slider';
 
@@ -547,6 +548,7 @@ function App() {
   const [values, setValues] = useState([]);
   const [show, setShow] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
+  const [exportModel, setExportModel] = useState(false);
 
   const [viewState, dispatch] = useReducer(viewReducer, initialState)
   
@@ -870,6 +872,9 @@ return(
     }
   }
 
+  const handleExport = () => {
+    setExportModel(true)
+  }
   const handleGrid = () => {
     setShowGrid(!showGrid)
   }
@@ -1048,6 +1053,10 @@ return(
   let uniqueColors = [...new Set(currentObjects.map(o => Object.values(o.color)[0]))];
   console.log(uniqueColors);
 
+  const exportModalTooltip = props => (
+    <Tooltip {...props}>Export 3D modal (.gltf) of the profile</Tooltip>
+  );
+
   const uploadModalTooltip = props => (
     <Tooltip {...props}>Add 3D modal to the profile</Tooltip>
   );
@@ -1074,6 +1083,41 @@ return(
   const persViewTooltip = props => (
     <Tooltip {...props}>Turn on perspective (3D) view</Tooltip>
   );
+
+  const exporter = new GLTFExporter();
+
+  const ExportGLTF = () => {
+  const { scene } = useThree();
+      if(exportModel){      
+        exporter.parse(scene , function ( gltf ) {
+          const output = JSON.stringify( gltf, null, 2 );
+          console.log( output );
+          saveString( output, 'Street_Profile.gltf' );
+          //downloadJSON( gltf ); //check and create a button  
+          setExportModel(false)
+        },function ( error ) {
+          console.log( 'An error happened during parsing', error );
+        }, );
+      }
+}
+
+  const link = document.createElement( 'a' );
+			link.style.display = 'none';
+			document.body.appendChild( link ); // Firefox workaround, see #6594
+
+			function save( blob, filename ) {
+
+				link.href = URL.createObjectURL( blob );
+				link.download = filename;
+				link.click();
+
+				// URL.revokeObjectURL( url ); breaks Firefox...
+
+			}
+
+			function saveString( text, filename ) {
+				save( new Blob( [ text ], { type: 'text/plain' } ), filename );
+			}
   
   return (
     <AppContext.Provider value={showSettings}>
@@ -1152,6 +1196,12 @@ return(
           </Button>
           </OverlayTrigger>
           <br/>
+          <OverlayTrigger placement="left" overlay={exportModalTooltip}>
+          <Button onClick={handleExport} className = "B btn-sm">
+              Export 3D Model
+          </Button>
+          </OverlayTrigger>
+          <br/>
           <OverlayTrigger placement="left" overlay={clearAllTooltip}>
             <Button variant="danger" className = "B btn-sm" onClick={handleClearData}>
                 Clear all
@@ -1180,6 +1230,7 @@ return(
       <div className='flexbox-interaction canvas'>
       {/* <Canvas camera={ {position: [2,2,10], fov: 70}} > */}
       <Canvas orthographic camera={ {position: [0,0,200], zoom: getZoom() , top:200, bottom:-200, left:200, right:200, near:0, far:2000 }}>
+        <ExportGLTF />
       <AppContext.Provider value={showSettings}>
         <group>
         <Suspense fallback={null}>
