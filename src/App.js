@@ -2,6 +2,7 @@
 import './App.css';
 import React, {Suspense, useContext, useEffect, useMemo, useRef, useState , useReducer} from 'react'
 import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber'
+import { Html, useProgress } from '@react-three/drei';
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls' ;
 import "/node_modules/materialize-css/dist/js/materialize.min.js";
@@ -10,7 +11,7 @@ import { GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter";
 import { SketchPicker } from "react-color";
 import RangeSlider from 'react-bootstrap-range-slider';
 
-import {Button, Form, Modal, OverlayTrigger, Tooltip, Col, Row, ToggleButton, Table, Stack} from 'react-bootstrap';
+import {Button, Form, Modal, OverlayTrigger, Tooltip, Col, Row, ToggleButton, Table, Stack, Spinner} from 'react-bootstrap';
 import Dropdown from 'react-bootstrap/Dropdown'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import DropdownButton from 'react-bootstrap/DropdownButton'
@@ -62,6 +63,16 @@ var arrObj = [];
 const Aspect = () => {
   const { size, viewport } = useThree();
   return size.width / viewport.width;
+}
+
+function Loader() {
+  const { progress } = useProgress()
+  return <Html center>
+        {/* {progress} % loaded */}
+      <Spinner animation="border" role="status" variant="success">
+      <span className="visually-hidden">Loading...</span>
+    </Spinner>
+    </Html>
 }
 
 const CameraController = () => {
@@ -1245,7 +1256,7 @@ return(
           </mesh>
         </Suspense>  
           
-        <Suspense fallback={null}>
+        <Suspense fallback={<Loader/>}>
           <mesh position={[-15,-10,0]}>
             <Model />
             
