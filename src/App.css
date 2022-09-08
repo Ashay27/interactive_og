@@ -30,10 +30,15 @@
 .conflicts-log{
   position: fixed;
   top: 2%;
-  right: 2%;
-  width: 22%;
+  right: 5%;
+  /* width: 22%; */
   height: auto;
-  border: 2px dashed #333;
+  z-index:1;
+  /* border: 2px dashed #333; */
+}
+
+.conflicts-log strong{
+  font-size: 15px;
 }
 
 .buttons{

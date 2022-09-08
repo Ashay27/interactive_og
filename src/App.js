@@ -11,7 +11,7 @@ import { GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter";
 import { SketchPicker } from "react-color";
 import RangeSlider from 'react-bootstrap-range-slider';
 
-import {Button, Form, Modal, OverlayTrigger, Tooltip, Col, Row, ToggleButton, Table, Stack, Spinner} from 'react-bootstrap';
+import {Button, Form, Modal, OverlayTrigger, Tooltip, Col, Row, ToggleButton, Table, Stack, Spinner, Toast, ToastContainer} from 'react-bootstrap';
 import InfoModalContent from './Components/InfoModalContent'
 import Dropdown from 'react-bootstrap/Dropdown'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
@@ -1181,8 +1181,17 @@ return(
 
 
     < div className= "flexbox-interaction conflicts-log">
-        <p> Click on an object to see the related conflicts </p>
-        <NewlineText text={objectConflictsLog} />
+      <ToastContainer position='top-end'>
+        <Toast className="d-inline-block m-1" bg="danger" show={selectedObjectId===0?false:true}>
+          <Toast.Header closeButton = {false}>
+            <strong className="me-auto">Conflicts log</strong>
+          </Toast.Header>
+          <Toast.Body className="text-white">
+            <strong><NewlineText text={objectConflictsLog} /> </strong>
+          </Toast.Body>
+        </Toast>
+       </ToastContainer> 
+
     </div>
 
     < div className= "flexbox-interaction info-button">
