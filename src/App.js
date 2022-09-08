@@ -1185,6 +1185,13 @@ return(
         <NewlineText text={objectConflictsLog} />
     </div>
 
+    < div className= "flexbox-interaction info-button">
+      <OverlayTrigger placement="left" overlay={InfoTooltip}>          
+        <Button className = "B lg" onClick={handleInfoButton}>
+          <i className="bi bi-info-circle"></i>
+        </Button>
+      </OverlayTrigger>
+    </div>
     
       
       < div className= "flexbox-interaction buttons">
@@ -1192,11 +1199,6 @@ return(
           <Dropdown.Item eventKey="2"><PipeModal/></Dropdown.Item>
           <Dropdown.Item eventKey="3"><OrderModal/></Dropdown.Item>
         </DropdownButton> */}
-        <OverlayTrigger placement="left" overlay={InfoTooltip}>          
-        <Button className = "B btn-sm" onClick={handleInfoButton}>
-          <i class="bi bi-info-circle"></i>
-        </Button>
-        </OverlayTrigger>
 
         <OverlayTrigger placement="left" overlay={rotateViewTooltip}>          
         <Button className = "B btn-sm" onClick={() => dispatch({ type: ROTATE })}>

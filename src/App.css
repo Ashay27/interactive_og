@@ -88,6 +88,10 @@
   margin-left: 10px;
  }
 
+ .B i{
+   font-size: x-large;
+ }
+
  .my-legend {
   flex-shrink: 0;
   width: fit-content;
@@ -130,4 +134,11 @@
 
   .lower-alpha{
     list-style-type: lower-alpha;
+  }
+
+  .info-button{
+    position: fixed;
+    top: 1%;
+    right: 2%;
+    width: 2%;
   }
