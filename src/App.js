@@ -12,6 +12,7 @@ import { SketchPicker } from "react-color";
 import RangeSlider from 'react-bootstrap-range-slider';
 
 import {Button, Form, Modal, OverlayTrigger, Tooltip, Col, Row, ToggleButton, Table, Stack, Spinner} from 'react-bootstrap';
+import InfoModalContent from './Components/InfoModalContent'
 import Dropdown from 'react-bootstrap/Dropdown'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import DropdownButton from 'react-bootstrap/DropdownButton'
@@ -559,6 +560,7 @@ function App() {
   const [values, setValues] = useState([]);
   const [show, setShow] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
   const [exportModel, setExportModel] = useState(false);
 
   const [viewState, dispatch] = useReducer(viewReducer, initialState)
@@ -790,6 +792,42 @@ return(
 )
 }
 
+function InfoModal() {
+  
+  const handleCloseInfoModal = () => {
+      setShowInfoModal(false);
+  }
+
+return(
+  <> 
+    <Modal 
+    size="xl"
+    backdrop="static"
+    centered
+    scrollable
+    show={showInfoModal} 
+    onHide={handleCloseInfoModal}>
+    <Modal.Header closeButton>
+      <Modal.Title className="text-primary h4">Instructions</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      <InfoModalContent/>
+    </Modal.Body>
+
+    <Modal.Footer>
+      <>
+    <Button variant="secondary" onClick={handleCloseInfoModal} className="B btn-sm">
+      Close
+    </Button>
+    </>
+  </Modal.Footer>
+    </Modal>
+  </>
+)
+
+}
+
+
   const changeHandler = (event) => {
     // Passing file data (event.target.files[0]) to parse using Papa.parse
     Papa.parse(event.target.files[0], {
@@ -888,6 +926,9 @@ return(
   }
   const handleGrid = () => {
     setShowGrid(!showGrid)
+  }
+  const handleInfoButton = () => {
+    setShowInfoModal(true)
   }
 
   function SavedAssetModal(props) {
@@ -1064,6 +1105,9 @@ return(
   let uniqueColors = [...new Set(currentObjects.map(o => Object.values(o.color)[0]))];
   console.log(uniqueColors);
 
+  const InfoTooltip = props => (
+    <Tooltip {...props}>Check instructions to use the tool</Tooltip>
+  );
   const exportModalTooltip = props => (
     <Tooltip {...props}>Export 3D modal (.gltf) of the profile</Tooltip>
   );
@@ -1148,6 +1192,12 @@ return(
           <Dropdown.Item eventKey="2"><PipeModal/></Dropdown.Item>
           <Dropdown.Item eventKey="3"><OrderModal/></Dropdown.Item>
         </DropdownButton> */}
+        <OverlayTrigger placement="left" overlay={InfoTooltip}>          
+        <Button className = "B btn-sm" onClick={handleInfoButton}>
+          <i class="bi bi-info-circle"></i>
+        </Button>
+        </OverlayTrigger>
+
         <OverlayTrigger placement="left" overlay={rotateViewTooltip}>          
         <Button className = "B btn-sm" onClick={() => dispatch({ type: ROTATE })}>
                   View rotation
@@ -1181,6 +1231,8 @@ return(
         
 
         <div>
+        <InfoModal />
+
         <PipeModal/>
 
         <SavedAssetModal/>
