@@ -1215,30 +1215,33 @@ return(
         </Button>
         </OverlayTrigger>
 
-        <OverlayTrigger placement="left" overlay={frontViewTooltip}>          
-        <Button className = "B btn-sm" onClick={() => dispatch({ type: FRONT })}>
-                  Front View
-        </Button>
-        </OverlayTrigger>
+        <ButtonGroup className="mb-2">  
+          <OverlayTrigger placement="left" overlay={frontViewTooltip}>          
+          <Button className = "B btn-sm" onClick={() => dispatch({ type: FRONT })}>
+                    Front View
+          </Button>
+          </OverlayTrigger>
 
-        <OverlayTrigger placement="left" overlay={topViewTooltip}>          
-        <Button className = "B btn-sm" onClick={() => dispatch({ type: TOP })}>
-                  Top View
-        </Button>
-        </OverlayTrigger>
+          <OverlayTrigger placement="left" overlay={topViewTooltip}>          
+          <Button className = "B btn-sm" onClick={() => dispatch({ type: TOP })}>
+                    Top View
+          </Button>
+          </OverlayTrigger>
 
-        <OverlayTrigger placement="left" overlay={persViewTooltip}>          
-        <Button className = "B btn-sm" onClick={() => dispatch({ type: PERSPECTIVE })}>
-                  Perspective View
-        </Button>
-        </OverlayTrigger>
+          <OverlayTrigger placement="left" overlay={persViewTooltip}>          
+          <Button className = "B btn-sm" onClick={() => dispatch({ type: PERSPECTIVE })}>
+                    Perspective View
+          </Button>
+          </OverlayTrigger>
+        </ButtonGroup>
 
         <OverlayTrigger placement="left" overlay={gridTooltip}>
           <Button  className = "B btn-sm" onClick= {handleGrid}>
-                    View Grid
+                    Show Grid
           </Button>
         </OverlayTrigger>
         
+        <SavedAssetModal/>
         
 
         <div>
@@ -1246,7 +1249,7 @@ return(
 
         <PipeModal/>
 
-        <SavedAssetModal/>
+        
 
         <TransferDataModal/>
         {/* <br/><br/>
@@ -1264,17 +1267,19 @@ return(
               <Form.Text classname = "text-muted">The object in current position will be deleted</Form.Text>
           </Form> */}
           <br/>
-          <OverlayTrigger placement="left" overlay={uploadModalTooltip}>
-          <Button onClick={handleClick} className = "B btn-sm">
-              Upload a 3D Model
-          </Button>
-          </OverlayTrigger>
-          <br/>
-          <OverlayTrigger placement="left" overlay={exportModalTooltip}>
-          <Button onClick={handleExport} className = "B btn-sm">
-              Export 3D Model
-          </Button>
-          </OverlayTrigger>
+          <ButtonGroup className="mb-2">
+            <OverlayTrigger placement="left" overlay={uploadModalTooltip}>
+            <Button onClick={handleClick} className = "B btn-sm">
+                Upload 3D Model
+            </Button>
+            </OverlayTrigger>
+            <br/>
+            <OverlayTrigger placement="left" overlay={exportModalTooltip}>
+            <Button onClick={handleExport} className = "B btn-sm">
+                Export 3D Model
+            </Button>
+            </OverlayTrigger>
+          </ButtonGroup>  
           <br/>
           <OverlayTrigger placement="left" overlay={clearAllTooltip}>
             <Button variant="danger" className = "B btn-sm" onClick={handleClearData}>
