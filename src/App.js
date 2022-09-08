@@ -1182,7 +1182,7 @@ return(
 
     < div className= "flexbox-interaction conflicts-log">
       <ToastContainer position='top-end'>
-        <Toast className="d-inline-block m-1" bg="danger" show={selectedObjectId===0?false:true}>
+        <Toast className="d-inline-block m-1" bg={objectConflicts.length == 0 ? "success":"danger"} show={selectedObjectId===0?false:true}>
           <Toast.Header closeButton = {false}>
             <strong className="me-auto">Conflicts log</strong>
           </Toast.Header>
