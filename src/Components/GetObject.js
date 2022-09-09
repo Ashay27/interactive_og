@@ -549,9 +549,9 @@ function Cylinder({objectId}) {
       ref={ref}
       //scale={clicked ? 1.5 : 1} 
       //onClick={(event) => click(!clicked)}
-      //show object Name on single click and conflicts on Double click
+      //show Conflicts on single click and Asset Update Modal on right click
       onClick={handleClick}
-      onDoubleClick={handleShow}
+      onContextMenu={handleShow}
       onPointerOver={(event) => hover(true)}
       onPointerOut={(event) => hover(false)}>
       {assetId.includes("Boom") ? 
