@@ -14,7 +14,7 @@ import RangeSlider from 'react-bootstrap-range-slider';
 import {Button, Form, Modal, OverlayTrigger, Tooltip, Col, Row, ToggleButton, Table, Stack, Spinner, Toast, ToastContainer} from 'react-bootstrap';
 import InfoModalContent from './Components/InfoModalContent'
 import Dropdown from 'react-bootstrap/Dropdown'
-import ButtonGroup from 'react-bootstrap/ButtonGroup'
+import {ButtonGroup, ButtonToolbar} from 'react-bootstrap'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 //import PipeModal from './Components/PipeModal';
 import OrderModal from './Components/OrderModal';
@@ -226,9 +226,9 @@ function PipeModal(props) {
 
 return (
   <>
-  <OverlayTrigger placement="left" overlay={addAssetTooltip}>
+  <OverlayTrigger placement="top" overlay={addAssetTooltip}>
   <Button className = "B btn-sm" onClick={handleShow}>
-    Add Asset
+    Add
   </Button>
   </OverlayTrigger>
 
@@ -744,9 +744,9 @@ const uploadDataToolip = props => (
 
 return(
   <>
- <OverlayTrigger placement="left" overlay={transferDataToolip}>
+ <OverlayTrigger placement="top" overlay={transferDataToolip}>
     <Button onClick={handleShowTransferDataModal} className = "B btn-sm">
-      Download/Upload
+      Transfer data
     </Button>
  </OverlayTrigger>
   
@@ -993,7 +993,7 @@ return(
 
   return(
     <>
-    <OverlayTrigger placement="left" overlay={saveTooltip}>
+    <OverlayTrigger placement="top" overlay={saveTooltip}>
       <Button className = "B btn-sm" onClick={handleShowAssetModal}>
         Asset Details
       </Button>
@@ -1209,49 +1209,65 @@ return(
           <Dropdown.Item eventKey="3"><OrderModal/></Dropdown.Item>
         </DropdownButton> */}
 
-        <OverlayTrigger placement="left" overlay={rotateViewTooltip}>          
+      <ButtonToolbar className="mb-3">
+      <Button variant="outline-dark" className = "B btn-sm" disabled>Views:</Button>
+
+        <OverlayTrigger placement="top" overlay={rotateViewTooltip}>          
         <Button className = "B btn-sm" onClick={() => dispatch({ type: ROTATE })}>
-                  View rotation
+                  Rotation
         </Button>
         </OverlayTrigger>
 
         <ButtonGroup className="mb-2">  
-          <OverlayTrigger placement="left" overlay={frontViewTooltip}>          
+          <OverlayTrigger placement="top" overlay={frontViewTooltip}>          
           <Button className = "B btn-sm" onClick={() => dispatch({ type: FRONT })}>
-                    Front View
+                    Front
           </Button>
           </OverlayTrigger>
 
-          <OverlayTrigger placement="left" overlay={topViewTooltip}>          
+          <OverlayTrigger placement="top" overlay={topViewTooltip}>          
           <Button className = "B btn-sm" onClick={() => dispatch({ type: TOP })}>
-                    Top View
+                    Top
           </Button>
           </OverlayTrigger>
 
-          <OverlayTrigger placement="left" overlay={persViewTooltip}>          
+          <OverlayTrigger placement="top" overlay={persViewTooltip}>          
           <Button className = "B btn-sm" onClick={() => dispatch({ type: PERSPECTIVE })}>
-                    Perspective View
+                    Perspective
           </Button>
           </OverlayTrigger>
         </ButtonGroup>
 
-        <OverlayTrigger placement="left" overlay={gridTooltip}>
+        </ButtonToolbar>
+
+        <ButtonToolbar className="mb-3">
+        <Button variant="outline-dark" className = "B btn-sm" disabled>Show:</Button>
+
+        <OverlayTrigger placement="top" overlay={gridTooltip}>
           <Button  className = "B btn-sm" onClick= {handleGrid}>
-                    Show Grid
+                    Grid
           </Button>
         </OverlayTrigger>
         
         <SavedAssetModal/>
+        </ButtonToolbar>
         
 
         <div>
         <InfoModal />
 
+        <ButtonToolbar className="mb-3">
+        <Button variant="outline-dark" className = "B btn-sm" disabled>Asset:</Button>
+
         <PipeModal/>
 
+        <OverlayTrigger placement="top" overlay={clearAllTooltip}>
+            <Button variant="danger" className = "B btn-sm" onClick={handleClearData}>
+                Clear all
+            </Button>
+        </OverlayTrigger>
+        </ButtonToolbar>
         
-
-        <TransferDataModal/>
         {/* <br/><br/>
 
           <Form>
@@ -1266,26 +1282,29 @@ return(
               <br/>
               <Form.Text classname = "text-muted">The object in current position will be deleted</Form.Text>
           </Form> */}
+
+        <ButtonToolbar className="mb-3">
+          <Button variant="outline-dark" className = "B btn-sm" disabled>3D Model:</Button>
+
+          <OverlayTrigger placement="top" overlay={uploadModalTooltip}>
+            <Button onClick={handleClick} className = "B btn-sm">
+                Upload background
+            </Button>
+          </OverlayTrigger>
+          
           <br/>
           <ButtonGroup className="mb-2">
-            <OverlayTrigger placement="left" overlay={uploadModalTooltip}>
-            <Button onClick={handleClick} className = "B btn-sm">
-                Upload 3D Model
-            </Button>
-            </OverlayTrigger>
+          <TransferDataModal/>
             <br/>
-            <OverlayTrigger placement="left" overlay={exportModalTooltip}>
+            <OverlayTrigger placement="top" overlay={exportModalTooltip}>
             <Button onClick={handleExport} className = "B btn-sm">
-                Export 3D Model
+                Export 3D profile
             </Button>
             </OverlayTrigger>
           </ButtonGroup>  
           <br/>
-          <OverlayTrigger placement="left" overlay={clearAllTooltip}>
-            <Button variant="danger" className = "B btn-sm" onClick={handleClearData}>
-                Clear all
-            </Button>
-          </OverlayTrigger>
+        </ButtonToolbar>
+          
           
           <input
             type = "file"
