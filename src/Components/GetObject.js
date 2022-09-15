@@ -129,6 +129,11 @@ function Cylinder({objectId}) {
       cancel()
       return
     }
+
+      appContext.setSelectedObjectId(0);
+      console.log("No selected object")
+      appContext.setObjectConflicts([]);
+      appContext.setObjectConflictsLog('');
     
       setPosition.start({position: [(appContext.storedLineIntersect[1] + parseFloat(distance) + (x/aspect)) ,(appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2) ), -cylinderDepth/2 ]}); // / props.aspect
       console.log('position-> x: ' + (appContext.storedLineIntersect[1] + parseFloat(distance) + (x/aspect)) + ' y: ' + (appContext.storedLineIntersect[0] - parseFloat(depth) - (parseFloat(diameter)/2))  + ' z: ' + -cylinderDepth/2);
@@ -549,9 +554,9 @@ function Cylinder({objectId}) {
       ref={ref}
       //scale={clicked ? 1.5 : 1} 
       //onClick={(event) => click(!clicked)}
-      //show object Name on single click and conflicts on Double click
+      //show Conflicts on single click and Asset Update Modal on right click
       onClick={handleClick}
-      onDoubleClick={handleShow}
+      onContextMenu={handleShow}
       onPointerOver={(event) => hover(true)}
       onPointerOut={(event) => hover(false)}>
       {assetId.includes("Boom") ? 

@@ -30,10 +30,15 @@
 .conflicts-log{
   position: fixed;
   top: 2%;
-  right: 2%;
-  width: 22%;
+  right: 5%;
+  /* width: 22%; */
   height: auto;
-  border: 2px dashed #333;
+  z-index:1;
+  /* border: 2px dashed #333; */
+}
+
+.conflicts-log strong{
+  font-size: 15px;
 }
 
 .buttons{
@@ -88,6 +93,10 @@
   margin-left: 10px;
  }
 
+ .B i{
+   font-size: x-large;
+ }
+
  .my-legend {
   flex-shrink: 0;
   width: fit-content;
@@ -126,4 +135,15 @@
   margin-right: 5px;
   margin-left: 0;
   border: 1px solid #999;
+  }
+
+  .lower-alpha{
+    list-style-type: lower-alpha;
+  }
+
+  .info-button{
+    position: fixed;
+    top: 1%;
+    right: 2%;
+    width: 2%;
   }

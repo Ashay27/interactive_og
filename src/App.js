@@ -2,16 +2,19 @@
 import './App.css';
 import React, {Suspense, useContext, useEffect, useMemo, useRef, useState , useReducer} from 'react'
 import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber'
+import { Html, useProgress } from '@react-three/drei';
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls' ;
 import "/node_modules/materialize-css/dist/js/materialize.min.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter";
 import { SketchPicker } from "react-color";
 import RangeSlider from 'react-bootstrap-range-slider';
 
-import {Button, Form, Modal, OverlayTrigger, Tooltip, Col, Row, ToggleButton, Table, Stack} from 'react-bootstrap';
+import {Button, Form, Modal, OverlayTrigger, Tooltip, Col, Row, ToggleButton, Table, Stack, Spinner, Toast, ToastContainer} from 'react-bootstrap';
+import InfoModalContent from './Components/InfoModalContent'
 import Dropdown from 'react-bootstrap/Dropdown'
-import ButtonGroup from 'react-bootstrap/ButtonGroup'
+import {ButtonGroup, ButtonToolbar} from 'react-bootstrap'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 //import PipeModal from './Components/PipeModal';
 import OrderModal from './Components/OrderModal';
@@ -61,6 +64,16 @@ var arrObj = [];
 const Aspect = () => {
   const { size, viewport } = useThree();
   return size.width / viewport.width;
+}
+
+function Loader() {
+  const { progress } = useProgress()
+  return <Html center>
+        {/* {progress} % loaded */}
+      <Spinner animation="border" role="status" variant="success">
+      <span className="visually-hidden">Loading...</span>
+    </Spinner>
+    </Html>
 }
 
 const CameraController = () => {
@@ -213,9 +226,9 @@ function PipeModal(props) {
 
 return (
   <>
-  <OverlayTrigger placement="left" overlay={addAssetTooltip}>
+  <OverlayTrigger placement="top" overlay={addAssetTooltip}>
   <Button className = "B btn-sm" onClick={handleShow}>
-    Add Asset
+    Add
   </Button>
   </OverlayTrigger>
 
@@ -547,6 +560,8 @@ function App() {
   const [values, setValues] = useState([]);
   const [show, setShow] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [exportModel, setExportModel] = useState(false);
 
   const [viewState, dispatch] = useReducer(viewReducer, initialState)
   
@@ -561,7 +576,7 @@ function App() {
   const [updatedObjectId, setUpdatedObjectId] = useState();
   const [updatedState, setUpdatedState] = useState('NONE');
   const [selectedObjectId, setSelectedObjectId] = useState(0);
-  const [filePath, setFilePath] = useState("./Lega Blocks - Haaksbergweg - Principe straat_no K&L_moved to origin_reducedPolycount4.gltf");
+  const [filePath, setFilePath] = useState("./Haaksbergweg - bg.gltf");
 
   const showSettings = {
     showStoredObjectsUpload: showStoredObjectsUpload,
@@ -729,9 +744,9 @@ const uploadDataToolip = props => (
 
 return(
   <>
- <OverlayTrigger placement="left" overlay={transferDataToolip}>
+ <OverlayTrigger placement="top" overlay={transferDataToolip}>
     <Button onClick={handleShowTransferDataModal} className = "B btn-sm">
-      Download/Upload
+      Transfer data
     </Button>
  </OverlayTrigger>
   
@@ -776,6 +791,42 @@ return(
   </>
 )
 }
+
+function InfoModal() {
+  
+  const handleCloseInfoModal = () => {
+      setShowInfoModal(false);
+  }
+
+return(
+  <> 
+    <Modal 
+    size="xl"
+    backdrop="static"
+    centered
+    scrollable
+    show={showInfoModal} 
+    onHide={handleCloseInfoModal}>
+    <Modal.Header closeButton>
+      <Modal.Title className="text-primary h4">Instructions</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      <InfoModalContent/>
+    </Modal.Body>
+
+    <Modal.Footer>
+      <>
+    <Button variant="secondary" onClick={handleCloseInfoModal} className="B btn-sm">
+      Close
+    </Button>
+    </>
+  </Modal.Footer>
+    </Modal>
+  </>
+)
+
+}
+
 
   const changeHandler = (event) => {
     // Passing file data (event.target.files[0]) to parse using Papa.parse
@@ -870,8 +921,14 @@ return(
     }
   }
 
+  const handleExport = () => {
+    setExportModel(true)
+  }
   const handleGrid = () => {
     setShowGrid(!showGrid)
+  }
+  const handleInfoButton = () => {
+    setShowInfoModal(true)
   }
 
   function SavedAssetModal(props) {
@@ -936,7 +993,7 @@ return(
 
   return(
     <>
-    <OverlayTrigger placement="left" overlay={saveTooltip}>
+    <OverlayTrigger placement="top" overlay={saveTooltip}>
       <Button className = "B btn-sm" onClick={handleShowAssetModal}>
         Asset Details
       </Button>
@@ -1048,6 +1105,13 @@ return(
   let uniqueColors = [...new Set(currentObjects.map(o => Object.values(o.color)[0]))];
   console.log(uniqueColors);
 
+  const InfoTooltip = props => (
+    <Tooltip {...props}>Check instructions to use the tool</Tooltip>
+  );
+  const exportModalTooltip = props => (
+    <Tooltip {...props}>Export 3D modal (.gltf) of the profile</Tooltip>
+  );
+
   const uploadModalTooltip = props => (
     <Tooltip {...props}>Add 3D modal to the profile</Tooltip>
   );
@@ -1074,6 +1138,41 @@ return(
   const persViewTooltip = props => (
     <Tooltip {...props}>Turn on perspective (3D) view</Tooltip>
   );
+
+  const exporter = new GLTFExporter();
+
+  const ExportGLTF = () => {
+  const { scene } = useThree();
+      if(exportModel){      
+        exporter.parse(scene , function ( gltf ) {
+          const output = JSON.stringify( gltf, null, 2 );
+          console.log( output );
+          saveString( output, 'Street_Profile.gltf' );
+          //downloadJSON( gltf ); //check and create a button  
+          setExportModel(false)
+        },function ( error ) {
+          console.log( 'An error happened during parsing', error );
+        }, );
+      }
+}
+
+  const link = document.createElement( 'a' );
+			link.style.display = 'none';
+			document.body.appendChild( link ); // Firefox workaround, see #6594
+
+			function save( blob, filename ) {
+
+				link.href = URL.createObjectURL( blob );
+				link.download = filename;
+				link.click();
+
+				// URL.revokeObjectURL( url ); breaks Firefox...
+
+			}
+
+			function saveString( text, filename ) {
+				save( new Blob( [ text ], { type: 'text/plain' } ), filename );
+			}
   
   return (
     <AppContext.Provider value={showSettings}>
@@ -1082,10 +1181,26 @@ return(
 
 
     < div className= "flexbox-interaction conflicts-log">
-        <p> Click on an object to see the related conflicts </p>
-        <NewlineText text={objectConflictsLog} />
+      <ToastContainer position='top-end'>
+        <Toast className="d-inline-block m-1" bg={objectConflicts.length == 0 ? "success":"danger"} show={selectedObjectId===0?false:true}>
+          <Toast.Header closeButton = {false}>
+            <strong className="me-auto">Conflicts log</strong>
+          </Toast.Header>
+          <Toast.Body className="text-white">
+            <strong><NewlineText text={objectConflictsLog} /> </strong>
+          </Toast.Body>
+        </Toast>
+       </ToastContainer> 
+
     </div>
 
+    < div className= "flexbox-interaction info-button">
+      <OverlayTrigger placement="left" overlay={InfoTooltip}>          
+        <Button className = "B lg" onClick={handleInfoButton}>
+          <i className="bi bi-info-circle"></i>
+        </Button>
+      </OverlayTrigger>
+    </div>
     
       
       < div className= "flexbox-interaction buttons">
@@ -1093,44 +1208,66 @@ return(
           <Dropdown.Item eventKey="2"><PipeModal/></Dropdown.Item>
           <Dropdown.Item eventKey="3"><OrderModal/></Dropdown.Item>
         </DropdownButton> */}
-        <OverlayTrigger placement="left" overlay={rotateViewTooltip}>          
+
+      <ButtonToolbar className="mb-3">
+      <Button variant="outline-dark" className = "B btn-sm" disabled>Views:</Button>
+
+        <OverlayTrigger placement="top" overlay={rotateViewTooltip}>          
         <Button className = "B btn-sm" onClick={() => dispatch({ type: ROTATE })}>
-                  View rotation
+                  Rotation
         </Button>
         </OverlayTrigger>
 
-        <OverlayTrigger placement="left" overlay={frontViewTooltip}>          
-        <Button className = "B btn-sm" onClick={() => dispatch({ type: FRONT })}>
-                  Front View
-        </Button>
-        </OverlayTrigger>
+        <ButtonGroup className="mb-2">  
+          <OverlayTrigger placement="top" overlay={frontViewTooltip}>          
+          <Button className = "B btn-sm" onClick={() => dispatch({ type: FRONT })}>
+                    Front
+          </Button>
+          </OverlayTrigger>
 
-        <OverlayTrigger placement="left" overlay={topViewTooltip}>          
-        <Button className = "B btn-sm" onClick={() => dispatch({ type: TOP })}>
-                  Top View
-        </Button>
-        </OverlayTrigger>
+          <OverlayTrigger placement="top" overlay={topViewTooltip}>          
+          <Button className = "B btn-sm" onClick={() => dispatch({ type: TOP })}>
+                    Top
+          </Button>
+          </OverlayTrigger>
 
-        <OverlayTrigger placement="left" overlay={persViewTooltip}>          
-        <Button className = "B btn-sm" onClick={() => dispatch({ type: PERSPECTIVE })}>
-                  Perspective View
-        </Button>
-        </OverlayTrigger>
+          <OverlayTrigger placement="top" overlay={persViewTooltip}>          
+          <Button className = "B btn-sm" onClick={() => dispatch({ type: PERSPECTIVE })}>
+                    Perspective
+          </Button>
+          </OverlayTrigger>
+        </ButtonGroup>
 
-        <OverlayTrigger placement="left" overlay={gridTooltip}>
+        </ButtonToolbar>
+
+        <ButtonToolbar className="mb-3">
+        <Button variant="outline-dark" className = "B btn-sm" disabled>Show:</Button>
+
+        <OverlayTrigger placement="top" overlay={gridTooltip}>
           <Button  className = "B btn-sm" onClick= {handleGrid}>
-                    View Grid
+                    Grid
           </Button>
         </OverlayTrigger>
         
+        <SavedAssetModal/>
+        </ButtonToolbar>
         
 
         <div>
+        <InfoModal />
+
+        <ButtonToolbar className="mb-3">
+        <Button variant="outline-dark" className = "B btn-sm" disabled>Asset:</Button>
+
         <PipeModal/>
 
-        <SavedAssetModal/>
-
-        <TransferDataModal/>
+        <OverlayTrigger placement="top" overlay={clearAllTooltip}>
+            <Button variant="danger" className = "B btn-sm" onClick={handleClearData}>
+                Clear all
+            </Button>
+        </OverlayTrigger>
+        </ButtonToolbar>
+        
         {/* <br/><br/>
 
           <Form>
@@ -1145,18 +1282,29 @@ return(
               <br/>
               <Form.Text classname = "text-muted">The object in current position will be deleted</Form.Text>
           </Form> */}
-          <br/>
-          <OverlayTrigger placement="left" overlay={uploadModalTooltip}>
-          <Button onClick={handleClick} className = "B btn-sm">
-              Upload a 3D Model
-          </Button>
-          </OverlayTrigger>
-          <br/>
-          <OverlayTrigger placement="left" overlay={clearAllTooltip}>
-            <Button variant="danger" className = "B btn-sm" onClick={handleClearData}>
-                Clear all
+
+        <ButtonToolbar className="mb-3">
+          <Button variant="outline-dark" className = "B btn-sm" disabled>3D Model:</Button>
+
+          <OverlayTrigger placement="top" overlay={uploadModalTooltip}>
+            <Button onClick={handleClick} className = "B btn-sm">
+                Upload background
             </Button>
           </OverlayTrigger>
+          
+          <br/>
+          <ButtonGroup className="mb-2">
+          <TransferDataModal/>
+            <br/>
+            <OverlayTrigger placement="top" overlay={exportModalTooltip}>
+            <Button onClick={handleExport} className = "B btn-sm">
+                Export 3D profile
+            </Button>
+            </OverlayTrigger>
+          </ButtonGroup>  
+          <br/>
+        </ButtonToolbar>
+          
           
           <input
             type = "file"
@@ -1180,6 +1328,7 @@ return(
       <div className='flexbox-interaction canvas'>
       {/* <Canvas camera={ {position: [2,2,10], fov: 70}} > */}
       <Canvas orthographic camera={ {position: [0,0,200], zoom: getZoom() , top:200, bottom:-200, left:200, right:200, near:0, far:2000 }}>
+        <ExportGLTF />
       <AppContext.Provider value={showSettings}>
         <group>
         <Suspense fallback={null}>
@@ -1194,7 +1343,7 @@ return(
           </mesh>
         </Suspense>  
           
-        <Suspense fallback={null}>
+        <Suspense fallback={<Loader/>}>
           <mesh position={[-15,-10,0]}>
             <Model />
             

@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 
 //window.storedObjectsUpload = [];
