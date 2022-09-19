@@ -1,70 +1,59 @@
-# Getting Started with Create React App
+# Interactive Underground3D
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This product was developed with the aim to ease the process of planners in design of urban areas. Ultimately aiming to be able to optimise both the below and above ground space. Here the focus was on the below ground and optimising the space to have room for assets that could solve the problems related to climate adaptation, energy transition and urban densification.
+
+## Copyright and License
+
+<pre>Copyright (C) X Gemeente
+              X Amsterdam
+              X Economic Services Departments
+
+Licensed under the EUPL, Version 1.2 or later (the "License");
+You may not use this work except in compliance with the License.
+You may obtain a copy of the License at:
+
+  https://github.com/IOOR-GAdam/interactive_og/blob/main/LICENSE.txt
+  
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing
+permissions and limitations under the License.</pre>
+
+## Built with
+
+[R3F](https://docs.pmnd.rs/react-three-fiber)\
+[Threejs](https://threejs.org/)\
+[Reactjs](https://reactjs.org/)\
+[Drei](https://github.com/pmndrs/drei)\
+[React-spring](https://react-spring.dev/guides/r3f#react-three-fiber)\
+[Use-gesture](https://github.com/pmndrs/use-gesture)\
+[react-bootstrap](https://react-bootstrap.github.io/)\
+[react-bootstrap-range-slider](https://github.com/jaywilz/react-bootstrap-range-slider)\
+[bootstrap-icons](https://icons.getbootstrap.com/)
+
+## Installation
+
+1. Make sure you have [git](https://gitforwindows.org/index.html) and [node.js](https://nodejs.org/en/)
+2. Clone this repository using the terminal:
+<pre>git clone https://github.com/IOOR-GAdam/interactive_og.git</pre>
+3. Install relevant dependencies:
+<pre>npm install</pre>
+
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+### `npm run start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The page will reload when you make changes.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
+### `npm run deploy`
 
 Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+And deploy the app to the homepage (mentioned in package.json) via gh-pages.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
