@@ -243,7 +243,17 @@ function Cylinder({objectId}) {
                 var neighbourObjectAssetCat = neighbourObjectAssetId.toString().split("_",2)[1];
                 console.log("neighbourObjectAssetCat: " +  neighbourObjectAssetCat)
                 
-                if(o.Asset.includes("Boom")|| o.Asset.includes("Gebouwen")){ //current asset
+                console.log(o[neighbourObjectAssetName.toString()])
+                console.log("& included : " + (o[neighbourObjectAssetName.toString()]).toString().includes("&"))
+
+                //if(o.Asset.includes("Boom")|| o.Asset.includes("Gebouwen")){ //current asset //Add asset here if it contains assets with different categories (t and d) like W_t and W_d
+
+                /* 
+                If the recommended distance value of the neighbour asset contains & then it should be categorized as transport or distribution  
+                and the asset name should have different categories (t and d) and should be named with name_t and name_d like W_t and W_d
+                */
+                if((o[neighbourObjectAssetName.toString()]).toString().includes("&")){
+                  console.log("Reading transp and dist values")
                   if(neighbourObjectAssetCat === "t"){
                     uitlegschemaDistance = o[neighbourObjectAssetName.toString()]
                     uitlegschemaDistance = (uitlegschemaDistance.toString().split("&",2)[0])
@@ -325,7 +335,17 @@ function Cylinder({objectId}) {
                 var neighbourObjectAssetCat = neighbourObjectAssetId.toString().split("_",2)[1];
                 console.log("neighbourObjectAssetCat: " +  neighbourObjectAssetCat)
                 
-                if(o.Asset.includes("Boom")|| o.Asset.includes("Gebouwen")){ //current asset
+                console.log(o[neighbourObjectAssetName.toString()])
+                console.log("& included : " + (o[neighbourObjectAssetName.toString()]).toString().includes("&"))
+                
+                //if(o.Asset.includes("Boom")|| o.Asset.includes("Gebouwen")){ //current asset //Add asset here if it contains assets with different categories (t and d) like W_t and W_d
+
+                /* 
+                If the recommended distance value of the neighbour asset contains & then it should be categorized as transport or distribution  
+                and the asset name should have different categories (t and d) and should be named with name_t and name_d like W_t and W_d
+                */
+                if((o[neighbourObjectAssetName.toString()]).toString().includes("&")){ 
+                  console.log("Reading transp and dist values")
                   if(neighbourObjectAssetCat === "t"){
                     uitlegschemaDistance = o[neighbourObjectAssetName.toString()]
                     uitlegschemaDistance = (uitlegschemaDistance.toString().split("&",2)[0])
