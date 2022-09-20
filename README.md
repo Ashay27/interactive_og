@@ -32,6 +32,22 @@ permissions and limitations under the License.</pre>
 [react-bootstrap-range-slider](https://github.com/jaywilz/react-bootstrap-range-slider)\
 [bootstrap-icons](https://icons.getbootstrap.com/)
 
+## Features
+
+1. See steps to use the tool with instructions button on top right
+2. Add 3D street profile
+3. Add different assets to the underground in the street
+4. Detect conflicts between assets based on their horizontal distance
+5. Drag and drop assets to change position
+6. See all the assets in the a tabular data
+7. Update asset details by right-clicking
+8. Remove assets from the profile
+9. Restore deleted assets
+10. View the profile in front, top or perspective views
+11. Rotate in the profile and save rotation by Alt+R
+12. Clear all the data build again
+13. Export profile to GLTF format
+
 ## Installation
 
 1. Make sure you have [git](https://gitforwindows.org/index.html) and [node.js](https://nodejs.org/en/)
