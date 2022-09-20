@@ -8,26 +8,21 @@ import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls' ;
 import "/node_modules/materialize-css/dist/js/materialize.min.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter";
-import { SketchPicker } from "react-color";
+
 import RangeSlider from 'react-bootstrap-range-slider';
 
 import {Button, Form, Modal, OverlayTrigger, Tooltip, Col, Row, ToggleButton, Table, Stack, Spinner, Toast, ToastContainer} from 'react-bootstrap';
 import InfoModalContent from './Components/InfoModalContent'
-import Dropdown from 'react-bootstrap/Dropdown'
+
 import {ButtonGroup, ButtonToolbar} from 'react-bootstrap'
-import DropdownButton from 'react-bootstrap/DropdownButton'
-//import PipeModal from './Components/PipeModal';
-import OrderModal from './Components/OrderModal';
-import AddObjectsFromCSVModal from './Components/AddObjectsFromCSVModal';
+
 import Papa from "papaparse";
-import UploadObjects from './Components/UploadObjects';
+
 import ObjectData from './uitlegschemaAfstand.json';
-import UploadObjectFromLocalStorage from './Components/UploadObjectFromLocalStorage';
+
 import GetAllObjects from './Components/GetAllObjects'
 import AppContext from './Components/AppContext';
-import ChangeOrder from './Components/ChangeOrder';
-import background from './haaksbergwegBackground.png'
-import { Vector3 } from 'three';
+
 
 const LOCAL_STORAGE_KEY = 'localData.objects'
 const LOCAL_ID_KEY = 'localData.id'
