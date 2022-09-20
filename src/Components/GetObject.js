@@ -12,8 +12,10 @@ import {Button, Form, Modal, Stack} from 'react-bootstrap';
 const LOCAL_STORAGE_KEY = 'localData.objects'
 const LOCAL_ORDER_KEY = 'localData.order'
 const [FRONT,TOP, ROTATE, PERSPECTIVE] = ['FRONT', 'TOP', 'ROTATE', 'PERSPECTIVE']
-const HART = ["CAI/T", "Data", "E (LS)", "E (MS)_t", "E (MS)_d", "E (HS)", "Boom 1", "Boom 2", "Boom 3"]
-const RAND = ["DWA_t", "DWA_d", "DWA+RWA (gemengd)_t", "DWA+RWA (gemengd)_d", "HWA/ RWA", "PL", "Warmte_HT", "Warmte_MT", "Warmte LT", "W_t", "W_d", "G_t", "G_d", "O.A.T.", "Gebouwen", "DWA_t_Exception", "DWA_d_Exception", "HWA/ RWA_Exception" ]
+//const HART = ["CAI/T", "Data", "E (LS)", "E (MS)_t", "E (MS)_d", "E (HS)", "Boom 1", "Boom 2", "Boom 3"]
+//const RAND = ["DWA_t", "DWA_d", "DWA+RWA (gemengd)_t", "DWA+RWA (gemengd)_d", "HWA/ RWA", "PL", "Warmte_HT", "Warmte_MT", "Warmte LT", "W_t", "W_d", "G_t", "G_d", "O.A.T.", "Gebouwen", "DWA_t_Exception", "DWA_d_Exception", "HWA/ RWA_Exception" ]
+//everything which is not in RAND is considered as HART
+const RAND = ObjectData.rand;
 const VERTICAL = ["Boom 1", "Boom 2", "Boom 3", "Gebouwen"]
 var height, crown, trunkDia;
 
@@ -241,7 +243,17 @@ function Cylinder({objectId}) {
                 var neighbourObjectAssetCat = neighbourObjectAssetId.toString().split("_",2)[1];
                 console.log("neighbourObjectAssetCat: " +  neighbourObjectAssetCat)
                 
-                if(o.Asset.includes("Boom")|| o.Asset.includes("Gebouwen")){ //current asset
+                console.log(o[neighbourObjectAssetName.toString()])
+                console.log("& included : " + (o[neighbourObjectAssetName.toString()]).toString().includes("&"))
+
+                //if(o.Asset.includes("Boom")|| o.Asset.includes("Gebouwen")){ //current asset //Add asset here if it contains assets with different categories (t and d) like W_t and W_d
+
+                /* 
+                If the recommended distance value of the neighbour asset contains & then it should be categorized as transport or distribution  
+                and the asset name should have different categories (t and d) and should be named with name_t and name_d like W_t and W_d
+                */
+                if((o[neighbourObjectAssetName.toString()]).toString().includes("&")){
+                  console.log("Reading transp and dist values")
                   if(neighbourObjectAssetCat === "t"){
                     uitlegschemaDistance = o[neighbourObjectAssetName.toString()]
                     uitlegschemaDistance = (uitlegschemaDistance.toString().split("&",2)[0])
@@ -323,7 +335,17 @@ function Cylinder({objectId}) {
                 var neighbourObjectAssetCat = neighbourObjectAssetId.toString().split("_",2)[1];
                 console.log("neighbourObjectAssetCat: " +  neighbourObjectAssetCat)
                 
-                if(o.Asset.includes("Boom")|| o.Asset.includes("Gebouwen")){ //current asset
+                console.log(o[neighbourObjectAssetName.toString()])
+                console.log("& included : " + (o[neighbourObjectAssetName.toString()]).toString().includes("&"))
+                
+                //if(o.Asset.includes("Boom")|| o.Asset.includes("Gebouwen")){ //current asset //Add asset here if it contains assets with different categories (t and d) like W_t and W_d
+
+                /* 
+                If the recommended distance value of the neighbour asset contains & then it should be categorized as transport or distribution  
+                and the asset name should have different categories (t and d) and should be named with name_t and name_d like W_t and W_d
+                */
+                if((o[neighbourObjectAssetName.toString()]).toString().includes("&")){ 
+                  console.log("Reading transp and dist values")
                   if(neighbourObjectAssetCat === "t"){
                     uitlegschemaDistance = o[neighbourObjectAssetName.toString()]
                     uitlegschemaDistance = (uitlegschemaDistance.toString().split("&",2)[0])
