@@ -6,7 +6,7 @@ This product was developed with the aim to ease the process of planners in desig
 
 <pre>Copyright (C) X Gemeente
               X Amsterdam
-              X Economic Services Departments
+              X 
 
 Licensed under the EUPL, Version 1.2 or later (the "License");
 You may not use this work except in compliance with the License.
@@ -73,3 +73,11 @@ The page will reload when you make changes.
 Builds the app for production to the `build` folder.\
 And deploy the app to the homepage (mentioned in package.json) via gh-pages.
 
+## Contact people
+
+Alessandra Ricetti (a.riccetti@amsterdam.nl)\
+Joyce van den Berg (Joyce.van.den.Berg@amsterdam.nl)
+
+## Developer
+
+Ashay Shah (ashayshah.27@gmail.com)
