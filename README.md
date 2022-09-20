@@ -75,7 +75,7 @@ And deploy the app to the homepage (mentioned in package.json) via gh-pages.
 
 ## Contact people
 
-Alessandra Ricetti (a.riccetti@amsterdam.nl)\
+Alessandra Riccetti (a.riccetti@amsterdam.nl)\
 Joyce van den Berg (Joyce.van.den.Berg@amsterdam.nl)
 
 ## Developer
