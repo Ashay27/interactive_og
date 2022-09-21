@@ -62,10 +62,8 @@ const Aspect = () => {
 }
 
 function Loader() {
-  const { progress } = useProgress()
   return <Html center>
-        {/* {progress} % loaded */}
-      <Spinner animation="border" role="status" variant="success">
+    <Spinner animation="border" role="status" variant="success">
       <span className="visually-hidden">Loading...</span>
     </Spinner>
     </Html>
@@ -792,6 +790,25 @@ function InfoModal() {
   const handleCloseInfoModal = () => {
       setShowInfoModal(false);
   }
+  
+  const handleSaveDetailedInfo = () => {
+    const myRequest = new Request('Instructions.pdf');
+    fetch(myRequest).then((response) => {
+      response.blob().then((blob) => {
+        
+        const fileURL = URL.createObjectURL(blob);
+        // console.log(fileURL)
+        
+        let alink = document.createElement('a');
+        document.body.appendChild( alink );
+        alink.href = fileURL;
+        alink.download = 'Instructions.pdf';
+        alink.click();
+  
+        URL.revokeObjectURL(fileURL)
+      });
+    });
+  }
 
 return(
   <> 
@@ -811,6 +828,10 @@ return(
 
     <Modal.Footer>
       <>
+    <Button variant="primary" onClick={handleSaveDetailedInfo} className="B btn-sm">
+        Download detailed instructions
+    </Button>
+
     <Button variant="secondary" onClick={handleCloseInfoModal} className="B btn-sm">
       Close
     </Button>
@@ -1157,12 +1178,12 @@ return(
 
 			function save( blob, filename ) {
 
-				link.href = URL.createObjectURL( blob );
+        const objectURL = URL.createObjectURL( blob )
+				link.href = objectURL;
 				link.download = filename;
 				link.click();
 
-				// URL.revokeObjectURL( url ); breaks Firefox...
-
+        URL.revokeObjectURL(objectURL)
 			}
 
 			function saveString( text, filename ) {
