@@ -1209,7 +1209,7 @@ return(
 
         <OverlayTrigger placement="top" overlay={rotateViewTooltip}>          
         <Button className = "B btn-sm" onClick={() => dispatch({ type: ROTATE })}>
-                  rotate
+                  Rotation
         </Button>
         </OverlayTrigger>
 
