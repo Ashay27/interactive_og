@@ -43,7 +43,41 @@ export default function InfoModalContent() {
                   <li class="lower-alpha">Add all the assets for the profile in a similar manner.</li>                
                 </ol>
             </li>
-          
+
+            <li>
+              <b>Legend: </b>
+                <p>* transp means transport <br/>
+                   * dist means distribution
+                </p>
+              <ul>
+                  <li >CAI/T - CAI/ TV/ Telecom (transp)</li>
+                  <li >Data - Glasvezel (dist)</li>
+                  <li >E (LS) - Electra Laagspanning (dist)</li>
+                  <li >E (MS)_t - Electra Middenspanning (transp)</li>
+                  <li >E (MS)_d - Electra Middenspanning (dist)</li>
+                  <li >E (HS) - Electra Hoogspanning (transp)</li>
+                  <li >DWA_t - DWA Droogweerafvoer (onderheid riool) (transp)</li>
+                  <li >DWA_d - DWA Droogweerafvoer (riool) (dist)</li>
+                  <li >DWA+RWA (gemengd)_t - DWA+RWA (gemengd) Droogweerafvoer (onderheid riool) (transp)</li>
+                  <li >DWA+RWA (gemengd)_d - DWA+RWA (gemengd) Droogweerafvoer (riool) (dist)</li>
+                  <li >HWA/ RWA - Hemelwaterafvoer (riool) (dist)</li>
+                  <li >PL - Persleiding (transp)</li>
+                  <li >Warmte_HT - Warmtenet Hoogtemperatuur (HT) (transp)</li>
+                  <li >Warmte_MT - Warmtenet Midden temperatuur (MT) (dist)</li>
+                  <li >Warmte LT - Warmtenet Lage Temperatuur (dist)</li>
+                  <li >Koude - Koude (Warmtenet Lage Temperatuur (dist)) </li>
+                  <li >Datawarmte - Datawarmte (Warmtenet Lage Temperatuur (dist))</li>
+                  <li >W_t - Drinkwater (transp)</li>
+                  <li >W_d - Drinkwater (dist)</li>
+                  <li >G_t - Gas (transp)</li>
+                  <li >G_d - Gas (dist)</li>
+                  <li >O.A.T. - Ondergronds Afval Transport (transp)</li>
+                  <li >Boom 1 - Tree height more than 15 meters</li>
+                  <li >Boom 2 - Tree height between 10 and 15 meters</li>
+                  <li >Boom 3 - Tree height between 6 to 10 meters</li>
+                  <li >Gebouwen</li>
+                </ul>
+            </li>
             <li>
               <b>Conflict detection: </b>To check for conflicts in the profile, you need to check the conflicts for each asset. 
               <ol>
@@ -107,6 +141,14 @@ export default function InfoModalContent() {
             <li>Paste the copied data to the empty textbox and click “Upload”.</li>
             <li>The profile is transferred to the new computer/browser.</li>
           </ol>
+        </li>
+        <li class="list-group-item">
+          <b>Contact at</b>
+          <p> integraleontwerpmthodeOR@amsterdam.nl </p>
+        </li>
+        <li class="list-group-item">
+          <b>License - EUPL v1.2</b>
+          <p>Find the License at <a href = "https://github.com/IOOR-GAdam/interactive_og/blob/main/LICENSE.txt"> GitHub  </a> </p>
         </li>
       </ul>
     </>
